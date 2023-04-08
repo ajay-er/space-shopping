@@ -4,7 +4,7 @@ const shopRouter = express.Router();
 const shopController = require('../controllers/shop.controller');
 
 shopRouter.get('/dd',(req,res)=>{
-    res.render('shop/logins/signup.login.ejs');
+    res.render('admin/dashboard.ejs');
 })
 
 module.exports = shopRouter;

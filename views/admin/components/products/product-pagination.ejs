@@ -1,0 +1,25 @@
+<div class="flex justify-between items-center mr-4 mt-1">  
+  <div class="text-darkGray text-xs ml-5">SHOWING <%=skip+1||1%>-<%=currentPage==lastPage||lastPage==1?totalProducts:skip+limit%> OF <%=totalProducts%></div>
+  <nav aria-label="Page navigation example">
+    <ul class="flex list-style-none">
+      <% if(lastPage!=1){ %> 
+        <li class="page-item rounded-lg text-black <%= !currentPage?" bg-lightGray ":null %> ">
+          <a
+          class="<%= !currentPage?" text-black ":null %> page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-lg text-darkGray hover:text-black hover:bg-lightGray focus:shadow-none"
+          href="/admin/products">
+          1
+        </a>
+      </li>        
+      <% } %> 
+      <% for(i=2;i<=lastPage;i++){%>
+        <li class="page-item rounded-lg <%=currentPage==i?"bg-lightGray ":null %>">
+          <a
+            class="<%= currentPage==i?" text-black ":null %> page-link relative block py-1.5 px-3 border-0 bg-transparent outline-none transition-all duration-300 rounded-lg text-darkGray hover:text-black hover:bg-lightGray focus:shadow-none"
+            href="/admin/products<%="/?page="+i %>">
+            <%= i %> 
+          </a>
+        </li>
+      <% } %>
+    </ul>
+  </nav>
+</div>
