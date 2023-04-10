@@ -24,10 +24,6 @@ shopRouter.post('/otpverify',httpPostVerifyOTP);
 
 
 
-shopRouter.get('/dd',(req,res)=>{
-    res.render('shop/logins/otp-login');
-})
-
 
 shopRouter.get('*',httpGet404);
 
