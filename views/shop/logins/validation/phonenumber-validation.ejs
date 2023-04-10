@@ -1,0 +1,46 @@
+<script>
+    const form = document.getElementById("login-form");
+    const phone = document.getElementById("phone");
+    const phoneRegex = /^\d{10}$/;
+    const phoneError = "<strong>Invalid phone number format. Please enter a 10-digit number without spaces or dashes.</strong>";
+
+    phone.addEventListener("input", () => {
+        let phoneErrorText = "";
+        
+        // Check if the phone number field is empty or invalid
+        if (phone.value.trim() !== "" && !phoneRegex.test(phone.value.trim())) {
+            phoneErrorText = phoneError;
+        }
+
+        // Display error message or clear existing error message
+        document.getElementById("phone-error").innerHTML = phoneErrorText;
+        phone.classList.toggle("is-invalid", phoneErrorText !== "");
+    });
+
+    form.addEventListener("submit", (event) => {
+        let isValid = true;
+        let phoneErrorText = "";
+
+        // Check if the phone number field is empty or invalid
+        if (phone.value.trim() === "") {
+            phoneErrorText = "<strong>Phone number is required.</strong>";
+            isValid = false;
+        } else if (!phoneRegex.test(phone.value.trim())) {
+            phoneErrorText = phoneError;
+            isValid = false;
+        }
+
+        // Display error message if any
+        if (!isValid) {
+            event.preventDefault();
+            document.getElementById("phone-error").innerHTML = phoneErrorText;
+            phone.classList.add("is-invalid");
+        }
+    });
+
+    // Clear error message and class when input field is focused
+    phone.addEventListener("focus", () => {
+        document.getElementById("phone-error").innerHTML = "";
+        phone.classList.remove("is-invalid");
+    });
+</script>

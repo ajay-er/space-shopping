@@ -1,7 +1,10 @@
 const express = require('express');
 const adminRouter = express.Router();
 
-const adminController = require('../controllers/admin.controller');
+const {
+    httpGetAdminHome,
+} = require('../controllers/admin.controller');
 
+// adminRouter.get('/',httpGetAdminHome);
 
 module.exports = adminRouter;

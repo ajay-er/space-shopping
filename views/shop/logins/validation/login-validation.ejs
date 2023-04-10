@@ -1,3 +1,4 @@
+
 <script>
     const form = document.getElementById("login-form");
     const email = document.getElementById("email");
@@ -6,56 +7,53 @@
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
 
     form.addEventListener("submit", (event) => {
-        let isValid = true;
-        let emailError = "";
-        let passwordError = "";
+      let isValid = true;
+      let emailError = "";
+      let passwordError = "";
 
-        // Check if the email field is empty or invalid
-        if (email.value.trim() === "") {
-            emailError = "<strong>Email is required.</strong>";
-            isValid = false;
-        } else if (!emailRegex.test(email.value)) {
-            emailError = "<strong>Invalid email format.</strong>";
-            isValid = false;
-        }
+      // Check if the email field is empty or invalid
+      if (email.value.trim() === "") {
+        emailError = "<strong>Email is required.</strong>";
+        isValid = false;
+      } else if (!emailRegex.test(email.value)) {
+        emailError = "<strong>Invalid email format.</strong>";
+        isValid = false;
+      }
 
-        // Check if the password field is empty or invalid
-        if (passwordInput.value.trim() === "") {
-            passwordError = "<strong>Password is required.</strong>";
-            isValid = false;
-        } else if (!passwordRegex.test(passwordInput.value.trim())) {
-            passwordError = "<strong>Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number.</strong>";
-            isValid = false;
-        }
+      // Check if the password field is empty or invalid
+      if (passwordInput.value.trim() === "") {
+        passwordError = "<strong>Password is required.</strong>";
+        isValid = false;
+      } else if (!passwordRegex.test(passwordInput.value.trim())) {
+        passwordError = "<strong>Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number.</strong>";
+        isValid = false;
+      }
 
-        // Display error messages if any
-        if (!isValid) {
-            event.preventDefault();
-            document.getElementById("email-error-message").innerHTML = emailError;
-            document.getElementById("email-error-label").textContent = emailError;
-            document.getElementById("password-error-message").innerHTML = passwordError;
-            document.getElementById("password-error-label").textContent = passwordError;
-            email.classList.add("is-invalid");
-            passwordInput.classList.add("is-invalid");
-        }
+      // Display error messages if any
+      if (!isValid) {
+        event.preventDefault();
+        document.getElementById("email-error-message").innerHTML = emailError;
+        document.getElementById("email-error-label").textContent = emailError;
+        document.getElementById("password-error-message").innerHTML = passwordError;
+        document.getElementById("password-error-label").textContent = passwordError;
+        email.classList.add("is-invalid");
+        passwordInput.classList.add("is-invalid");
+      }
     });
 
     // Clear error messages and classes when input fields are focused
     email.addEventListener("focus", () => {
-        document.getElementById("email-error-message").innerHTML = "";
-        document.getElementById("email-error-label").textContent = "";
-        email.classList.remove("is-invalid");
+      document.getElementById("email-error-message").innerHTML = "";
+      document.getElementById("email-error-label").textContent = "";
+      email.classList.remove("is-invalid");
     });
 
     passwordInput.addEventListener("focus", () => {
-        document.getElementById("password-error-message").innerHTML = "";
-        document.getElementById("password-error-label").textContent = "";
-        passwordInput.classList.remove("is-invalid");
+      document.getElementById("password-error-message").innerHTML = "";
+      document.getElementById("password-error-label").textContent = "";
+      passwordInput.classList.remove("is-invalid");
     });
-</script>
-
-
-
+  </script>
 
 <!-- <script>
     function validateForm(event) {
