@@ -7,4 +7,9 @@ shopRouter.get('/dd',(req,res)=>{
     res.render('shop/logins/login.ejs');
 })
 
+shopRouter.get('/contact',(req,res)=>{
+    res.render('shop/contact');
+})
+
+
 module.exports = shopRouter;
