@@ -1,0 +1,126 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        let isValid = validateForm();
+        if (isValid) {
+            // Submit the form
+            this.submit();
+        }
+    });
+
+    function validateForm() {
+        let username = document.getElementById("username").value;
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
+        let confirmPassword = document.getElementById("confirm-password").value;
+        let checkbox = document.getElementById("exampleCheckbox12").checked;
+        let usernameError = document.getElementById("username-error");
+        let emailError = document.getElementById("email-error");
+        let passwordError = document.getElementById("password-error");
+        let confirmPasswordError = document.getElementById("confirm-password-error");
+        let phone = document.getElementById("phone").value;
+        let otp = document.getElementById("otp").value;
+        let phoneError = document.getElementById("phone-error");
+        let otpError = document.getElementById("otp-error");
+
+
+        if (username.trim() === "") {
+            usernameError.innerHTML = "Username cannot be empty";
+            usernameError.style.color = "red"; // add red color
+            return false;
+        } else if (username.length < 6) {
+            usernameError.innerHTML = "Username must be at least 6 characters long";
+            usernameError.style.color = "red";
+            return false;
+        } else {
+            usernameError.innerHTML = "";
+        }
+
+        if (email.trim() === "") {
+            emailError.innerHTML = "Email cannot be empty";
+            emailError.style.color = "red"; // add red color
+            return false;
+        } else {
+            // email validation using regular expression
+            let emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+            if (!emailRegex.test(email)) {
+                emailError.innerHTML = "Invalid email format";
+                emailError.style.color = "red";
+                return false;
+            } else {
+                emailError.innerHTML = "";
+            }
+        }
+
+        if (password.trim() === "") {
+            passwordError.innerHTML = "Password cannot be empty";
+            passwordError.style.color = "red"; // add red color
+            return false;
+
+        } else {
+            // password validation
+            let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+            if (!passwordRegex.test(password)) {
+                passwordError.innerHTML = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character";
+                passwordError.style.color = "red";
+                return false;
+
+            } else {
+                passwordError.innerHTML = "";
+            }
+        }
+
+        if (confirmPassword.trim() === "") {
+            confirmPasswordError.innerHTML = "Confirm password cannot be empty";
+            confirmPasswordError.style.color = "red"; // add red color
+            return false;
+        } else if (password !== confirmPassword) {
+            confirmPasswordError.innerHTML = "Passwords do not match";
+            confirmPasswordError.style.color = "red"; // add red color
+            return false;
+        } else {
+            confirmPasswordError.innerHTML = "";
+        }
+
+        if (phone.trim() === "") {
+            phoneError.innerHTML = "Phone number cannot be empty";
+            phoneError.style.color = "red"; // add red color
+            return false;
+        } else if (!/^[0-9]{10}$/.test(phone)) {
+            phoneError.innerHTML = "Invalid phone number format";
+            phoneError.style.color = "red";
+            return false;
+        } else {
+            phoneError.innerHTML = "";
+        }
+
+        if (otp.trim() === "") {
+            otpError.innerHTML = "OTP cannot be empty";
+            otpError.style.color = "red"; // add red color
+            return false;
+        } else if (!/^[0-9]{6}$/.test(otp)) {
+            otpError.innerHTML = "Invalid OTP format";
+            otpError.style.color = "red";
+            return false;
+        } else {
+            otpError.innerHTML = "";
+        }
+
+        if (!checkbox) {
+            showAlert();
+            return false; // Set errors to true if checkbox is not checked
+        }
+
+        function showAlert() {
+            swal("Please accept the terms and conditions.", {
+                buttons: false,
+                timer: 3000,
+                icon: "warning",
+            });
+        }
+
+       return true;
+    }
+</script>
