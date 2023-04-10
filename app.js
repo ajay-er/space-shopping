@@ -2,7 +2,7 @@ const path = require('path');
 
 const express = require('express');
 const morgan = require('morgan');
-const { mongoConnect } = require('./services/mongo');
+const { mongoConnect } = require('./config/mongo');
 const cors = require('cors');
 require('dotenv').config();
 
