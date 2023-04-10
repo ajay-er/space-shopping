@@ -24,13 +24,14 @@ function httpGetOTP(req, res) {
 }
 
 function httpVerifyPhone(req, res) {
-  isPhoneNumberExist(req.body.phone).then((response) => {
+  const { phone } = req.body;
+  isPhoneNumberExist(phone).then((response) => {
     if (response) {
-      req.session.phone = req.body.phone;
-      res.render('shop/logins/otp-verify');
+      req.session.phone = phone;
+      return res.render('shop/logins/otp-verify',{phone});
     } else {
       let message = 'Phone number not registered';
-      res.redirect('/otplogin?message=' + message);
+      return res.redirect('/otp-login?message=' + message);
     }
   });
 }
@@ -41,10 +42,9 @@ function httpPostVerifyOTP(req, res) {
       if (response.status) {
         req.session.loggedIn = true;
         req.session.user = response.user;
-
         res.redirect('/');
       } else {
-        res.redirect('/login?message=');
+        res.redirect('/otp-verify?message=Incorrect OTP. Please try again.');
       }
     }
   );

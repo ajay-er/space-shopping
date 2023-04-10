@@ -14,15 +14,12 @@ const {
 } = require('../controllers/shop.controller');
 
 
-
 shopRouter.get('/',httpGetHome);
 shopRouter.get('/login',httpGetLogin);
 shopRouter.get('/signup',httpGetSignup);
-shopRouter.get('/otplogin',httpGetOTP);
-shopRouter.post('/otplogin',httpVerifyPhone);
-shopRouter.post('/otpverify',httpPostVerifyOTP);
-
-
+shopRouter.get('/otp-login',httpGetOTP);
+shopRouter.post('/verify-login',httpVerifyPhone);
+shopRouter.post('/otp-verify',httpPostVerifyOTP);
 
 
 shopRouter.get('*',httpGet404);

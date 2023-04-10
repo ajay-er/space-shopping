@@ -4,7 +4,7 @@ const { sendOtp, verifyOtp } = require('../config/twilio');
 async function isPhoneNumberExist(phoneNumber) {
   let user = await userDatabase.findOne({ phone: phoneNumber });
   if (user) {
-   /*  await sendOtp(phoneNumber); */
+    await sendOtp(phoneNumber); 
     return true;
   }else{
     return false;
