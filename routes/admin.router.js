@@ -1,13 +1,18 @@
 const express = require('express');
 const adminRouter = express.Router();
 
-// const {
-//     httpGetAdminHome,
-// } = require('../controllers/admin.controller');
+const {
+    httpGetDashBoard,
+    httpGetLogin,
+    httpPostLogin,
+    httpPostLogout,
 
-adminRouter.get('/',(req,res)=>{
-    res.render('admin/dashboard')
-});
+} = require('../controllers/admin.controller');
+
+adminRouter.get('/',httpGetDashBoard);
+adminRouter.get('/login',httpGetLogin)
+adminRouter.post('/login', httpPostLogin)
+adminRouter.post('/logout', httpPostLogout)
 
 
 module.exports = adminRouter;

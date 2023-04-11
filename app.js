@@ -6,6 +6,7 @@ const bodyParser= require('body-parser');
 const morgan = require('morgan');
 const { mongoConnect } = require('./config/mongo');
 const cors = require('cors');
+const flash = require('connect-flash')
 require('dotenv').config();
 
 const app = express();
@@ -30,7 +31,9 @@ app.use(
       maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
     }
   })
-)
+);
+app.use(flash());
+
 
 //view engine setup
 app.set('view engine', 'ejs');

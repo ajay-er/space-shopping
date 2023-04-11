@@ -1,43 +1,43 @@
 const {
-  isPhoneNumberExist,
-  checkOTPcorrectOrNot,
+  sendVerificationCode,
+  verifyPhoneNumber,
+  sendVerificationSignup,
+  submitSignup,
+
+
 } = require('../models/user.model');
 
 function httpGetHome(req, res) {
   res.status(200).render('shop/home');
 }
 
-function httpGet404(req, res) {
-  res.status(404).render('shop/404');
-}
-
 function httpGetSignup(req, res) {
-  res.render('shop/logins/signup');
+  res.render('shop/logins/signup',{ message: req.flash('message') });
 }
 
 function httpGetLogin(req, res) {
   res.render('shop/logins/login');
 }
 
-function httpGetOTP(req, res) {
+function httpGetOTP(req, res) { 
   res.render('shop/logins/otp-login');
 }
 
 function httpVerifyPhone(req, res) {
   const { phone } = req.body;
-  isPhoneNumberExist(phone).then((response) => {
+  sendVerificationCode(phone).then((response) => {
     if (response) {
       req.session.phone = phone;
-      return res.render('shop/logins/otp-verify',{phone});
+      return res.render('shop/logins/otp-verify', { phone });
     } else {
       let message = 'Phone number not registered';
       return res.redirect('/otp-login?message=' + message);
     }
   });
-}
+} 
 
 function httpPostVerifyOTP(req, res) {
-  checkOTPcorrectOrNot(req.session.phone, req.body.otp).then(
+  verifyPhoneNumber(req.session.phone, req.body.otp).then(
     async (response) => {
       if (response.status) {
         req.session.loggedIn = true;
@@ -50,6 +50,42 @@ function httpPostVerifyOTP(req, res) {
   );
 }
 
+
+
+
+async function httpSignUpOtpVerify(req, res) {
+  const { phone} = req.body;
+  
+  const phoneExist = await sendVerificationSignup(phone);
+  if (!phoneExist) {
+    req.flash('message', 'Phone number already registered');
+    return res.redirect('/signup');
+  }
+  req.flash('message', 'OTP sent successfully');
+}
+
+
+async function httpPostSignUp(req, res) {
+  const phoneVerified = await submitSignup(req.body);
+  if (phoneVerified===false) {
+    req.flash('message', 'Phone number not registered');
+    return res.redirect('/login');
+  }
+
+  req.session.loggedIn = true;
+  return res.redirect('/');
+}
+
+
+function httpPostLogout(req, res) {
+  req.session.destroy();
+  res.redirect('/');
+}
+
+function httpGet404(req, res) {
+  res.status(404).render('shop/404');
+}
+
 module.exports = {
   httpGetHome,
   httpGetSignup,
@@ -57,6 +93,9 @@ module.exports = {
   httpGetOTP,
   httpVerifyPhone,
   httpPostVerifyOTP,
+  httpSignUpOtpVerify,
+  httpPostSignUp,
 
+  httpPostLogout,
   httpGet404,
 };
