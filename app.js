@@ -37,7 +37,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // route middlewares
-app.use('/admin', adminRouter);
+app.use('/dashboard', adminRouter);
 app.use('/', shopRouter);
 
 
