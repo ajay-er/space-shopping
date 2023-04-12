@@ -2,6 +2,11 @@ const express = require('express');
 const shopRouter = express.Router();
 
 const {
+    isLoggedIn,
+    isLoggedOut,
+} = require('../auth/shop.auth');
+
+const {
     httpGetHome,
     httpGetSignup,
     httpGetLogin,
@@ -17,12 +22,12 @@ const {
 
 
 shopRouter.get('/',httpGetHome);
-shopRouter.get('/login',httpGetLogin);
-// shopRouter.post('/login');
-shopRouter.get('/signup',httpGetSignup);
-shopRouter.get('/otp-login',httpGetOTP);
-shopRouter.post('/verify-login',httpVerifyPhone);
-shopRouter.post('/otp-verify',httpPostVerifyOTP);
+shopRouter.get('/login',isLoggedOut,httpGetLogin);
+shopRouter.post('/login');
+shopRouter.get('/signup',isLoggedOut,httpGetSignup);
+shopRouter.get('/otp-login',isLoggedOut,httpGetOTP);
+shopRouter.post('/verify-login',isLoggedOut,httpVerifyPhone);
+shopRouter.post('/otp-verify',isLoggedOut,httpPostVerifyOTP);
 shopRouter.post('/signup-otp',httpSignUpOtpVerify);
 shopRouter.post('/signup',httpPostSignUp);
 

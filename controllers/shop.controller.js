@@ -51,11 +51,8 @@ function httpPostVerifyOTP(req, res) {
 }
 
 
-
-
 async function httpSignUpOtpVerify(req, res) {
   const { phone} = req.body;
-  
   const phoneExist = await sendVerificationSignup(phone);
   if (!phoneExist) {
     req.flash('message', 'Phone number already registered');
@@ -66,12 +63,14 @@ async function httpSignUpOtpVerify(req, res) {
 
 
 async function httpPostSignUp(req, res) {
+  console.log(req.body);
   const phoneVerified = await submitSignup(req.body);
-  if (phoneVerified===false) {
+  if (!phoneVerified.status) {
     req.flash('message', 'Phone number not registered');
     return res.redirect('/login');
   }
 
+  req.session.user = phoneVerified.user;
   req.session.loggedIn = true;
   return res.redirect('/');
 }

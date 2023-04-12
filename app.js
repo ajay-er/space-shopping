@@ -1,13 +1,14 @@
+require('dotenv').config();
+
 const path = require('path');
 
 const express = require('express');
 const session = require('express-session');
-const bodyParser= require('body-parser');
+const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const { mongoConnect } = require('./config/mongo');
 const cors = require('cors');
-const flash = require('connect-flash')
-require('dotenv').config();
+const flash = require('connect-flash');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,12 +29,11 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
-    }
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    },
   })
 );
 app.use(flash());
-
 
 //view engine setup
 app.set('view engine', 'ejs');
@@ -42,7 +42,6 @@ app.set('views', path.join(__dirname, 'views'));
 // route middlewares
 app.use('/dashboard', adminRouter);
 app.use('/', shopRouter);
-
 
 async function startServer() {
   await mongoConnect();
