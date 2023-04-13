@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3000;
 
 // routes
 const adminRouter = require('./routes/admin.router');
-const shopRouter = require('./routes/shop.router');
+const userRouter = require('./routes/user.router');
 
 //global middlewares
 app.use(express.json());
@@ -43,7 +43,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // route middlewares
 app.use('/dashboard', adminRouter);
-app.use('/', shopRouter);
+app.use('/', userRouter);
 
 async function startServer() {
   await mongoConnect();

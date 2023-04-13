@@ -1,5 +1,5 @@
 function isLoggedIn(req, res, next) {
-  if (req.session.adminId) {
+  if (req.session.adminLoggedIn) {
     next();
   } else {
     res.redirect('/admin/login');
@@ -7,7 +7,7 @@ function isLoggedIn(req, res, next) {
 }
 
 function isLoggedOut(req, res, next) {
-  if (!req.session.adminId) {
+  if (!req.session.adminLoggedIn) {
     next();
   } else {
     res.redirect('/admin');

@@ -1,4 +1,4 @@
-const userDatabase = require('./user.schema');
+const userDatabase = require('../schema/user.schema');
 const { sendOtp, verifyOtp } = require('../config/twilio');
 
 async function sendVerificationCode(phoneNumber) {

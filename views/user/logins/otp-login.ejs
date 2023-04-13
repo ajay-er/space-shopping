@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+  <%- include("../../partials/user-header") %>
+</head>
+
+<body>
+  <%- include("../layouts/navbar.ejs") %>
+    <main class="main">
+      <div class="page-header breadcrumb-wrap">
+        <div class="container">
+          <div class="breadcrumb">
+            <a href="/" rel="nofollow">Home</a>
+            <span></span> Pages
+            <span></span> Login / Register
+          </div>
+        </div>
+      </div>
+      <section class="pt-50 pb-50">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-10 m-auto">
+              <div class="row">
+                <div class="col-lg-5 offset-lg-2 mx-auto">
+                  <div
+                    class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5">
+                    <div class="padding_eight_all bg-white">
+                      <div class="heading_s1">
+                        <h3 class="mb-30">Login</h3>
+                      </div>
+                      <form method="post" action="/verify-login" id="login-form">
+                        <div class="form-group">
+                          <input id="phone" name="phone" class="form-control" placeholder="Phone Number" type="tel">
+                          <div id="phone-error" class="invalid-feedback"></div>
+                        </div>
+                        <div class="form-group">
+                          <button type="submit" class="btn btn-fill-out btn-block w-100 hover-up">SEND OTP</button>
+                        </div>
+                      </form>
+                      <div class="text-muted text-center mt-15 mb-15">Don't have an account? <a href="/signup">Sign
+                          up</a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <%- include("../layouts/footer.ejs") %>
+      <%- include("../components/script/script.ejs") %>
+        <%- include("../components/preloading.ejs") %>
+          <%- include("./validation/phonenumber-validation.ejs") %>
+
+</body>
+
+</html>
