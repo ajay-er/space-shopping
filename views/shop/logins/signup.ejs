@@ -36,85 +36,84 @@
                                                 <h3 class="mb-30">Create an Account</h3>
                                             </div>
                                             <p class="mb-50 font-sm">
-                                                Your personal data will be used to support your experience throughout
-                                                this website, to manage access to your account, and for other purposes
+                                                Your personal data will be used to support your experience
+                                                throughout
+                                                this website, to manage access to your account, and for other
+                                                purposes
                                                 described in our privacy policy
                                             </p>
-                                            <form id="formvalidation" action="/signup" class="form-inline">
-                                                <% if (message) { %>
-                                                    <div class="alert-danger">
-                                                        <%= message %>
+                                            <form id="formValid" action="/signup" method="post" class="form-inline">
+                                                <span class="error-message" id="errors"></span>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="text" name="username" placeholder="Username"
+                                                            id="username" class="form-control">
                                                     </div>
-                                                    <% } %>
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <input type="text" name="username"
-                                                                    placeholder="Username" id="username"
-                                                                    class="form-control">
-                                                            </div>
-                                                            <span class="error-message" id="username-error"></span>
+                                                    <span class="error-message" id="username-error"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="email" name="email" placeholder="Email" id="email"
+                                                            class="form-control">
+                                                    </div>
+                                                    <span class="error-message" id="email-error"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="password" name="password" placeholder="Password"
+                                                            id="password" class="form-control">
+                                                    </div>
+                                                    <span class="error-message" id="password-error"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="password" name="confirm-password"
+                                                            placeholder="Confirm password" id="confirm-password"
+                                                            class="form-control">
+                                                    </div>
+                                                    <span class="error-message" id="confirm-password-error"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="tel" name="phone" placeholder="Phone Number"
+                                                            id="phone" class="form-control">
+                                                        <div class="input-group-append">
+                                                            <button type="button" id="otp-button"
+                                                                class="btn btn-block mx-sm-2">Send
+                                                                OTP</button>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <input type="email" name="email" placeholder="Email"
-                                                                    id="email" class="form-control">
-                                                            </div>
-                                                            <span class="error-message" id="email-error"></span>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <input type="password" name="password"
-                                                                    placeholder="Password" id="password"
-                                                                    class="form-control">
-                                                            </div>
-                                                            <span class="error-message" id="password-error"></span>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <input type="password" name="confirm-password"
-                                                                    placeholder="Confirm password" id="confirm-password"
-                                                                    class="form-control">
-                                                            </div>
-                                                            <span class="error-message"
-                                                                id="confirm-password-error"></span>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <input type="tel" name="phone"
-                                                                    placeholder="Phone Number" id="phone"
-                                                                    class="form-control">
-                                                                <div class="input-group-append">
-                                                                    <button type="button"
-                                                                        class="btn otp-button btn-primary btn-block mx-sm-2">Send
-                                                                        OTP</button>
-                                                                </div>
-                                                            </div>
+                                                    </div>
+
+                                                   
+                                                        <span class="error-message" id="phone-error-verify" style="display: none;">
+                                                            Phone number already registred </span>
                                                             <span class="error-message" id="phone-error"></span>
+
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <input type="text" name="otp" placeholder="OTP" id="otp"
+                                                        class="form-control">
+                                                    <span class="error-message" id="otp-error"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="chek-form">
+                                                        <div class="custome-checkbox">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="checkbox" id="exampleCheckbox" value="">
+                                                            <label class="form-check-label"
+                                                                for="exampleCheckbox"><span>I agree to terms
+                                                                    &amp; Policy.<a href="#"><i
+                                                                            class="mr-5 text-muted"></i>Learn
+                                                                        more</a></span></label>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <input type="text" name="otp" placeholder="OTP" id="otp"
-                                                                class="form-control">
-                                                            <span class="error-message" id="otp-error"></span>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="chek-form">
-                                                                <div class="custome-checkbox">
-                                                                    <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox"
-                                                                        value="">
-                                                                    <label class="form-check-label"
-                                                                        for="exampleCheckbox"><span>I agree to terms
-                                                                            &amp; Policy.<a href="#"><i
-                                                                                    class="mr-5 text-muted"></i>Learn
-                                                                                more</a></span></label>
-                                                                </div>
-                                                            </div>
-                                                            
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <button type="submit"
-                                                                class="btn btn-fill-out btn-block hover-up"
-                                                                name="submit">Submit & Register</button>
-                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-fill-out btn-block hover-up"
+                                                        name="submit">Submit & Register</button>
+                                                </div>
                                             </form>
 
                                             <div class="divider-text-center mt-15 mb-15">
@@ -148,81 +147,7 @@
                 <%- include("../components/preloading.ejs") %>
                     <%- include("./validation/signup-validation.ejs") %>
 
+
 </body>
 
 </html>
-
-<!-- <script>
-    $(document).ready(function () {
-        $('.otp-button').click(function () {
-            var username = $('#username').val();
-            var email = $('#email').val();
-            var password = $('#password').val();
-            var confirmPassword = $('#confirm-password').val();
-            var phone = $('#phone').val();
-
-            // Validate the username
-            if (!username || !/^[a-zA-Z0-9]+$/.test(username)) {
-                $('#username-error').text('special symbols not allowed');
-                return false;
-            } else {
-                $('#username-error').hide();
-            }
-
-            // Validate the email address
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                $('#email-error').text('Please enter a valid email address');
-                return false;
-            } else {
-                $('#email-error').hide();
-            }
-
-            // Validate the password
-            if (!password || password.length < 6) {
-                $('#password-error').text('Please enter a password with at least 6 characters');
-                return false;
-            } else {
-                $('#password-error').hide();
-            }
-
-            // Validate the confirm password
-            if (!confirmPassword || confirmPassword !== password) {
-                $('#confirm-password-error').text('Passwords do not match');
-                return false;
-            } else {
-                $('#confirm-password-error').hide();
-            }
-
-            // Validate the phone number
-            if (!phone || !/^[0-9]{10}$/.test(phone)) {
-                $('#phone-error').text('Please enter a valid phone number');
-                return false;
-            } else {
-                $('#phone-error').hide();
-            }
-
-            // Disable phone number field
-            $('#phone').prop('readonly', true);
-
-            // Send OTP via AJAX
-            $.ajax({
-                type: 'POST',
-                url: '/signup-otp',
-                data: { phone: phone },
-                success: function (response) {
-                    // Handle successful response
-                    console.log(response);
-                },
-                error: function (xhr, status, error) {
-                    // Handle error response
-                    console.log(error);
-                }
-            });
-
-            return true;
-        });
-    });
-
-</script> -->
-
-

@@ -1,12 +1,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
 <script>
-    const form = document.getElementById("formvalidation");
+    const form = document.getElementById("formValid");
     const username = document.getElementById("username");
     const email = document.getElementById("email");
     const password = document.getElementById("password");
     const confirmPassword = document.getElementById("confirm-password");
     const phone = document.getElementById("phone");
+    const otpButton = document.getElementById("otp-button");
     const otp = document.getElementById("otp");
     const otpRegex = /^\d{6}$/;
     const phoneRegex = /^\d{10}$/;
@@ -14,14 +15,33 @@
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
     let isValid = false;
 
-    form.addEventListener("submit", (event) => {
+    // Disable OTP button by default
+    otpButton.disabled = true;
+
+    // Enable OTP button only when all fields are filled
+    form.addEventListener('input', () => {
+        if (username.value.trim() !== "" && email.value.trim() !== "" && password.value.trim() !== "" && confirmPassword.value.trim() !== "" && phone.value.trim() !== "") {
+            otpButton.disabled = false;
+        } else {
+            otpButton.disabled = true;
+        }
+    });
+
+    form.addEventListener('submit', (event) => {
+        let checkbox = document.getElementById("exampleCheckbox").checked;
         let usernameError = "";
         let emailError = "";
         let passwordError = "";
         let confirmPasswordError = "";
         let phoneError = "";
         let otpError = "";
-        const checkbox = document.getElementById("exampleCheckbox").checked;
+
+
+        // Check if all fields are filled
+        if (username.value.trim() === "" || email.value.trim() === "" || password.value.trim() === "" || confirmPassword.value.trim() === "" || phone.value.trim() === "") {
+            isValid = false;
+            event.preventDefault();
+        }
 
         // Username validation
         if (username.value.trim() === "") {
@@ -63,6 +83,7 @@
             otpError = "OTP is required.";
         } else if (!otpRegex.test(otp.value.trim())) {
             otpError = "Invalid OTP. OTP should be a 6-digit numeric code.";
+
         }
 
 
@@ -174,5 +195,37 @@
         otp.classList.toggle("is-invalid", otpError !== "");
     });
 
+
+    $(document).ready(function () {
+        $('#otp-button').click(function () {
+            var phone = $('#phone').val();
+            $.ajax({
+                type: 'POST',
+                url: '/signup-otp',
+                data: { phone: phone },
+                success: function (response) {
+                    // Handle successful response
+                    console.log(response);
+                    if (!response) {
+
+                        document.getElementById('phone-error-verify').style.display = 'block';
+                        document.getElementById('phone-error-verify').innerHTML = "Phone number already registered";
+                        setTimeout(()=>{
+                        document.getElementById('phone-error-verify').style.display = 'none';
+                        },5000)
+                    }else{
+                        document.getElementById('phone-error-verify').style.display = 'none';
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                    console.log(error);
+                }
+            });
+
+            return true;
+        });
+    });
 
 </script>

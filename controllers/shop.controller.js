@@ -52,22 +52,24 @@ function httpPostVerifyOTP(req, res) {
 
 
 async function httpSignUpOtpVerify(req, res) {
+  console.log('😁😁😁');
   const { phone} = req.body;
   const phoneExist = await sendVerificationSignup(phone);
   if (!phoneExist) {
-    req.flash('message', 'Phone number already registered');
-    return res.redirect('/signup');
+    res.send(false);
+  }else{
+    res.send(true);
   }
-  req.flash('message', 'OTP sent successfully');
+  
 }
 
 
 async function httpPostSignUp(req, res) {
-  console.log(req.body);
   const phoneVerified = await submitSignup(req.body);
   if (!phoneVerified.status) {
-    req.flash('message', 'Phone number not registered');
-    return res.redirect('/login');
+    req.flash('message', 'Phone number already registered');
+    return  res.redirect('/signup');
+
   }
 
   req.session.user = phoneVerified.user;
