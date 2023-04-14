@@ -10,11 +10,12 @@ const {
     httpGetHome,
     httpGetSignup,
     httpGetLogin,
-    httpGetOTP,
-    httpVerifyPhone,
-    httpPostVerifyOTP,
-    httpSignUpOtpVerify,
-    httpPostSignUp,
+    httpGetOtpLogin,
+    httpLoginVerifyPhone,
+    httpGetOtpVerify,
+    httpPostVerifyOtp,
+    httpSignupOtpVerify,
+    httpPostSignup,
 
     httpPostLogout,
     httpGet404,
@@ -23,13 +24,15 @@ const {
 
 userRouter.get('/',httpGetHome);
 userRouter.get('/login',isLoggedOut,httpGetLogin);
-userRouter.post('/login');
+// * userRouter.post('/login');
+userRouter.get('/otp-login',isLoggedOut,httpGetOtpLogin);
+userRouter.post('/otp-login',isLoggedOut,httpLoginVerifyPhone);
+userRouter.get('/otp-verify',isLoggedOut,httpGetOtpVerify);
+userRouter.post('/otp-verify',isLoggedOut,httpPostVerifyOtp);
+
 userRouter.get('/signup',isLoggedOut,httpGetSignup);
-userRouter.get('/otp-login',isLoggedOut,httpGetOTP);
-userRouter.post('/verify-login',isLoggedOut,httpVerifyPhone);
-userRouter.post('/otp-verify',isLoggedOut,httpPostVerifyOTP);
-userRouter.post('/signup-otp',httpSignUpOtpVerify);
-userRouter.post('/signup',httpPostSignUp);
+userRouter.post('/signup',httpPostSignup);
+userRouter.post('/signup-otp',httpSignupOtpVerify);
 
 
 userRouter.post('/logout',httpPostLogout);

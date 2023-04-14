@@ -4,7 +4,6 @@ const serviceSid = process.env.TWILIO_SERVICES_SID;
 const client = require('twilio')(accountSid, authToken);
 
 function sendOtp(phoneNumber) {
-
   client.verify.v2
     .services(serviceSid)
     .verifications.create({ to: '+91' + phoneNumber, channel: 'sms' })

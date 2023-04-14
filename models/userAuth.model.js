@@ -1,14 +1,9 @@
 const userDatabase = require('../schema/user.schema');
 const { sendOtp, verifyOtp } = require('../config/twilio');
 
-async function sendVerificationCode(phoneNumber) {
+async function checkUserExistOrNot(phoneNumber) {
   const user = await userDatabase.findOne({ phone: phoneNumber });
-  if (!user) {
-    await sendOtp(phoneNumber);
-    return true;
-  } else {
-    return false;
-  }
+  return user;
 }
 
 async function verifyPhoneNumber(phoneNumber, otp) {
@@ -24,11 +19,12 @@ async function verifyPhoneNumber(phoneNumber, otp) {
 async function sendVerificationSignup(phoneNumber) {
   const user = await userDatabase.findOne({ phone: phoneNumber });
   if (!user) {
-     await sendOtp(phoneNumber);
+    console.log('🔼🔼otp🔼');
+    sendOtp(phoneNumber);
     return true;
   } else {
     return false;
-  }
+  } 
 }
 
 async function submitSignup(userData){
@@ -53,7 +49,7 @@ async function submitSignup(userData){
         return { error: "Error saving user" };
       }
     } else {
-      return { error: "Invalid OTP" };
+      return { error: "Invalid OTP", status: false };
     }
   } catch (error) {
     console.error("Error submitting signup:", error);
@@ -63,7 +59,7 @@ async function submitSignup(userData){
 
 
 module.exports = {
-  sendVerificationCode,
+  checkUserExistOrNot,
   verifyPhoneNumber,
   sendVerificationSignup,
   submitSignup,

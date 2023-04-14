@@ -207,7 +207,6 @@
                     // Handle successful response
                     console.log(response);
                     if (!response) {
-
                         document.getElementById('phone-error-verify').style.display = 'block';
                         document.getElementById('phone-error-verify').innerHTML = "Phone number already registered";
                         setTimeout(()=>{
@@ -215,7 +214,6 @@
                         },5000)
                     }else{
                         document.getElementById('phone-error-verify').style.display = 'none';
-
                     }
                 },
                 error: function (xhr, status, error) {

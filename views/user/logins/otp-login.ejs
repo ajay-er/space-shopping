@@ -3,6 +3,7 @@
 
 <head>
   <%- include("../../partials/user-header") %>
+
 </head>
 
 <body>
@@ -29,15 +30,17 @@
                       <div class="heading_s1">
                         <h3 class="mb-30">Login</h3>
                       </div>
-                      <form method="post" action="/verify-login" id="login-form">
+
+                      <form id="login-form">
                         <div class="form-group">
-                          <input id="phone" name="phone" class="form-control" placeholder="Phone Number" type="tel">
+                          <input id="phone" name="phone" class="form-control" placeholder="Phone Number" type="tel" required>
                           <div id="phone-error" class="invalid-feedback"></div>
                         </div>
                         <div class="form-group">
-                          <button type="submit" class="btn btn-fill-out btn-block w-100 hover-up">SEND OTP</button>
+                          <button type="submit" id="send-otp" class="btn btn-fill-out btn-block w-100 hover-up">SEND OTP</button>
                         </div>
                       </form>
+
                       <div class="text-muted text-center mt-15 mb-15">Don't have an account? <a href="/signup">Sign
                           up</a></div>
                     </div>
@@ -55,5 +58,5 @@
           <%- include("./validation/phonenumber-validation.ejs") %>
 
 </body>
-
 </html>
+
