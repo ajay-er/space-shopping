@@ -2,12 +2,15 @@
 <html class="no-js" lang="en">
 
 <head>
-  <% include("../../partials/user-header") %>
+  <%- include("../../partials/user-header") %>
+  <%- include("../components/preloading.ejs") %>
+
 </head>
 
 <body>
   <%- include("../layouts/navbar.ejs") %>
-    <main class="main">
+  
+  <main class="main">
       <div class="page-header breadcrumb-wrap">
         <div class="container">
           <div class="breadcrumb">
@@ -72,7 +75,6 @@
     </main>
     <%- include("../layouts/footer.ejs") %>
       <%- include("../components/script/script.ejs") %>
-        <%- include("../components/preloading.ejs") %>
           <%- include("./validation/login-validation.ejs") %>
 
 </body>

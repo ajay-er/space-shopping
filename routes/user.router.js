@@ -26,7 +26,7 @@ userRouter.get('/',httpGetHome);
 userRouter.get('/login',isLoggedOut,httpGetLogin);
 // * userRouter.post('/login');
 userRouter.get('/otp-login',isLoggedOut,httpGetOtpLogin);
-userRouter.post('/otp-login',isLoggedOut,httpLoginVerifyPhone);
+userRouter.post('/otp-login',httpLoginVerifyPhone);
 userRouter.get('/otp-verify',isLoggedOut,httpGetOtpVerify);
 userRouter.post('/otp-verify',isLoggedOut,httpPostVerifyOtp);
 

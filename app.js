@@ -22,7 +22,7 @@ const userRouter = require('./routes/user.router');
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-//* app.use(morgan('combined'));
+// app.use(morgan('combined'));
 app.use(cors());
 app.use(cookieParser());
 app.use(
@@ -42,7 +42,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // route middlewares
-app.use('/dashboard', adminRouter);
+app.use('/admin', adminRouter);
 app.use('/', userRouter);
 
 async function startServer() {

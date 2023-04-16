@@ -6,41 +6,35 @@ const {
   submitSignup,
 } = require('../models/userAuth.model');
 
-
 function httpGetHome(req, res) {
   res.status(200).render('user/home');
 }
-
 
 function httpGetLogin(req, res) {
   res.render('user/logins/login');
 }
 
-
 //otp login
 function httpGetOtpLogin(req, res) {
-  console.log('🫡');
-  res.render('user/logins/otp-login');
+  return res.render('user/logins/otp-login');
 }
 
 function httpLoginVerifyPhone(req, res) {
   const { phone } = req.body;
-  console.log(phone+"📞📞📞");
-  checkUserExistOrNot(phone).then(async(response) => {
-    console.log(response);
-/*     if (response.status) {
+  console.log(phone + '📞📞📞');
+  checkUserExistOrNot(phone).then(async (response) => {
+    if (response) {
       await sendOtp(phone);
       req.session.phone = phone;
-      // return res.redirect(`/otp-verify?phone=${phone}`);
-      res.json({status:true});
+      res.status(200).json({ status: true });
     } else {
-      res.json({ status: false});//phone number already registerd
-    } */
+      res.status(400).json({ status: false }); //phone number already registerd
+    }
   });
 }
 
-function httpGetOtpVerify(req,res){
-  return res.render('user/logins/otp-verify',{phone:req.query.phone});
+function httpGetOtpVerify(req, res) {
+  return res.render('user/logins/otp-verify', { phone: req.session.phone });
 }
 
 function httpPostVerifyOtp(req, res) {
@@ -48,19 +42,17 @@ function httpPostVerifyOtp(req, res) {
     if (response.status) {
       req.session.userloggedIn = true;
       req.session.user = response.user;
-      res.redirect('/');
+      return res.redirect('/');
     } else {
       res.redirect('/otp-verify?message=Incorrect OTP. Please try again.');
     }
   });
 }
 
-
-//sign up 
+//sign up
 function httpGetSignup(req, res) {
-  res.render('user/logins/signup', { message: req.flash('message') });
+  return res.render('user/logins/signup', { message: req.flash('message') });
 }
-
 
 async function httpSignupOtpVerify(req, res) {
   console.log('😁😁😁');
@@ -82,7 +74,6 @@ async function httpPostSignup(req, res) {
   req.session.userloggedIn = true;
   return res.json({ status: true });
 }
-
 
 
 

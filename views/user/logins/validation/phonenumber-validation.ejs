@@ -1,81 +1,63 @@
 <script>
-    // const form = document.getElementById("login-form");
-    // const phone = document.getElementById("phone");
-    // const phoneRegex = /^\d{10}$/;
-    // const phoneError = "<strong>Invalid phone number format. Please enter a 10-digit number without spaces or dashes.</strong>";
+  var phoneInput = document.getElementById("phone");
+  var sendOTPButton = document.getElementById("send-otp-btn");
 
-    // phone.addEventListener("input", () => {
-    //     let phoneErrorText = "";
+  sendOTPButton.disabled = true;
 
-    //     // Check if the phone number field is empty or invalid
-    //     if (phone.value.trim() !== "" && !phoneRegex.test(phone.value.trim())) {
-    //         phoneErrorText = phoneError;
-    //     }
+  // Add an event listener to the phone input element
+  phoneInput.addEventListener("input", function () {
+    // Get the phone number entered by the user
+    var phone = phoneInput.value;
+    var errorMsg = "";
 
-    //     // Display error message or clear existing error message
-    //     document.getElementById("phone-error").innerHTML = phoneErrorText;
-    //     phone.classList.toggle("is-invalid", phoneErrorText !== "");
-    // });
+    // Validate the phone number using a regular expression
+    if (!phone.match(/^\d{10}$/)) {
+      errorMsg = "Please enter a valid 10-digit phone number.";
+      document.getElementById("errors").innerHTML = '<span style="color:red">' + errorMsg + '</span>';
+      sendOTPButton.disabled = true;
+    } else {
+      document.getElementById("errors").innerHTML = "";
+      sendOTPButton.disabled = false;
+    }
+  });
+  function sendOTP() {
+  // Get the phone number entered by the user
+  var phone = document.getElementById("phone").value;
+  var errorMsg = "";
 
-    // form.addEventListener("submit", (event) => {
-    //     let isValid = true;
-    //     let phoneErrorText = "";
-
-    //     // Check if the phone number field is empty or invalid
-    //     if (phone.value.trim() === "") {
-    //         phoneErrorText = "<strong>Phone number is required.</strong>";
-    //         isValid = false;
-    //     } else if (!phoneRegex.test(phone.value.trim())) {
-    //         phoneErrorText = phoneError;
-    //         isValid = false;
-    //     }
-
-    //     // Display error message if any
-    //     if (!isValid) {
-    //         event.preventDefault();
-    //         document.getElementById("phone-error").innerHTML = phoneErrorText;
-    //         phone.classList.add("is-invalid");
-    //     }
-    // });
-
-    // // Clear error message and class when input field is focused
-    // phone.addEventListener("focus", () => {
-    //     document.getElementById("phone-error").innerHTML = "";
-    //     phone.classList.remove("is-invalid");
-    // });
-
-
-
-   
-        $('#login-form').submit(function (event) {
-            var phone = $('#phone').val();
-            console.log('working.........')
-            $.ajax({
-                url: '/otp-login',
-                type: 'POST',
-                data: { phone: phone },
-                success: (response) => {
-                    console.log(response);
-                    if (response.status) {
-                        document.getElementById('phone-error').style.display = 'none';
-                        window.location.href = '/otp-verify';
-                    } else {
-                        // event.preventDefault();
-                        document.getElementById('phone-error').style.display = 'block';
-                        document.getElementById('phone-error').innerHTML = "Phone number not found in our records";
-                        setTimeout(() => {
-                            document.getElementById('phone-error').style.display = 'none';
-                        }, 6000)
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        });
-
+  // Validate the phone number using a regular expression
+  if (!phone.match(/^\d{10}$/)) {
+    errorMsg = "Please enter a valid 10-digit phone number.";
+    document.getElementById("errors").innerHTML = '<span style="color:red">' + errorMsg + '</span>';
+    sendOTPButton.disabled = true;
+    return;
+  } else {
+    
+    sendOTPButton.disabled = true;
+    // Send an AJAX request to generate the OTP
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/otp-login', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        window.location.href = '/otp-verify';
+      } else if (xhr.status === 400) {
+        errorMsg = "Phone number already registered";
+        document.getElementById("errors").innerHTML = '<span style="color:red">' + errorMsg + '</span>';
+        setTimeout(() => {
+          document.getElementById("errors").innerHTML = "";
+        }, 5000);
+      } else {
+        errorMsg = "Something went wrong";
+        document.getElementById("errors").innerHTML = '<span style="color:red">' + errorMsg + '</span>';
+        setTimeout(() => {
+          document.getElementById("errors").innerHTML = "";
+        }, 5000);
+      }
+      sendOTPButton.disabled = false;
+    };
+    xhr.send('phone=' + phone);
+  }
+}
 
 </script>
-
-
-

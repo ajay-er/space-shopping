@@ -6,6 +6,7 @@
 </head>
 
 <body>
+  <%- include("../components/preloading.ejs") %>
   <%- include("../layouts/navbar.ejs") %>
     <main class="main">
       <div class="page-header breadcrumb-wrap">
@@ -57,7 +58,6 @@
     </main>
     <%- include("../layouts/footer.ejs") %>
       <%- include("../components/script/script.ejs") %>
-        <%- include("../components/preloading.ejs") %>
           <%- include("./validation/otp-validation.ejs") %>
 
 </body>
