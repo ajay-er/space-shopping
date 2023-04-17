@@ -4,7 +4,7 @@ const userRouter = express.Router();
 const {
     isLoggedIn,
     isLoggedOut,
-} = require('../auth/user.auth');
+} = require('../middlewares/auth.handler');
 
 const {
     httpGetHome,

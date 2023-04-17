@@ -1,4 +1,3 @@
-const { sendOtp, verifyOtp } = require('../config/twilio');
 const {
   checkUserExistOrNot,
   verifyPhoneNumber,
@@ -6,39 +5,65 @@ const {
   submitSignup,
 } = require('../models/userAuth.model');
 
-function httpGetHome(req, res) {
-  res.status(200).render('user/home');
+const { handleError } = require('../middlewares/error.handler');
+const { validateSignup } = require('../config/joi');
+
+
+async function httpGetHome(req, res) {
+  try {
+    res.status(200).render('user/home');
+  } catch (error) {
+    handleError(res, error);
+  }
 }
 
-function httpGetLogin(req, res) {
-  res.render('user/logins/login');
+async function httpGetLogin(req, res) {
+  try {
+    res.render('user/logins/login');
+  } catch (error) {
+    handleError(res, error);
+  }
 }
 
 //otp login
 function httpGetOtpLogin(req, res) {
-  return res.render('user/logins/otp-login');
+  try {
+    res.render('user/logins/otp-login');
+  } catch (error) {
+    handleError(res, error);
+  }
 }
 
-function httpLoginVerifyPhone(req, res) {
+async function httpLoginVerifyPhone(req, res) {
   const { phone } = req.body;
-  console.log(phone + '📞📞📞');
-  checkUserExistOrNot(phone).then(async (response) => {
-    if (response) {
-      await sendOtp(phone);
+  console.log(phone + '📞');
+  try {
+    const userExists = await checkUserExistOrNot(phone);
+    if (userExists) {
       req.session.phone = phone;
       res.status(200).json({ status: true });
     } else {
-      res.status(400).json({ status: false }); //phone number already registerd
+      res.status(400).json({ status: false }); //phone number already registered
     }
-  });
+  } catch (error) {
+    handleError(res, error);
+  }
 }
 
-function httpGetOtpVerify(req, res) {
-  return res.render('user/logins/otp-verify', { phone: req.session.phone });
+async function httpGetOtpVerify(req, res) {
+  try {
+    const phone = req.session.phone;
+    return res.render('user/logins/otp-verify', { phone });
+  } catch (error) {
+    handleError(res, error);
+  }
 }
 
-function httpPostVerifyOtp(req, res) {
-  verifyPhoneNumber(req.session.phone, req.body.otp).then(async (response) => {
+async function httpPostVerifyOtp(req, res) {
+  try {
+    const { phone } = req.body;
+    const { otp } = req.body;
+    const response = await verifyPhoneNumber(phone, otp);
     if (response.status) {
       req.session.userloggedIn = true;
       req.session.user = response.user;
@@ -46,44 +71,72 @@ function httpPostVerifyOtp(req, res) {
     } else {
       res.redirect('/otp-verify?message=Incorrect OTP. Please try again.');
     }
-  });
+  } catch (error) {
+    handleError(res, error);
+  }
 }
 
 //sign up
-function httpGetSignup(req, res) {
-  return res.render('user/logins/signup', { message: req.flash('message') });
+async function httpGetSignup(req, res) {
+  try {
+    res.render('user/logins/signup');
+  } catch (error) {
+    handleError(res, error);
+  }
 }
 
 async function httpSignupOtpVerify(req, res) {
-  console.log('😁😁😁');
-  const { phone } = req.body;
-  const phoneExist = await sendVerificationSignup(phone);
-  if (!phoneExist) {
-    res.send(false);
-  } else {
-    res.send(true);
+  try {
+    const { phone } = req.body;
+    const phoneExist = await sendVerificationSignup(phone);
+    if (!phoneExist) {
+      res.send(false);
+    } else {
+      res.send(true);
+    }
+  } catch (error) {
+    handleError(res, error);
   }
 }
 
 async function httpPostSignup(req, res) {
-  const phoneVerified = await submitSignup(req.body);
-  if (!phoneVerified.status) {
-    return res.status(400).json({ status: false, error: phoneVerified.error });
+  try {
+    const validation = await validateSignup(req.body);
+
+    if (validation.error) {
+      return res.status(400).json({ error: validation.error.details[0].message });
+    }
+
+    const { status, user, message } = await submitSignup(req.body);
+
+    if (!status) {
+      return res
+        .status(400)
+        .json({error:message,status });
+    }
+    req.session.user = user;
+    req.session.userloggedIn = true;
+    return res.json({ status: true });
+  } catch (error) {
+    handleError(res, error);
   }
-  req.session.user = phoneVerified.user;
-  req.session.userloggedIn = true;
-  return res.json({ status: true });
 }
 
-
-
 function httpPostLogout(req, res) {
-  req.session.destroy();
-  res.redirect('/');
+  try {
+    req.session.destroy();
+    res.redirect('/');
+  } catch (error) {
+    handleError(res, error);
+  }
 }
 
 function httpGet404(req, res) {
-  res.status(404).render('user/404');
+  try {
+    res.status(404).render('user/404');
+  } catch (error) {
+    handleError(res, error);
+  }
 }
 
 module.exports = {
