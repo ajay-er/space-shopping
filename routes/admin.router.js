@@ -9,12 +9,12 @@ const {
 
 } = require('../controllers/admin.controller');
 
-const {isAdminLoggedIn,isAdminLoggedOut, isLoggedIn} = require('../middlewares/auth.handler');
+const {isAdminLoggedIn,isAdminLoggedOut} = require('../middlewares/auth.handler');
 
 adminRouter.get('/',isAdminLoggedIn,httpGetDashBoard);
-adminRouter.get('/login',isAdminLoggedOut,httpGetLogin)
-adminRouter.post('/login',isAdminLoggedOut, httpPostLogin)
-adminRouter.post('/logout',isAdminLoggedIn, httpPostLogout)
+adminRouter.get('/login',isAdminLoggedOut,httpGetLogin);
+adminRouter.post('/login',isAdminLoggedOut, httpPostLogin);
+adminRouter.get('/logout',isAdminLoggedIn, httpPostLogout);
 
 
 adminRouter.get('*');

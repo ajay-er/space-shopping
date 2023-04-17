@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const { mongoConnect } = require('./config/mongo');
 const cors = require('cors');
-const flash = require('connect-flash');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,7 +34,6 @@ app.use(
     },
   })
 );
-app.use(flash());
 
 //view engine setup
 app.set('view engine', 'ejs');

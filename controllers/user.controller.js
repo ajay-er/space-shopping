@@ -36,7 +36,7 @@ async function httpPostLoginVerify(req, res) {
       res.status(200).json({ status: true, message: 'Login successful!' });
     } else {
       res
-        .status(200)
+        .status(400)
         .json({ status: false, message: user.message });
     }
   } catch (error) {
