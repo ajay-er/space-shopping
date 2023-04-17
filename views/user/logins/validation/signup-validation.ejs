@@ -36,7 +36,6 @@
         let phoneError = "";
         let otpError = "";
 
-
         // Check if all fields are filled
         if (username.value.trim() === "" || email.value.trim() === "" || password.value.trim() === "" || confirmPassword.value.trim() === "" || phone.value.trim() === "") {
             isValid = false;
@@ -209,10 +208,10 @@
                     if (!response) {
                         document.getElementById('phone-error-verify').style.display = 'block';
                         document.getElementById('phone-error-verify').innerHTML = "Phone number already registered";
-                        setTimeout(()=>{
-                        document.getElementById('phone-error-verify').style.display = 'none';
-                        },5000)
-                    }else{
+                        setTimeout(() => {
+                            document.getElementById('phone-error-verify').style.display = 'none';
+                        }, 5000)
+                    } else {
                         document.getElementById('phone-error-verify').style.display = 'none';
                     }
                 },
@@ -225,5 +224,31 @@
             return true;
         });
     });
+
+    $(document).ready(function () {
+        $('#formValid').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/signup',
+                type: 'post',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status) {
+                        window.location.href = '/';
+                    }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        const error = JSON.parse(xhr.responseText);
+                        if (error.error === 'invalid OTP') {
+                            $('#otp-error').text(error.error);
+                        }
+                    }
+                }
+            });
+        });
+    });
+
 
 </script>

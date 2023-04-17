@@ -1,5 +1,6 @@
 const userDatabase = require('../schema/user.schema');
 const { sendOtp, verifyOtp } = require('../config/twilio');
+const { hashPassword } = require('../config/security');
 
 async function checkUserExistOrNot(phoneNumber) {
   try {
@@ -13,7 +14,7 @@ async function checkUserExistOrNot(phoneNumber) {
   } catch (error) {
     console.error(error);
     throw new Error('Error checking user existence');
-  } 
+  }
 }
 
 async function verifyPhoneNumber(phoneNumber, otp) {
@@ -21,7 +22,7 @@ async function verifyPhoneNumber(phoneNumber, otp) {
     const isVerified = await verifyOtp(phoneNumber, otp);
     if (isVerified) {
       const user = await userDatabase.findOne({ phone: phoneNumber });
-      return { status: true ,user};
+      return { status: true, user };
     } else {
       return { status: false };
     }
@@ -32,7 +33,7 @@ async function verifyPhoneNumber(phoneNumber, otp) {
 }
 
 async function sendVerificationSignup(phoneNumber) {
-  try{
+  try {
     const user = await userDatabase.findOne({ phone: phoneNumber });
     if (!user) {
       await sendOtp(phoneNumber);
@@ -40,7 +41,7 @@ async function sendVerificationSignup(phoneNumber) {
     } else {
       return false; //phone number already registered
     }
-  }catch(error){
+  } catch (error) {
     console.error(error);
     throw new Error('Error sending verification code');
   }
@@ -49,23 +50,29 @@ async function sendVerificationSignup(phoneNumber) {
 async function submitSignup({ username, email, phone, password, otp }) {
   try {
     const isVerified = await verifyOtp(phone, otp);
+    const hashedPassword = await hashPassword(password);
+    
     if (isVerified) {
       const user = new userDatabase({
-        name: username,
-        email,
-        phone,
-        password,
+        username: username,
+        email: email,
+        phone: phone,
+        password: hashedPassword,
         status: true,
       });
 
       await user.save();
       return { status: true, user };
     } else {
-      return { status: false, message: 'Invalid OTP' };
+      return { status: false, message: 'invalid OTP' };
     }
   } catch (error) {
     console.error(error);
-    throw new Error('Error submitting signup');
+    if (error.status === 404) {
+      throw new Error('Twilio resource not found');
+    } else {
+      throw new Error('Error submitting signup');
+    }
   }
 }
 

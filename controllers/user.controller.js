@@ -6,10 +6,9 @@ const {
 } = require('../models/userAuth.model');
 
 const { handleError } = require('../middlewares/error.handler');
-const { validateSignup } = require('../config/joi');
+const  validateSignup  = require('../config/joi');
 
-
-async function httpGetHome(req, res) {
+function httpGetHome(req, res) {
   try {
     res.status(200).render('user/home');
   } catch (error) {
@@ -69,7 +68,7 @@ async function httpPostVerifyOtp(req, res) {
       req.session.user = response.user;
       return res.redirect('/');
     } else {
-      res.redirect('/otp-verify?message=Incorrect OTP. Please try again.');
+      res.redirect('/otp-verify?message=The OTP entered is incorrect. Please ensure you have entered the correct OTP and try again.');
     }
   } catch (error) {
     handleError(res, error);
@@ -104,18 +103,19 @@ async function httpPostSignup(req, res) {
     const validation = await validateSignup(req.body);
 
     if (validation.error) {
-      return res.status(400).json({ error: validation.error.details[0].message });
+      return res
+        .status(400)
+        .json({ error: validation.error.details[0].message });
     }
 
     const { status, user, message } = await submitSignup(req.body);
 
     if (!status) {
-      return res
-        .status(400)
-        .json({error:message,status });
+      return res.status(400).json({ error: message, status });
     }
     req.session.user = user;
     req.session.userloggedIn = true;
+    
     return res.json({ status: true });
   } catch (error) {
     handleError(res, error);

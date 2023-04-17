@@ -43,7 +43,7 @@
                                                 purposes
                                                 described in our privacy policy
                                             </p>
-                                            <form id="formValid" action="/signup" method="post" class="form-inline">
+                                            <form id="formValid" class="form-inline">
                                                 <span class="error-message" id="errors"></span>
                                                 <div class="form-group">
                                                     <div class="input-group">
@@ -68,7 +68,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <div class="input-group">
-                                                        <input type="password" name="confirm-password"
+                                                        <input type="password" name="confirmpassword"
                                                             placeholder="Confirm password" id="confirm-password"
                                                             class="form-control">
                                                     </div>
@@ -84,12 +84,10 @@
                                                                 OTP</button>
                                                         </div>
                                                     </div>
-
-                                                   
-                                                        <span class="error-message" id="phone-error-verify" style="display: none;">
-                                                            Phone number already registred </span>
-                                                            <span class="error-message" id="phone-error"></span>
-
+                                                    <span class="error-message" id="phone-error-verify"
+                                                        style="display: none;">
+                                                        Phone number already registred </span>
+                                                    <span class="error-message" id="phone-error"></span>
                                                 </div>
 
                                                 <div class="form-group">
@@ -112,7 +110,7 @@
 
                                                 </div>
                                                 <div class="form-group">
-                                                    <button type="submit" class="btn btn-fill-out btn-block hover-up"
+                                                    <button type="submit" id="submitButton" class="btn btn-fill-out btn-block hover-up"
                                                         name="submit">Submit & Register</button>
                                                 </div>
                                             </form>
