@@ -1,6 +1,25 @@
 const userDatabase = require('../schema/user.schema');
 const { sendOtp, verifyOtp } = require('../config/twilio');
-const { hashPassword } = require('../config/security');
+const { hashPassword, comparePassword } = require('../config/security');
+
+async function checkUserWithEmail(email, password) {
+  try {
+    const user = await userDatabase.findOne({ email: email });
+    if (user) {
+      const isPasswordMatch = await comparePassword(password, user.password);
+      if (isPasswordMatch) {
+        return { status: true, user: user };
+      } else {
+        return { status: false, message: 'Invalid password' };
+      }
+    } else {
+      return { status: false, message: 'Invalid email' };
+    }
+  } catch (error) {
+    console.error(error);
+    return { status: false, message: 'Error checking user existence' };
+  }
+}
 
 async function checkUserExistOrNot(phoneNumber) {
   try {
@@ -51,7 +70,7 @@ async function submitSignup({ username, email, phone, password, otp }) {
   try {
     const isVerified = await verifyOtp(phone, otp);
     const hashedPassword = await hashPassword(password);
-    
+
     if (isVerified) {
       const user = new userDatabase({
         username: username,
@@ -77,6 +96,7 @@ async function submitSignup({ username, email, phone, password, otp }) {
 }
 
 module.exports = {
+  checkUserWithEmail,
   checkUserExistOrNot,
   verifyPhoneNumber,
   sendVerificationSignup,

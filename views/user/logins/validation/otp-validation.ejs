@@ -3,6 +3,7 @@
     const otp = document.getElementById("otp");
     const otpRegex = /^\d{6}$/;
     const otpError = "<strong>Invalid OTP format. Please enter a 6-digit number.</strong>";
+    const invalidOtpError = "<strong>The OTP entered is incorrect. Please ensure you have entered the correct OTP and try again.</strong>";
 
     otp.addEventListener("input", () => {
         let otpErrorText = "";
@@ -17,7 +18,8 @@
         otp.classList.toggle("is-invalid", otpErrorText !== "");
     });
 
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
         let isValid = true;
         let otpErrorText = "";
 
@@ -32,10 +34,31 @@
 
         // Display error message if any
         if (!isValid) {
-            event.preventDefault();
             document.getElementById("otp-error").innerHTML = otpErrorText;
             otp.classList.add("is-invalid");
+            return;
         }
+
+        // Verify OTP
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/otp-verify');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                const data = JSON.parse(xhr.response);
+
+                if (data.status) {
+                    window.location.href = '/';
+                } else {
+                    otpErrorText = invalidOtpError;
+                    document.getElementById("otp-error").innerHTML = otpErrorText;
+                    otp.classList.add("is-invalid");
+                }
+            }
+        };
+        xhr.send(JSON.stringify({ otp: otp.value.trim() }));
+
     });
 
     // Clear error message and class when input field is focused
@@ -43,6 +66,4 @@
         document.getElementById("otp-error").innerHTML = "";
         otp.classList.remove("is-invalid");
     });
-
 </script>
-

@@ -10,6 +10,7 @@ const {
     httpGetHome,
     httpGetSignup,
     httpGetLogin,
+    httpPostLoginVerify,
     httpGetOtpLogin,
     httpLoginVerifyPhone,
     httpGetOtpVerify,
@@ -17,14 +18,15 @@ const {
     httpSignupOtpVerify,
     httpPostSignup,
 
-    httpPostLogout,
+    httpGetAccount,
+    httpGetLogout,
     httpGet404,
 } = require('../controllers/user.controller');
 
 
 userRouter.get('/',httpGetHome);
 userRouter.get('/login',isLoggedOut,httpGetLogin);
-// * userRouter.post('/login');
+userRouter.post('/login',httpPostLoginVerify);
 userRouter.get('/otp-login',isLoggedOut,httpGetOtpLogin);
 userRouter.post('/otp-login',httpLoginVerifyPhone);
 userRouter.get('/otp-verify',isLoggedOut,httpGetOtpVerify);
@@ -34,8 +36,8 @@ userRouter.get('/signup',isLoggedOut,httpGetSignup);
 userRouter.post('/signup',httpPostSignup);
 userRouter.post('/signup-otp',httpSignupOtpVerify);
 
-
-userRouter.post('/logout',httpPostLogout);
+userRouter.get('/account',httpGetAccount);
+userRouter.get('/logout',httpGetLogout);
 userRouter.get('*',httpGet404);
 
 module.exports = userRouter;

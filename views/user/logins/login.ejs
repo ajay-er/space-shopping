@@ -32,15 +32,18 @@
                       <div class="heading_s1">
                         <h3 class="mb-30">Login</h3>
                       </div>
-                      <form method="post" id="login-form" action="/home">
+                      <form id="login-form">
+                        
                         <div class="form-group">
                           <input id="email" class="form-control" placeholder="Email" type="text" name="email">
                           <div id="email-error" class="invalid-feedback"></div>
+                          <span id="emailError" ></span>
                         </div>
                         <div class="form-group">
                           <input id="password" class="form-control" placeholder="Password" type="password"
                             name="password">
                           <div id="password-error" class="invalid-feedback"></div>
+                          <span id="passwordError"></span>
                         </div>
                         <div class="login_footer form-group">
                           <div class="chek-form">

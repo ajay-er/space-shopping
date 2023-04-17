@@ -1,4 +1,5 @@
 const {
+  checkUserWithEmail,
   checkUserExistOrNot,
   verifyPhoneNumber,
   sendVerificationSignup,
@@ -6,7 +7,7 @@ const {
 } = require('../models/userAuth.model');
 
 const { handleError } = require('../middlewares/error.handler');
-const  validateSignup  = require('../config/joi');
+const validateSignup = require('../config/joi');
 
 function httpGetHome(req, res) {
   try {
@@ -19,6 +20,25 @@ function httpGetHome(req, res) {
 async function httpGetLogin(req, res) {
   try {
     res.render('user/logins/login');
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
+async function httpPostLoginVerify(req, res) {
+  const { email, password } = req.body;
+  console.log(email,password);
+  try {
+    const user = await checkUserWithEmail(email, password);
+    if (user.status) {
+      req.session.userloggedIn = true;
+      req.session.user = user;
+      res.status(200).json({ status: true, message: 'Login successful!' });
+    } else {
+      res
+        .status(200)
+        .json({ status: false, message: user.message });
+    }
   } catch (error) {
     handleError(res, error);
   }
@@ -60,15 +80,15 @@ async function httpGetOtpVerify(req, res) {
 
 async function httpPostVerifyOtp(req, res) {
   try {
-    const { phone } = req.body;
+    const phone = req.session.phone;
     const { otp } = req.body;
     const response = await verifyPhoneNumber(phone, otp);
     if (response.status) {
       req.session.userloggedIn = true;
       req.session.user = response.user;
-      return res.redirect('/');
+      return res.json({ status: true });
     } else {
-      res.redirect('/otp-verify?message=The OTP entered is incorrect. Please ensure you have entered the correct OTP and try again.');
+      return res.json({ status: false });
     }
   } catch (error) {
     handleError(res, error);
@@ -115,14 +135,24 @@ async function httpPostSignup(req, res) {
     }
     req.session.user = user;
     req.session.userloggedIn = true;
-    
+
     return res.json({ status: true });
   } catch (error) {
     handleError(res, error);
   }
 }
 
-function httpPostLogout(req, res) {
+function httpGetAccount(req,res){
+  try{
+    const user = req.session.user;
+    res.render('user/account',{user});
+    
+  }catch(error){
+    handleError(res,error);
+  }
+}
+
+function httpGetLogout(req, res) {
   try {
     req.session.destroy();
     res.redirect('/');
@@ -143,6 +173,7 @@ module.exports = {
   httpGetHome,
   httpGetSignup,
   httpGetLogin,
+  httpPostLoginVerify,
   httpGetOtpLogin,
   httpLoginVerifyPhone,
   httpGetOtpVerify,
@@ -150,6 +181,7 @@ module.exports = {
   httpSignupOtpVerify,
   httpPostSignup,
 
-  httpPostLogout,
+  httpGetAccount,
+  httpGetLogout,
   httpGet404,
 };

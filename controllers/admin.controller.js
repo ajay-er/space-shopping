@@ -22,7 +22,6 @@ function httpPostLogin(req,res){
     }
 }
 
-
 function httpPostLogout(req,res){
     try{
         req.session.destroy();
@@ -31,7 +30,8 @@ function httpPostLogout(req,res){
         console.log(err);
     }
 }
- 
+
+
 module.exports = {
   httpGetDashBoard,
   httpGetLogin,

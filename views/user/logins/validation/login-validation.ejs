@@ -4,6 +4,8 @@
     const passwordInput = document.getElementById("password");
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+    const emailErrorElement = document.getElementById("email-error");
+    const passwordErrorElement = document.getElementById("password-error");
 
     // Validate email field as user types
     email.addEventListener("input", () => {
@@ -15,7 +17,8 @@
             emailError = "<strong>Invalid email format.</strong>";
         }
 
-        document.getElementById("email-error").innerHTML = emailError;
+        document.getElementById('emailError').innerHTML = '';
+        emailErrorElement.innerHTML = emailError;
         email.classList.toggle("is-invalid", emailError !== "");
     });
 
@@ -23,18 +26,21 @@
     passwordInput.addEventListener("input", () => {
         let passwordError = "";
 
-        if (passwordInput.value.trim() === "") {
+        if (passwordInput.value.trim() === "") {             
             passwordError = "<strong>Password is required.</strong>";
         } else if (!passwordRegex.test(passwordInput.value.trim())) {
             passwordError = "<strong>Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number.</strong>";
         }
 
-        document.getElementById("password-error").innerHTML = passwordError;
+        document.getElementById('passwordError').innerHTML = '';
+        passwordErrorElement.innerHTML = passwordError;
         passwordInput.classList.toggle("is-invalid", passwordError !== "");
     });
 
     // Validate form on submit
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
         let isValid = true;
         let emailError = "";
         let passwordError = "";
@@ -55,13 +61,37 @@
             isValid = false;
         }
 
-        if (!isValid) {
-            event.preventDefault();
-            document.getElementById("email-error").innerHTML = emailError;
-            document.getElementById("password-error").innerHTML = passwordError;
-            email.classList.toggle("is-invalid", emailError !== "");
-            passwordInput.classList.toggle("is-invalid", passwordError !== "");
+        emailErrorElement.innerHTML = emailError;
+        passwordErrorElement.innerHTML = passwordError;
+        email.classList.toggle("is-invalid", emailError !== "");
+        passwordInput.classList.toggle("is-invalid", passwordError !== "");
+       
+        try{
+            $.ajax({
+                type:'post',
+                url:'/login',
+                data:{email:email.value.trim(),password: passwordInput.value.trim()},
+                success:(response)=>{
+                    console.log(response.message);
+                    document.getElementById('passwordError').style.color = 'red';
+                    if(response.message==='Invalid password'){
+                        document.getElementById('passwordError').innerHTML = response.message;
+                        setTimeout(()=>{
+                            document.getElementById('passwordError').innerHTML = "";
+                        },5000)
+                    }else if(response.message==='Invalid email'){
+                        document.getElementById('emailError').innerHTML = response.message;
+                        setTimeout(()=>{
+                            document.getElementById('emailError').innerHTML = "";
+                        },5000)
+                    }else{
+                        window.location.href = '/';
+                    }
+                }
+
+            })
+        }catch(error){
+            
         }
     });
-
 </script>

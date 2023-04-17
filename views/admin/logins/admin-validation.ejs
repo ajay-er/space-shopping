@@ -37,6 +37,7 @@
             document.getElementById("password-error").innerHTML = passwordError;
             email.classList.add("is-invalid");
             passwordInput.classList.add("is-invalid");
+            return;
         }
     });
 
@@ -50,5 +51,6 @@
         document.getElementById("password-error").innerHTML = "";
         passwordInput.classList.remove("is-invalid");
     });
+
 
 </script>
