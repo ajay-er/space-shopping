@@ -1,0 +1,107 @@
+<section class="content-main">
+    <div class="content-header">
+        <h2 class="content-title">Users list</h2>
+    </div>
+    <div class="card mb-4">
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Phone</th>
+                            <th>Block/Unblock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach(function(user) { %>
+                            <tr>
+                                <td width="40%">
+                                    <a href="#" class="itemside">
+                                        <div class="left">
+                                            <img src="/admins/assets/imgs/people/avatar1.jpg" class="img-sm img-avatar"
+                                                alt="Userpic">
+                                        </div>
+                                        <div class="info pl-3">
+                                            <h6 class="mb-0 title">
+                                                <%= user.username %>
+                                            </h6>
+                                            <small class="text-muted">User ID: #439</small>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>
+                                    <%= user.email %>
+                                </td>
+
+                                <td><span class="badge rounded-pill alert-success">Active</span></td>
+                                <td>
+                                    <%= user.phone %>
+                                </td>
+                                <% if (user.status) { %>
+                                    <td><button class="btn btn-primary block-user" data-user-id="<%= user._id %>"
+                                            data-action="block">Block</button></td>
+                                    <% } else { %>
+                                        <td><button class="btn btn-danger block-user" data-user-id="<%= user._id %>"
+                                                data-action="unblock">Unblock</button></td>
+                                        <% } %>
+
+
+                            </tr>
+                            <% }); %>
+
+                    </tbody>
+                </table> <!-- table-responsive.// -->
+            </div>
+        </div> <!-- card-body end// -->
+    </div> <!-- card end// -->
+    <div class="pagination-area mt-15 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                <li class="page-item"><a class="page-link" href="#">02</a></li>
+                <li class="page-item"><a class="page-link" href="#">03</a></li>
+                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                <li class="page-item"><a class="page-link" href="#">16</a></li>
+                <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section> <!-- content-main end// -->
+
+
+<script>
+    $(document).on('click', '.block-user', function () {
+        const userId = $(this).data('user-id');
+        const action = $(this).data('action');
+        $.ajax({
+            url: '/admin/block-user/' + userId + '/' + action,
+            type: 'PUT',
+            success: function (data) {
+                console.log(data);
+                var userRow = $(`tr[data-user-id="${userId}"]`);
+                if (data.status === 200) {
+                    var button = $('[data-user-id="' + userId + '"]');
+                    if (action === 'block') {
+                        button.text('Unblock').removeClass('btn-primary').addClass('btn-danger').data('action', 'unblock');
+                    } else {
+                        button.text('Block').removeClass('btn-danger').addClass('btn-primary').data('action', 'block');
+                    }
+                } 
+            },
+            error: function (xhr, status, error) {
+                var message;
+                if (xhr.status === 404) {
+                    message = 'User not found';
+                } else {
+                    message = 'Error updating user status';
+                }
+                alert('Error: ' + message)
+            }
+        });
+    });
+</script>
