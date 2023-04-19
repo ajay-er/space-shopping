@@ -33,7 +33,9 @@ async function findUserWithId(userId, action) {
   }
 }
 
+
 module.exports = {
   fetchAllUsers,
   findUserWithId,
+
 };

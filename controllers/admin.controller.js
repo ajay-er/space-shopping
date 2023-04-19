@@ -1,5 +1,6 @@
 const { handleError } = require('../middlewares/error.handler');
-const { fetchAllUsers,findUserWithId } = require('../models/admin.model');
+
+const { fetchAllUsers, findUserWithId } = require('../models/admin.model');
 
 async function httpGetDashBoard(req, res) {
   try {
@@ -57,11 +58,14 @@ async function httpPutBlockUser(req, res) {
   const action = req.params.action;
 
   try {
-    const user = await findUserWithId(userId,action);
-    if(!user.status){
-        return res.send({status:404,message: 'User not found' });
-    }else{
-        return res.send({status:200,message: `User status updated.User ${action}ed succesfully.`})
+    const user = await findUserWithId(userId, action);
+    if (!user.status) {
+      return res.send({ status: 404, message: 'User not found' });
+    } else {
+      return res.send({
+        status: 200,
+        message: `User status updated.User ${action}ed succesfully.`,
+      });
     }
   } catch (error) {
     handleError(res, error);
@@ -77,10 +81,10 @@ async function httpGetLogout(req, res) {
   }
 }
 
-async function httpGet404(req,res){
-  try{
+async function httpGet404(req, res) {
+  try {
     res.render('admin/404');
-  }catch(error){
+  } catch (error) {
     handleError(res, error);
   }
 }
