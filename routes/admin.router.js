@@ -21,7 +21,7 @@ const {
 const {
   httpGetCategories,
   httpPostCategories,
-  httpDeleteCategory,
+  httpPutCategory,
 } = require('../controllers/category.controller');
 
 const {
@@ -39,15 +39,11 @@ adminRouter.get('/products', isAdminLoggedIn, httpGetProducts);
 
 adminRouter.get('/categories', isAdminLoggedIn, httpGetCategories);
 adminRouter.post('/categories', isAdminLoggedIn, httpPostCategories);
-adminRouter.put('/delete-category/:id',isAdminLoggedIn,httpDeleteCategory);
+adminRouter.put('/category-status', isAdminLoggedIn, httpPutCategory);
 
 adminRouter.get('/add-products', isAdminLoggedIn, httpGetAddProduct);
 adminRouter.post('/add-products/:id', isAdminLoggedIn, httpPostAddProduct);
-adminRouter.put(
-  '/block-user/:userId/:action',
-  isAdminLoggedIn,
-  httpPutBlockUser
-);
+adminRouter.put('/user-status', isAdminLoggedIn, httpPutBlockUser);
 
 adminRouter.get('*', httpGet404);
 

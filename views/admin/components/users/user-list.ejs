@@ -26,7 +26,7 @@
                                                 alt="Userpic">
                                         </div>
                                         <div class="info pl-3">
-                                            <h6 class="mb-0 title">
+                                            <h6 id="username" class="mb-0 title">
                                                 <%= user.username %>
                                             </h6>
                                             <small class="text-muted">User ID: #439</small>
@@ -79,10 +79,12 @@
         const userId = $(this).data('user-id');
         const action = $(this).data('action');
         $.ajax({
-            url: '/admin/block-user/' + userId + '/' + action,
+            url: '/admin/user-status',
             type: 'PUT',
+            data:{
+                action:action,id:userId
+            },
             success: function (data) {
-                console.log(data);
                 var userRow = $(`tr[data-user-id="${userId}"]`);
                 if (data.status === 200) {
                     var button = $('[data-user-id="' + userId + '"]');
@@ -91,6 +93,7 @@
                     } else {
                         button.text('Block').removeClass('btn-danger').addClass('btn-primary').data('action', 'block');
                     }
+                    alert(`User ${action}ed successfully😁`);
                 } 
             },
             error: function (xhr, status, error) {
@@ -98,7 +101,7 @@
                 if (xhr.status === 404) {
                     message = 'User not found';
                 } else {
-                    message = 'Error updating user status';
+                    message = 'Failed to update user status due to server error';
                 }
                 alert('Error: ' + message)
             }

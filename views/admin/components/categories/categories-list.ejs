@@ -15,67 +15,88 @@
                     <form id="login-form">
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Name</label>
-                            <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" />
+                            <input type="text" name="name" placeholder="Type here" class="form-control"
+                                id="product_name" />
                         </div>
 
-                       
+
                         <div class="mb-4">
-                            <label  class="form-label">Description</label>
-                            <textarea name="description" placeholder="Type here" id="desc" class="form-control"></textarea>
+                            <label class="form-label">Description</label>
+                            <textarea name="description" placeholder="Type here" id="desc"
+                                class="form-control"></textarea>
                         </div>
                         <div class="d-grid">
-                            <button type="submit" onclick="addCategory()" class="btn btn-primary">Create category</button>
+                            <button type="submit" onclick="postCategory()" class="btn btn-primary">Create
+                                category</button>
                         </div>
 
                     </form>
                 </div>
-                
+
                 <div class="col-md-9">
                     <div class="table-responsive">
-                        <table class="table table-hover" style="overflow: hidden;">
+                        <table class="table table-hover" >
                             <thead>
                                 <tr>
-                                    <th class="text-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" />
-                                        </div>
-                                    </th>
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Description</th>
+                                    <th>Active</th>
                                     <th>Order</th>
                                     <th class="text-end">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <% category.forEach(function(category) { %>
+                                <% category.forEach((category)=> { %>
                                     <tr>
-                                      <td class="text-center">
-                                        <div class="form-check">
-                                          <input class="form-check-input" type="checkbox" value="" />
-                                        </div>
-                                      </td>
-                                      <% var randomNum = Math.floor(Math.random() * 1223) + 1; %>
-                                      <td><%= randomNum %></td>
-                                      <td><b><%= category.name %></b></td>
-                                      <td><%= category.description %></td>
-                                      <% var randomNum2 = Math.floor(Math.random() * 102); %>
-                                      <td><%= randomNum2 %></td>
-                                      <td class="text-end">
-                                        <div class="dropdown">
-                                            <a href="#" data-bs-toggle="dropdown"
-                                                class="btn btn-light rounded btn-sm font-sm"> <i
-                                                    class="material-icons md-more_horiz"></i> </a>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="#">View detail</a>
-                                                <a class="dropdown-item" href="#">Edit info</a>
-                                                <a class="dropdown-item text-danger" onclick="deleteCategory('<%= category._id %>')"
-                                                href="#">Delete</a>
-                                            </div>
-                                        </div>
-                                    </td>
+
+                                        <% var randomNum=Math.floor(Math.random() * 1223) + 1; %>
+                                            <td>
+                                                <%= randomNum %>
+                                            </td>
+                                            <td><b>
+                                                    <%= category.name %>
+                                                </b></td>
+                                            <td>
+                                                <%= category.description %>
+                                            </td>
+                                            <% if (category.active) { %>
+                                                <td><span class="badge rounded-pill alert-success"
+                                                        id="enableRound">Active</span></td>
+                                                <% } else { %>
+                                                    <td><span class="badge rounded-pill alert-danger"
+                                                            id="disbleRound">Disabled</span>
+                                                    </td>
+                                                    <% } %>
+
+                                                        <% var randomNum2=Math.floor(Math.random() * 102); %>
+                                                            <td>
+                                                                <%= randomNum2 %>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <div class="dropdown">
+                                                                    <a href="#" data-bs-toggle="dropdown"
+                                                                        class="btn btn-light rounded btn-sm font-sm"> <i
+                                                                            class="material-icons md-more_horiz"></i>
+                                                                    </a>
+                                                                    <div class="dropdown-menu">
+                                                                        <a class="dropdown-item" href="#">View
+                                                                            detail</a>
+                                                                        <% if(category.active) { %>
+                                                                            <a class="dropdown-item text-danger"
+                                                                                onclick="updateCategory('<%= category._id %>',false)"
+                                                                                href="#">Disable</a>
+                                                                            <% } else { %>
+
+                                                                                <a class="dropdown-item text-success"
+                                                                                    onclick="updateCategory('<%= category._id %>',true)"
+                                                                                    href="#">Enable</a>
+                                                                                <% } %>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
                                     </tr>
-                                  <% }) %>
+                                    <% }) %>
 
                             </tbody>
                         </table>
@@ -88,42 +109,46 @@
 
 
 <script>
-    function addCategory() {
+    function postCategory() {
         const description = document.getElementById('desc').value.trim()
         const name = document.getElementById('product_name').value.trim()
         $.ajax({
-      url: '/admin/categories',
-      method:'POST',
-      data:{
-        name:name,
-        description:description
-      },
-      success:(resp)=>{
-        alert('Category created successfully');
-      },
-      error:()=>{
-        alert('Something went wrong.Cant add category');
-      }
-    })
+            url: '/admin/categories',
+            method: 'POST',
+            data: {
+                name: name,
+                description: description
+            },
+            success: (resp) => {
+                alert('Category created successfully');
+            },
+            error: () => {
+                alert('Failed to add category due to server error');
+            }
+        })
     }
 
-    function deleteCategory(categoryId) {
-        const description = document.getElementById('desc').value.trim()
-        const name = document.getElementById('product_name').value.trim()
+    function updateCategory(categoryId, status) {
+        let enableOrDisable;
+        if (status) {
+            enableOrDisable = "Enabled"
+        } else {
+            enableOrDisable = "Disabled"
+        }
         $.ajax({
-      url: '/admin/categories',
-      method:'PUT',
-      data:{
-        name:name,
-        description:description
-      },
-      success:(resp)=>{
-        
-      },
-      error:()=>{
-        alert('Something went wrong.Cant delete category');
-      }
-    })
+            url: '/admin/category-status',
+            method: 'PUT',
+            data: { id: categoryId, status: status },
+            success: (response) => {
+                alert(`Category ${enableOrDisable} successfully`);
+                
+
+            },
+            error: () => {
+                alert('Failed to delete category due to server error');
+            }
+        })
     }
+
 
 </script>

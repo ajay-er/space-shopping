@@ -54,11 +54,9 @@ async function httpGetUsers(req, res) {
 }
 
 async function httpPutBlockUser(req, res) {
-  const userId = req.params.userId;
-  const action = req.params.action;
-
+  const { id, action } = req.body;
   try {
-    const user = await findUserWithId(userId, action);
+    const user = await findUserWithId(id, action);
     if (!user.status) {
       return res.send({ status: 404, message: 'User not found' });
     } else {

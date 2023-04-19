@@ -13,22 +13,37 @@ async function fetchCategories() {
   }
 }
 
-async function addCatogory(name, description) {
+async function addCategory(name, description) {
   try {
     const category = new categoryDatabase({
       name: name,
       description: description,
-      active:true,
+      active: true,
     });
     await category.save();
-    
+
     return { status: true };
   } catch (error) {
     throw new Error(`Error adding categories: ${error.message}`);
   }
 }
 
+async function updateCategory(categoryId,updateStatus) {
+  try {
+    const category = await categoryDatabase.updateOne({_id:categoryId},{$set:{active:updateStatus}});
+    console.log('Update result:', category);
+    if (category.modifiedCount > 0) {
+      return { status: true };
+    } else {
+      return { status: false };
+    }
+  } catch (error) {
+    throw new Error(`Error deleting categories: ${error.message}`);
+  }
+}
+
 module.exports = {
   fetchCategories,
-  addCatogory,
+  addCategory,
+  updateCategory,
 };

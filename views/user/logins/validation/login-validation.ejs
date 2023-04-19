@@ -26,7 +26,7 @@
     passwordInput.addEventListener("input", () => {
         let passwordError = "";
 
-        if (passwordInput.value.trim() === "") {             
+        if (passwordInput.value.trim() === "") {
             passwordError = "<strong>Password is required.</strong>";
         } else if (!passwordRegex.test(passwordInput.value.trim())) {
             passwordError = "<strong>Password must be at least 6 characters long and contain at least one lowercase letter, one uppercase letter, and one number.</strong>";
@@ -65,33 +65,60 @@
         passwordErrorElement.innerHTML = passwordError;
         email.classList.toggle("is-invalid", emailError !== "");
         passwordInput.classList.toggle("is-invalid", passwordError !== "");
-       
-        try{
+
+        try {
             $.ajax({
-                type:'post',
-                url:'/login',
-                data:{email:email.value.trim(),password: passwordInput.value.trim()},
-                success:(response)=>{
+                type: 'post',
+                url: '/login',
+                data: { email: email.value.trim(), password: passwordInput.value.trim() },
+                success:  (response) => {
+
                     console.log(response.message);
                     document.getElementById('passwordError').style.color = 'red';
-                    if(response.message==='Invalid password'){
+                    if (response.message === 'Invalid password') {
                         document.getElementById('passwordError').innerHTML = response.message;
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             document.getElementById('passwordError').innerHTML = "";
-                        },5000)
-                    }else if(response.message==='Invalid email'){
+                        }, 5000)
+                    } else if (response.message === 'Invalid email') {
                         document.getElementById('emailError').innerHTML = response.message;
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             document.getElementById('emailError').innerHTML = "";
-                        },5000)
-                    }else{
-                        window.location.href = '/';
+                        }, 5000)
+                    } else {
+                        sweetAlert();
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 2000);
                     }
                 }
 
             })
-        }catch(error){
+        } catch (error) {
             console.error(error);
         }
     });
+
+
+
+    function sweetAlert() {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        Toast.fire({
+            icon: 'success',
+            title: 'Signed in successfully'
+        })
+    }
+
+
 </script>

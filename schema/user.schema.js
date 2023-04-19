@@ -21,7 +21,10 @@ const userSchema = new mongoose.Schema({
   status:{
     type:Boolean,
     required: true,
-  }
+  },
+  address:[{
+    type:Object
+  }]
 });
 
 module.exports = mongoose.model('User', userSchema);
