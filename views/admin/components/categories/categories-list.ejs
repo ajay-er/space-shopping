@@ -19,12 +19,6 @@
                                 id="product_name" />
                         </div>
 
-
-                        <div class="mb-4">
-                            <label class="form-label">Description</label>
-                            <textarea name="description" placeholder="Type here" id="desc"
-                                class="form-control"></textarea>
-                        </div>
                         <div class="d-grid">
                             <button type="submit" onclick="postCategory()" class="btn btn-primary">Create
                                 category</button>
@@ -40,7 +34,6 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
-                                    <th>Description</th>
                                     <th>Active</th>
                                     <th>Order</th>
                                     <th class="text-end">Action</th>
@@ -57,9 +50,7 @@
                                             <td><b>
                                                     <%= category.name %>
                                                 </b></td>
-                                            <td>
-                                                <%= category.description %>
-                                            </td>
+                                            
                                             <% if (category.active) { %>
                                                 <td><span class="badge rounded-pill alert-success"
                                                         id="enableRound">Active</span></td>
@@ -110,14 +101,12 @@
 
 <script>
     function postCategory() {
-        const description = document.getElementById('desc').value.trim()
         const name = document.getElementById('product_name').value.trim()
         $.ajax({
             url: '/admin/categories',
             method: 'POST',
             data: {
                 name: name,
-                description: description
             },
             success: (resp) => {
                 alert('Category created successfully');
@@ -141,8 +130,6 @@
             data: { id: categoryId, status: status },
             success: (response) => {
                 alert(`Category ${enableOrDisable} successfully`);
-                
-
             },
             error: () => {
                 alert('Failed to delete category due to server error');

@@ -1,79 +1,83 @@
 <section class="content-main">
-    <form action="/add-product" method="POST">
-      <div class="row">
-        <div class="col-9">
-          <div class="content-header">
-            <h2 class="content-title">Add New Product</h2>
-            <div>
-              <button type="submit" class="btn btn-md rounded font-sm hover-up">Add product</button>
+  <form  method="post" action="/admin/add-products">
+    <div class="row">
+      <div class="col-9">
+        <div class="content-header">
+          <h2 class="content-title">Add New Product</h2>
+          <div>
+            <button type="submit" id="add-product-btn" class="btn btn-md rounded font-sm hover-up">Add product</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="mb-4">
+              <label for="productName" class="form-label">Product title</label>
+              <input type="text" placeholder="Type here" class="form-control" id="productName" name="productName"
+                required>
+            </div>
+            <div class="mb-4">
+              <label class="form-label">Full description</label>
+              <textarea placeholder="Type here" class="form-control" rows="4" id="productDescription"
+                name="productDescription" required></textarea>
+            </div>
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="mb-4">
+                  <label class="form-label">Regular price</label>
+                  <div class="row gx-2">
+                    <input placeholder="₹" type="text" class="form-control" id="productPrice" name="productPrice"
+                      required>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="mb-4">
+                  <label class="form-label">Old price</label>
+                  <input placeholder="₹" type="text" class="form-control" id="productOldPrice" name="productOldPrice"
+                    required>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="mb-4">
+                  <label class="form-label">Stocks</label>
+                  <input placeholder="999" type="text" class="form-control" id="stocks" name="stocks" required>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row gx-2">
+                <div class="col-sm-6 mb-3">
+                  <label class="form-label">Category</label>
+                  <select class="form-select" name="productCategory" id="productCategory" required>
+                    <option selected hidden>Add to Category</option>
+                    <% categories.forEach(category=> {%> <% if(category.active){ %>
+                        <option value="<%= category._id %>">
+                          <%= category.name %>
+                        </option>
+                        <% } %>
+                          <%}); %>
+                  </select>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-6">
-          <div class="card mb-4">
-            <div class="card-body">
-              <div class="mb-4">
-                <label for="product_name" class="form-label">Product title</label>
-                <input type="text" placeholder="Type here" class="form-control" id="productName" name="productName">
-              </div>
-              <div class="mb-4">
-                <label class="form-label">Full description</label>
-                <textarea placeholder="Type here" class="form-control" rows="4" name="productDescription"></textarea>
-              </div>
-              <div class="row">
-                <div class="col-lg-4">
-                  <div class="mb-4">
-                    <label class="form-label">Regular price</label>
-                    <div class="row gx-2">
-                      <input placeholder="₹" type="text" class="form-control" name="productPrice">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-4">
-                  <div class="mb-4">
-                    <label class="form-label">Old price</label>
-                    <input placeholder="₹" type="text" class="form-control" name="productOldPrice">
-                  </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="mb-4">
-                      <label class="form-label">Stock</label>
-                      <select class="form-select" name="stock">
-                        <option>Stock</option>
-                        <option>Out of stock</option>
-                      </select>
-                    </div>
-                  </div>
-                <div class="card-body">
-                  <div class="row gx-2">
-                    <div class="col-sm-6 mb-3">
-                      <label class="form-label">Category</label>
-                      <select class="form-select" name="productCategory">
-                        <option>ANIME & MANGA</option>
-                        <option>COMICS & SUPERHEROS</option>
-                        <option>RETRO TOYS</option>
-                      </select>
-                    </div>
-                  </div> <!-- row.// -->
-                </div>
-              </div>
-            </div>
-          </div> <!-- card end// -->
-        </div>
-        <div class="col-lg-3">
-          <div class="card mb-4">
-            <div class="card-header">
-              <h4>Media</h4>
-            </div>
-            <div class="card-body">
-              <div class="input-upload">
-                <img src="/admins/assets/imgs/theme/upload.svg" alt="">
-                <input class="form-control" type="file" name="productImage">
-              </div>
-            </div>
-          </div> <!-- card end// -->
-        </div>
       </div>
-    </form>
-  </section> <!-- content-main end// -->
-  
+      <div class="col-lg-3">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h4>Media</h4>
+          </div>
+          <div class="card-body">
+            <div class="input-upload">
+              <img src="/admins/assets/imgs/theme/upload.svg" alt="">
+              <input class="form-control" type="file" name="productImage" id="productImage" required>
+            </div>
+          </div>
+        </div> <!-- card end// -->
+      </div>
+    </div>
+  </form>
+</section> <!-- content-main end// -->

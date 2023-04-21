@@ -21,9 +21,9 @@ async function httpGetCategories(req, res) {
 }
 
 async function httpPostCategories(req, res) {
-  const { name, description } = req.body;
+  const { name } = req.body;
   try {
-    const response = await addCategory(name, description);
+    const response = await addCategory(name);
     if (response.status) {
       res.status(200).json({ status: true, category: response.category });
     } else {

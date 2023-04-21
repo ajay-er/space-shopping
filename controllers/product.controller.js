@@ -1,6 +1,8 @@
 const { handleError } = require('../middlewares/error.handler');
 
-const { fetchAllProducts } = require('../models/product.model');
+const { fetchAllProducts,addNewProduct } = require('../models/product.model');
+
+const { fetchCategories } = require('../models/category.model');
 
 async function httpGetProducts(req, res) {
     try {
@@ -17,15 +19,23 @@ async function httpGetProducts(req, res) {
   
   async function httpGetAddProduct(req, res) {
     try {
-      return res.render('admin/add-products');
+      const response = await fetchCategories()
+      return res.render('admin/add-products',{categories:response.categories});
     } catch (error) {
       handleError(res, error);
     }
   }
   
   async function httpPostAddProduct(req, res) {
-    const productId = req.body.params;
     try {
+      console.log("🥲🥲");
+      console.log(req.body);
+      const response = await addNewProduct(req.body);
+      if(response.status){
+         res.redirect('/admin/add-products');
+      }else{
+         res.status(500).json({status:false });
+      }
     } catch (error) {
       handleError(res, error);
     }

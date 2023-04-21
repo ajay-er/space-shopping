@@ -13,24 +13,30 @@ async function fetchCategories() {
   }
 }
 
-async function addCategory(name, description) {
+async function addCategory(name) {
   try {
     const category = new categoryDatabase({
       name: name,
-      description: description,
       active: true,
     });
-    await category.save();
+    const result = await category.save();
 
-    return { status: true };
+    if (result) {
+      return { status: true };
+    } else {
+      return { status: false };
+    }
   } catch (error) {
     throw new Error(`Error adding categories: ${error.message}`);
   }
 }
 
-async function updateCategory(categoryId,updateStatus) {
+async function updateCategory(categoryId, updateStatus) {
   try {
-    const category = await categoryDatabase.updateOne({_id:categoryId},{$set:{active:updateStatus}});
+    const category = await categoryDatabase.updateOne(
+      { _id: categoryId },
+      { $set: { active: updateStatus } }
+    );
     console.log('Update result:', category);
     if (category.modifiedCount > 0) {
       return { status: true };

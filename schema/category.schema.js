@@ -6,10 +6,6 @@ const categorySchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  description: {
-    type: String,
-    required: true,
-  },
   active:{
     type:Boolean,
     required:true,
