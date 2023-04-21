@@ -1,5 +1,5 @@
 <section class="content-main">
-  <form  method="post" action="/admin/add-products">
+  <form id="myForm">
     <div class="row">
       <div class="col-9">
         <div class="content-header">
@@ -52,12 +52,13 @@
                   <label class="form-label">Category</label>
                   <select class="form-select" name="productCategory" id="productCategory" required>
                     <option selected hidden>Add to Category</option>
-                    <% categories.forEach(category=> {%> <% if(category.active){ %>
+                    <% categories.forEach(category=> { %>
+                      <% if(category.active) { %>
                         <option value="<%= category._id %>">
                           <%= category.name %>
                         </option>
                         <% } %>
-                          <%}); %>
+                          <% }); %>
                   </select>
                 </div>
               </div>
@@ -76,8 +77,37 @@
               <input class="form-control" type="file" name="productImage" id="productImage" required>
             </div>
           </div>
-        </div> <!-- card end// -->
+        </div>
       </div>
     </div>
   </form>
-</section> <!-- content-main end// -->
+</section>
+
+<script>
+
+  const form = document.getElementById('myForm');
+  const submitButton = document.getElementById("add-product-btn");
+
+  submitButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    const formData = new FormData(form);
+
+    const url = "/admin/add-products";
+
+    axios.post(url, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }
+    })
+      .then(response => {
+        console.log("Product added successfully!");
+        callAlertify('success', 'Product added successfully!');
+        event.target.form.reset();
+      })
+      .catch(error => {
+        callAlertify('error', 'Error adding product');
+        console.error("Error adding product");
+      });
+  });
+
+</script>

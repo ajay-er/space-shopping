@@ -1,6 +1,8 @@
 const express = require('express');
 const adminRouter = express.Router();
 
+const upload = require('../config/multer');
+
 const {
   httpGetDashBoard,
   httpGetLogin,
@@ -42,7 +44,7 @@ adminRouter.post('/categories', isAdminLoggedIn, httpPostCategories);
 adminRouter.put('/category-status', isAdminLoggedIn, httpPutCategory);
 
 adminRouter.get('/add-products', isAdminLoggedIn, httpGetAddProduct);
-adminRouter.post('/add-products', isAdminLoggedIn, httpPostAddProduct);
+adminRouter.post('/add-products',upload.single('productImage'), isAdminLoggedIn, httpPostAddProduct);
 adminRouter.put('/user-status', isAdminLoggedIn, httpPutBlockUser);
 
 adminRouter.get('*', httpGet404);

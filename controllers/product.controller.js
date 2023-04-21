@@ -32,7 +32,7 @@ async function httpGetProducts(req, res) {
       console.log(req.body);
       const response = await addNewProduct(req.body);
       if(response.status){
-         res.redirect('/admin/add-products');
+        res.status(200).json({ success: true });
       }else{
          res.status(500).json({status:false });
       }

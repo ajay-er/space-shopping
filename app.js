@@ -19,7 +19,7 @@ const userRouter = require('./routes/user.router');
 
 //global middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('short'));
 app.use(cors());
