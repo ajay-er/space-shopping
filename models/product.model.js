@@ -1,4 +1,5 @@
 const productDatabase = require('../schema/product.schema');
+const cloudinary = require('../config/cloudinary');
 
 async function fetchAllProducts() {
   try {
@@ -13,7 +14,7 @@ async function fetchAllProducts() {
   }
 }
 
-async function addNewProduct(dataBody) {
+async function addNewProduct(dataBody, dataFiles) {
   const {
     productName,
     productDescription,
@@ -21,25 +22,38 @@ async function addNewProduct(dataBody) {
     productOldPrice,
     stocks,
     productCategory,
-    productImage,
   } = dataBody;
 
+  const product = new productDatabase({
+    productName: productName,
+    productDescription: productDescription,
+    productPrice: productPrice,
+    productOldPrice: productOldPrice,
+    stocks: stocks,
+    productCategory: productCategory,
+    deleteStatus: false,
+  });
+
   try {
-    const product = new productDatabase({
-      productName: productName,
-      productDescription: productDescription,
-      productPrice: productPrice,
-      productOldPrice: productOldPrice,
-      stocks: stocks,
-      productCategory: productCategory,
-      productImage: productImage,
-      deleteStatus: false,
-    });
+    const imageUrlList = [];
+
+    for (let i = 0; i < dataFiles.length; i++) {
+      let locaFilePath = dataFiles[i].path;
+      let response = await cloudinary.uploader.upload(locaFilePath, {
+        folder: 'space/product_images',
+        unique_filename: true,
+      });
+      imageUrlList.push(response.url);
+    }
+
+    product.productImageUrls = imageUrlList;
+    console.log('😉');
+    console.log(imageUrlList);
+    console.log('😉');
 
     const result = await product.save();
     console.log(result);
     if (result) {
-      console.log("😉");
       return { status: true };
     } else {
       return { status: false };

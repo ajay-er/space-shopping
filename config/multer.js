@@ -3,15 +3,23 @@ const path = require('path');
 const multer = require('multer');
 
 const storage = multer.diskStorage({
-  destination: (req, files, cb) => {
-    cb(null, './Images');
-  },
   filename: (req, file, cb) => {
-    console.log(file);
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
 
-const upload = multer({ storage: storage });
+//file validation
+const fileFilter = (req, file, cb) => {
+  if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+    return cb(new Error('Only JPEG and PNG images are allowed!'), false);
+  }
+  cb(null, true);
+};
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 },
+  fileFilter: fileFilter,
+});
 
 module.exports = upload;

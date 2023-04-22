@@ -28,13 +28,11 @@ async function httpGetProducts(req, res) {
   
   async function httpPostAddProduct(req, res) {
     try {
-      console.log("🥲🥲");
-      console.log(req.body);
-      const response = await addNewProduct(req.body);
+      const response = await addNewProduct(req.body,req.files);
       if(response.status){
-        res.status(200).json({ success: true });
+        res.status(200).json({ success: true ,message :'Product added succesfully'});
       }else{
-         res.status(500).json({status:false });
+         res.status(500).json({status:false,message: 'Failed to add product.'});
       }
     } catch (error) {
       handleError(res, error);

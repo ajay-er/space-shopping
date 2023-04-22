@@ -44,7 +44,7 @@ adminRouter.post('/categories', isAdminLoggedIn, httpPostCategories);
 adminRouter.put('/category-status', isAdminLoggedIn, httpPutCategory);
 
 adminRouter.get('/add-products', isAdminLoggedIn, httpGetAddProduct);
-adminRouter.post('/add-products',upload.single('productImage'), isAdminLoggedIn, httpPostAddProduct);
+adminRouter.post('/add-products',upload.array('productImage',4), isAdminLoggedIn, httpPostAddProduct);
 adminRouter.put('/user-status', isAdminLoggedIn, httpPutBlockUser);
 
 adminRouter.get('*', httpGet404);

@@ -30,7 +30,7 @@ async function httpPostLogin(req, res) {
       } else {
         return res
           .status(400)
-          .json({ status: true, error: 'Email or password is incorrect.' });
+          .json({ status: false, error: 'Email or password is incorrect.' });
       }
     } else {
       return res.status(400).json({ error: 'Admin credentials are not set.' });

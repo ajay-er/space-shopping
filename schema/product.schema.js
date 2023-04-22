@@ -29,9 +29,8 @@ const productSchema = new mongoose.Schema(
       type:Number,
       required:true,
     },
-    productImage: {
-      type: Array,
-      required: true,
+    productImageUrls: {
+      type: [String],
     },
     deleteStatus: {
       type: Boolean,
