@@ -18,6 +18,9 @@ const {
   httpGetProducts,
   httpGetAddProduct,
   httpPostAddProduct,
+  httpGetEditProduct,
+  httpPutProduct,
+  httpPutProductDetails,
 } = require('../controllers/product.controller');
 
 const {
@@ -36,16 +39,21 @@ adminRouter.get('/login', isAdminLoggedOut, httpGetLogin);
 adminRouter.post('/login', isAdminLoggedOut, httpPostLogin);
 adminRouter.get('/logout', isAdminLoggedIn, httpGetLogout);
 
-adminRouter.get('/users', isAdminLoggedIn, httpGetUsers);
-adminRouter.get('/products', isAdminLoggedIn, httpGetProducts);
-
 adminRouter.get('/categories', isAdminLoggedIn, httpGetCategories);
 adminRouter.post('/categories', isAdminLoggedIn, httpPostCategories);
 adminRouter.put('/category-status', isAdminLoggedIn, httpPutCategory);
 
+adminRouter.get('/users', isAdminLoggedIn, httpGetUsers);
+adminRouter.put('/user-status', isAdminLoggedIn, httpPutBlockUser);
+
+adminRouter.get('/products', isAdminLoggedIn, httpGetProducts);
 adminRouter.get('/add-products', isAdminLoggedIn, httpGetAddProduct);
 adminRouter.post('/add-products',upload.array('productImage',4), isAdminLoggedIn, httpPostAddProduct);
-adminRouter.put('/user-status', isAdminLoggedIn, httpPutBlockUser);
+
+adminRouter.get('/edit-product/:id',isAdminLoggedIn,httpGetEditProduct);
+adminRouter.put('/edit-product',isAdminLoggedIn,httpPutProductDetails);
+adminRouter.put('/product-status/:id',isAdminLoggedIn,httpPutProduct);
+
 
 adminRouter.get('*', httpGet404);
 

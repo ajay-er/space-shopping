@@ -24,6 +24,9 @@ submitButton.addEventListener('click', (event) => {
     productCategory === 'Add to Category'
   ) {
     callAlertify('warning', 'Please fill in all required fields');
+    setTimeout(() => {
+      submitButton.disabled = false;
+    }, 3000);
     return;
   }
 
@@ -48,3 +51,49 @@ submitButton.addEventListener('click', (event) => {
       console.error('Error adding product:', error);
     });
 });
+
+// //image section
+// const imagePreview = document.getElementById('image-preview');
+// const fileInput = document.getElementById('productImage');
+
+// fileInput.addEventListener('change', (event) => {
+//   const fileList = event.target.files;
+  
+//   // Clear the preview
+//   imagePreview.innerHTML = '';
+  
+//   // Loop through the file list and display each image
+//   for (let i = 0; i < fileList.length; i++) {
+//     const file = fileList[i];
+    
+//     // Create a new image element
+//     const image = document.createElement('img');
+//     image.classList.add('preview-image');
+//     image.file = file;
+    
+//     // Create a remove button for the image
+//     const removeButton = document.createElement('button');
+//     removeButton.classList.add('btn', 'btn-danger', 'mt-2');
+//     removeButton.innerText = 'Remove';
+//     removeButton.addEventListener('click', (event) => {
+//       event.preventDefault();
+//       imagePreview.removeChild(imageContainer);
+//     });
+    
+//     // Create a container for the image and remove button
+//     const imageContainer = document.createElement('div');
+//     imageContainer.classList.add('preview-image-container');
+//     imageContainer.appendChild(image);
+//     imageContainer.appendChild(removeButton);
+    
+//     // Add the container to the preview
+//     imagePreview.appendChild(imageContainer);
+    
+//     // Display the image
+//     const reader = new FileReader();
+//     reader.onload = (event) => {
+//       image.src = event.target.result;
+//     };
+//     reader.readAsDataURL(file);
+//   }
+// });

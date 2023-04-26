@@ -3,14 +3,29 @@ const cloudinary = require('../config/cloudinary');
 
 async function fetchAllProducts() {
   try {
-    const products = await productDatabase.find({});
-    if (products) {
+    try {
+      const products = await productDatabase.find().populate('productCategory').exec();
       return { status: true, products };
-    } else {
-      return { status: false };
+    } catch (error) {
+      console.log(error);
+      return { status: false, message: error.message };
     }
   } catch (error) {
     throw new Error(`Error finding products: ${error.message}`);
+  }
+}
+
+
+async function fetchProduct(productId){
+  try{
+    const product = await productDatabase.findById(productId);
+    if (product) {
+      return { status: true, product };
+    } else {
+      return { status: false };
+    }
+  }catch(error){
+    throw new Error(`Error fetching product: ${error.message}`);
   }
 }
 
@@ -36,7 +51,7 @@ async function addNewProduct(dataBody, dataFiles) {
 
   try {
     const imageUrlList = [];
-
+   
     for (let i = 0; i < dataFiles.length; i++) {
       let locaFilePath = dataFiles[i].path;
       let response = await cloudinary.uploader.upload(locaFilePath, {
@@ -47,12 +62,7 @@ async function addNewProduct(dataBody, dataFiles) {
     }
 
     product.productImageUrls = imageUrlList;
-    console.log('😉');
-    console.log(imageUrlList);
-    console.log('😉');
-
     const result = await product.save();
-    console.log(result);
     if (result) {
       return { status: true };
     } else {
@@ -63,7 +73,22 @@ async function addNewProduct(dataBody, dataFiles) {
   }
 }
 
+async function updateProductStatus(productId){
+  try{
+    const product = await productDatabase.findByIdAndUpdate({_id:productId},{$set:{productStatus:false}});
+    if (product) {
+      return { status: true, product };
+    } else {
+      return { status: false };
+    }
+  }catch(error){
+    throw new Error(`Error updating product: ${error.message}`);
+  }
+}
+
 module.exports = {
   fetchAllProducts,
+  fetchProduct,
   addNewProduct,
+  updateProductStatus,
 };

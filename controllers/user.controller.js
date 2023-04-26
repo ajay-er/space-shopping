@@ -6,12 +6,21 @@ const {
   submitSignup,
 } = require('../models/userAuth.model');
 
+const { 
+  fetchAllProducts,
+} = require('../models/product.model');
+
 const { handleError } = require('../middlewares/error.handler');
 const validateSignup = require('../config/joi');
 
-function httpGetHome(req, res) {
+async function httpGetHome(req, res) {
   try {
-    res.status(200).render('user/home');
+    const productResult = await fetchAllProducts();
+    if(productResult){
+      res.status(200).render('user/home',{products:productResult.products,status:true});
+    }else{
+      res.status(500).json({status:false});
+    }
   } catch (error) {
     handleError(res, error);
   }

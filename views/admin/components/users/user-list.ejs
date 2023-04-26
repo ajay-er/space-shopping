@@ -93,7 +93,7 @@
                     } else {
                         button.text('Block').removeClass('btn-danger').addClass('btn-primary').data('action', 'block');
                     }
-                    alert(`User ${action}ed successfully😁`);
+                    callAlertify('warning',`User ${action}ed successfully👍`);
                 } 
             },
             error: function (xhr, status, error) {
@@ -103,7 +103,7 @@
                 } else {
                     message = 'Failed to update user status due to server error';
                 }
-                alert('Error: ' + message)
+                callAlertify('error: ' + message)
             }
         });
     });

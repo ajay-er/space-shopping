@@ -27,7 +27,7 @@
                 <div class="mb-4">
                   <label class="form-label">Regular price</label>
                   <div class="row gx-2">
-                    <input placeholder="₹" type="text" class="form-control" id="productPrice" name="productPrice"
+                    <input placeholder="₹"  type="number" class="remove-arrow form-control" id="productPrice" name="productPrice"
                       required>
                   </div>
                 </div>
@@ -35,14 +35,14 @@
               <div class="col-lg-4">
                 <div class="mb-4">
                   <label class="form-label">Old price</label>
-                  <input placeholder="₹" type="text" class="form-control" id="productOldPrice" name="productOldPrice"
+                  <input placeholder="₹" type="number" class="remove-arrow form-control" id="productOldPrice" name="productOldPrice"
                     required>
                 </div>
               </div>
               <div class="col-lg-4">
                 <div class="mb-4">
                   <label class="form-label">Stocks</label>
-                  <input placeholder="999" type="text" class="form-control" id="stocks" name="stocks" required>
+                  <input placeholder="999" type="number" class="remove-arrow form-control" id="stocks" name="stocks" required>
                 </div>
               </div>
             </div>
@@ -74,6 +74,7 @@
           <div class="card-body">
             <div class="input-upload">
               <img src="/admins/assets/imgs/theme/upload.svg" alt="">
+              <div id="image-preview"></div>
               <input class="form-control" type="file" name="productImage" id="productImage" multiple required>
             </div>
           </div>
@@ -82,3 +83,7 @@
     </div>
   </form>
 </section>
+
+
+
+

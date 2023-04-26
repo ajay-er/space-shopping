@@ -10,13 +10,11 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    productCategory: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
-        required: true,
-      },
-    ],
+    productCategory: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true,
+    },
     productPrice: {
       type: Number,
       required: true,
@@ -25,16 +23,18 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
-    stocks:{
-      type:Number,
-      required:true,
+    stocks: {
+      type: Number,
+      required: true,
     },
-    productImageUrls: {
-      type: [String],
-    },
-    deleteStatus: {
+    productImageUrls: [
+      {
+        type: String,
+      },
+    ],
+    productStatus: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   { timestamps: true }
