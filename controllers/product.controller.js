@@ -94,9 +94,16 @@ async function httpPutProduct(req, res) {
 
 async function httpPutProductDetails(req, res) {
   try {
-    console.log('😊');
     console.log(req.body.data);
   } catch (error) {
+    handleError(res, error);
+  }
+}
+
+async function httpGetProductpage(req,res){
+  try{
+    res.render('user/product');
+  }catch(error){
     handleError(res, error);
   }
 }
@@ -108,4 +115,5 @@ module.exports = {
   httpGetEditProduct,
   httpPutProduct,
   httpPutProductDetails,
+  httpGetProductpage,
 };

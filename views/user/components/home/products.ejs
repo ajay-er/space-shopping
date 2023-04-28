@@ -32,7 +32,7 @@
                                     <div class="product-cart-wrap mb-30">
                                         <div class="product-img-action-wrap">
                                             <div class="product-img product-img-zoom">
-                                                <a href="/products">
+                                                <a href="/product">
                                                     <img class="default-img" src="<%= product.productImageUrls[0] %>"
                                                         alt="">
                                                     <img class="hover-img" src="<%= product.productImageUrls[1] %>"
@@ -54,7 +54,7 @@
                                         </div>
                                         <div class="product-content-wrap">
                                             <div class="product-category">
-                                                <a href="/products">
+                                                <a href="/product">
                                                     <div class="product-category">
                                                         <a href="/all-products">
                                                             <%= product.productCategory.name %>
@@ -62,7 +62,7 @@
                                                     </div>
                                                 </a>
                                             </div>
-                                            <h2><a href="/products"><%- product.productName %></a></h2>
+                                            <h2><a href="/product"><%- product.productName %></a></h2>
                                             <div class="rating-result" title="90%">
                                                 <span>
                                                     <span>90%</span>
@@ -79,13 +79,9 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <% }) %>
-
                 </div>
-                <!--End product-grid-4-->
             </div>
-            <!--En tab one (Featured)-->
             <div class="tab-pane fade" id="tab-two" role="tabpanel" aria-labelledby="tab-two">
                 <div class="row product-grid-4">
 
@@ -99,7 +95,7 @@
                                     <div class="product-cart-wrap mb-30">
                                         <div class="product-img-action-wrap">
                                             <div class="product-img product-img-zoom">
-                                                <a href="/products">
+                                                <a href="/product">
                                                     <img class="default-img" src="<%= product.productImageUrls[0] %>"
                                                         alt="">
                                                     <img class="hover-img" src="<%= product.productImageUrls[1] %>"
@@ -121,7 +117,7 @@
                                         </div>
                                         <div class="product-content-wrap">
                                             <div class="product-category">
-                                                <a href="/products">
+                                                <a href="/product">
                                                     <div class="product-category">
                                                         <a href="/all-products">
                                                             <%= product.productCategory.name %>
@@ -129,7 +125,7 @@
                                                     </div>
                                                 </a>
                                             </div>
-                                            <h2><a href="/products"><%- product.productName %></a></h2>
+                                            <h2><a href="/product"><%- product.productName %></a></h2>
                                             <div class="rating-result" title="90%">
                                                 <span>
                                                     <span>90%</span>
@@ -141,7 +137,7 @@
                                             </div>
                                             <div class="product-action-1 show">
                                                 <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                    href="user-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    href="/cart"><i class="fi-rs-shopping-bag-add"></i></a>
                                             </div>
                                         </div>
                                     </div>
@@ -164,7 +160,7 @@
                                     <div class="product-cart-wrap mb-30">
                                         <div class="product-img-action-wrap">
                                             <div class="product-img product-img-zoom">
-                                                <a href="/products">
+                                                <a href="/product">
                                                     <img class="default-img" src="<%= product.productImageUrls[0] %>"
                                                         alt="">
                                                     <img class="hover-img" src="<%= product.productImageUrls[1] %>"
@@ -186,7 +182,7 @@
                                         </div>
                                         <div class="product-content-wrap">
                                             <div class="product-category">
-                                                <a href="/products">
+                                                <a href="/product">
                                                     <div class="product-category">
                                                         <a href="/all-products">
                                                             <%= product.productCategory.name %>
@@ -194,7 +190,7 @@
                                                     </div>
                                                 </a>
                                             </div>
-                                            <h2><a href="/products"><%- product.productName %></a></h2>
+                                            <h2><a href="/product"><%- product.productName %></a></h2>
                                             <div class="rating-result" title="90%">
                                                 <span>
                                                     <span>90%</span>
@@ -206,7 +202,7 @@
                                             </div>
                                             <div class="product-action-1 show">
                                                 <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                    href="user-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    href="/cart"><i class="fi-rs-shopping-bag-add"></i></a>
                                             </div>
                                         </div>
                                     </div>
@@ -214,10 +210,7 @@
 
                                 <% }) %>
                 </div>
-                <!--End product-grid-4-->
             </div>
-            <!--En tab three (New added)-->
         </div>
-        <!--End tab-content-->
     </div>
 </section>

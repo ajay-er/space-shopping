@@ -1,5 +1,5 @@
 <header class="header-area header-style-3 header-height-2">
-  
+
     <div class="header-top header-top-ptb-1 d-none d-lg-block">
         <div class="container">
             <div class="row align-items-center">
@@ -50,21 +50,19 @@
                 <div class="logo logo-width-1">
                     <a href="/"><img src="user/assets/imgs/theme/logo.svg" alt="logo"></a>
                 </div>
+
                 <div class="header-right">
                     <div class="search-style-2">
                         <form action="#">
                             <select class="select-active">
                                 <option>All Categories</option>
-                                <option>Women's</option>
-                                <option>Men's</option>
-                                <option>Cellphones</option>
-                                <option>Computer</option>
-                                <option>Electronics</option>
-                                <option> Accessories</option>
-                                <option>Home & Garden</option>
-                                <option>Luggage</option>
-                                <option>Shoes</option>
-                                <option>Mother & Kids</option>
+                                <% categories.forEach(category=> { %>
+                                    <% if (category.active) { %>
+                                        <option>
+                                            <%= category.name %>
+                                        </option>
+                                    <% } %>
+                                    <% }) %>
                             </select>
                             <input type="text" placeholder="Search for items...">
                         </form>
@@ -148,30 +146,13 @@
                         </a>
                         <div class="categori-dropdown-wrap categori-dropdown-active-large">
                             <ul>
-
-                                <li><a href="user-grid-right.html"><i class="evara-font-desktop"></i>Computer &
-                                        Office</a></li>
-                                <li><a href="user-grid-right.html"><i class="evara-font-cpu"></i>Consumer
-                                        Electronics</a></li>
-                                <li><a href="user-grid-right.html"><i class="evara-font-diamond"></i>Jewelry &
-                                        Accessories</a></li>
-                                <li><a href="user-grid-right.html"><i class="evara-font-home"></i>Home & Garden</a></li>
-                                <li><a href="user-grid-right.html"><i class="evara-font-high-heels"></i>Shoes</a></li>
-                                <li><a href="user-grid-right.html"><i class="evara-font-teddy-bear"></i>Mother &
-                                        Kids</a></li>
-                                <li><a href="user-grid-right.html"><i class="evara-font-kite"></i>Outdoor fun</a></li>
-                                <li>
-                                    <ul class="more_slide_open" style="display: none;">
-                                        <li><a href="user-grid-right.html"><i class="evara-font-desktop"></i>Beauty,
-                                                Health</a></li>
-                                        <li><a href="user-grid-right.html"><i class="evara-font-cpu"></i>Bags and
-                                                Shoes</a></li>
-                                        <li><a href="user-grid-right.html"><i class="evara-font-diamond"></i>Consumer
-                                                Electronics</a></li>
-                                        <li><a href="user-grid-right.html"><i class="evara-font-home"></i>Automobiles &
-                                                Motorcycles</a></li>
-                                    </ul>
-                                </li>
+                                <% categories.forEach(category=> { %>
+                                    <% if (category.active) { %>
+                                        <li><a href="">
+                                                <%= category.name %>
+                                            </a></li>
+                                    <% } %>
+                                    <% }) %>
                             </ul>
                         </div>
                     </div>
@@ -180,20 +161,15 @@
                             <ul>
                                 <li><a class="active" href="/">Home</a>
                                 </li>
-                                <li><a href="user-grid-right.html">Shop <i class="fi-rs-angle-down"></i></a>
-                                    <ul class="sub-menu">
-                                        <li><a href="user-grid-right.html">ANIME & MANGA</a></li>
-                                        <li><a href="user-grid-right.html">COMICS & SUPERHEROS</a></li>
-                                        <li><a href="user-grid-right.html">RETRO TOYS</a></li>
-                                        <li><a href="user-grid-right.html">SPORTS</a></li>
-                                        
-                                    </ul>
+
+                                <li><a href="#">Shop </a>
+
                                 </li>
                                 <li>
-                                    <a href="page-about.html">About</a>
+                                    <a href="#">About</a>
                                 </li>
                                 <li>
-                                    <a href="page-contact.html">Contact</a>
+                                    <a href="#">Contact</a>
                                 </li>
                             </ul>
                         </nav>
@@ -206,19 +182,19 @@
                     <div class="header-action-2">
                         <div class="header-action-icon-2">
                             <a href="/account">
-                                <img class="svgInject" alt="account"
-                                    src="user/assets/imgs/theme/icons/icon-account.svg">
+                                <img class="svgInject" alt="space" src="user/assets/imgs/theme/icons/icon-account.svg">
+                                <span class="pro-count white">2</span>
                             </a>
                         </div>
                         <div class="header-action-icon-2">
-                            <a href="user-wishlist.html">
-                                <img alt="Evara" src="user/assets/imgs/theme/icons/icon-heart.svg">
+                            <a href="/wishlist">
+                                <img alt="space" src="user/assets/imgs/theme/icons/icon-heart.svg">
                                 <span class="pro-count white">4</span>
                             </a>
                         </div>
                         <div class="header-action-icon-2">
                             <a class="mini-cart-icon" href="user-cart.html">
-                                <img alt="Evara" src="user/assets/imgs/theme/icons/icon-cart.svg">
+                                <img alt="space" src="user/assets/imgs/theme/icons/icon-cart.svg">
                                 <span class="pro-count white">2</span>
                             </a>
                             <div class="cart-dropdown-wrap cart-dropdown-hm2">

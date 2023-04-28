@@ -76,7 +76,7 @@
                           <div class="image-preview" data-index="<%= index %>">
                             <img src="<%= imageUrl %>" alt="image">
                           </div>
-                          <div class="">
+                          <div>
                             <button type="button" class="btn btn-danger btn-sm delete-image-btn"
                               data-url="<%= imageUrl %>">Delete</button>
                             <label for="productImage" class="btn btn-primary colorChoose">Choose File</label>
@@ -111,7 +111,7 @@
   }
 </style>
 
-
+<!-- 
 <script>
 
   function updateProduct(event) {
@@ -167,6 +167,56 @@
 
 </script>
 
+ -->
+
+<script>
+
+const imagePreview = document.getElementById('image-preview');
+const fileInput = document.getElementById('productImage');
+
+fileInput.addEventListener('change', (event) => {
+  const fileList = event.target.files;
+  
+  // Clear the preview
+  imagePreview.innerHTML = '';
+  
+  // Loop through the file list and display each image
+  for (let i = 0; i < fileList.length; i++) {
+    const file = fileList[i];
+    
+    // Create a new image element
+    const image = document.createElement('img');
+    image.classList.add('preview-image');
+    image.file = file;
+    
+    // Create a remove button for the image
+    const removeButton = document.createElement('button');
+    removeButton.classList.add('btn', 'btn-danger', 'mt-2');
+    removeButton.innerText = 'Remove';
+    removeButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      imagePreview.removeChild(imageContainer);
+    });
+    
+    // Create a container for the image and remove button
+    const imageContainer = document.createElement('div');
+    imageContainer.classList.add('preview-image-container');
+    imageContainer.appendChild(image);
+    imageContainer.appendChild(removeButton);
+    
+    // Add the container to the preview
+    imagePreview.appendChild(imageContainer);
+    
+    // Display the image
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      image.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+   }
+});
+
+</script>
 
 
 
@@ -178,19 +228,3 @@
 
 
 
-
-
-<!-- main -->
-<!-- <div class="col-lg-3">
-          <div class="card mb-4">
-            <div class="card-header">
-              <h4>Media</h4>
-            </div>
-            <div class="card-body">
-              <div class="input-upload">
-                <img src="/admins/assets/imgs/theme/upload.svg" alt="">
-                <input class="form-control" type="file" name="productImage" id="productImage" multiple required>
-              </div>
-            </div> -->
-<!-- </div>
-        </div> -->

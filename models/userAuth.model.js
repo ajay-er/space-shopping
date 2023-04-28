@@ -4,22 +4,24 @@ const { hashPassword, comparePassword } = require('../config/security');
 
 async function checkUserWithEmail(email, password) {
   try {
-    const user = await userDatabase.findOne({ email: email });
-    if (user) {
-      const isPasswordMatch = await comparePassword(password, user.password);
-      if (isPasswordMatch) {
-        return { status: true, user: user };
-      } else {
-        return { status: false, message: 'Invalid password' };
-      }
-    } else {
+    const user = await userDatabase.findOne({email:email});
+    if (!user) {
       return { status: false, message: 'Invalid email' };
     }
+    if (!user.status) {
+      return { status: false, message: 'User is blocked' };
+    }
+    const isPasswordMatch = await comparePassword(password, user.password);
+    if (isPasswordMatch) {
+      return { status: true, user: user, message: 'Login succesfull!' };
+    } else {
+      return { status: false, message: 'Invalid password' };
+    }
   } catch (error) {
-    console.error(error);
-    return { status: false, message: 'Error checking user existence' };
+    throw new Error('Error checking user existence');
   }
 }
+
 
 async function checkUserExistOrNot(phoneNumber) {
   try {

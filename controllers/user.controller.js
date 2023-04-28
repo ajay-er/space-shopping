@@ -6,20 +6,24 @@ const {
   submitSignup,
 } = require('../models/userAuth.model');
 
-const { 
-  fetchAllProducts,
-} = require('../models/product.model');
+const { fetchAllProducts } = require('../models/product.model');
 
 const { handleError } = require('../middlewares/error.handler');
 const validateSignup = require('../config/joi');
 
+
 async function httpGetHome(req, res) {
   try {
     const productResult = await fetchAllProducts();
-    if(productResult){
-      res.status(200).render('user/home',{products:productResult.products,status:true});
-    }else{
-      res.status(500).json({status:false});
+    if (productResult) {
+      res
+        .status(200)
+        .render('user/home', {
+          products: productResult.products,
+          status: true,
+        });
+    } else {
+      res.status(500).json({ status: false });
     }
   } catch (error) {
     handleError(res, error);
@@ -36,17 +40,15 @@ async function httpGetLogin(req, res) {
 
 async function httpPostLoginVerify(req, res) {
   const { email, password } = req.body;
-  console.log(email,password);
+  console.log(email, password);
   try {
-    const user = await checkUserWithEmail(email, password);
-    if (user.status) {
+    const userResult = await checkUserWithEmail(email, password);
+    if (userResult.status) {
       req.session.userloggedIn = true;
-      req.session.user = user;
-      res.status(200).json({ status: true, message: 'Login successful!' });
+      req.session.user = userResult.user;
+      res.status(200).json({ status: true, message: userResult.message });
     } else {
-      res
-        .status(400)
-        .json({ status: false, message: user.message });
+      res.json({ status: false, message: userResult.message });
     }
   } catch (error) {
     handleError(res, error);
@@ -151,13 +153,12 @@ async function httpPostSignup(req, res) {
   }
 }
 
-function httpGetAccount(req,res){
-  try{
+function httpGetAccount(req, res) {
+  try {
     const user = req.session.user;
-    res.render('user/account',{user});
-    
-  }catch(error){
-    handleError(res,error);
+    res.render('user/account', { user });
+  } catch (error) {
+    handleError(res, error);
   }
 }
 

@@ -5,46 +5,47 @@
             <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-2-arrows">
             </div>
             <div class="carausel-6-columns carausel-arrow-center" id="carausel-6-columns-2">
-                
-                <% products.forEach(product=>{ %>
-                    <% if(product.productStatus && product.productCategory.active &&  (new Date() - new Date(product.createdAt)) < ( 24 * 60 * 60 * 1000)) { %>
-                <div class="product-cart-wrap small hover-up">
-                    <div class="product-img-action-wrap">
-                        <div class="product-img product-img-zoom">
-                            <a href="/products">
-                                <img class="default-img" src="<%= product.productImageUrls[0] %>" alt="">
-                                <img class="hover-img" src="<%= product.productImageUrls[1] %>" alt="">
-                            </a>
-                        </div>
-                        <div class="product-action-1">
-                            <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal"
-                                data-bs-target="#quickViewModal">
-                                <i class="fi-rs-eye"></i></a>
-                            <a aria-label="Add To Wishlist" class="action-btn small hover-up"
-                                href="/wishlists" tabindex="0"><i class="fi-rs-heart"></i></a>
-                            <a aria-label="Compare" class="action-btn small hover-up" href=""
-                                tabindex="0"><i class="fi-rs-shuffle"></i></a>
-                        </div>
-                        <div class="product-badges product-badges-position product-badges-mrg">
-                            <span class="new">New</span>
-                        </div>
-                    </div>
-                    <div class="product-content-wrap">
-                        <h2><a href="/"><%- product.productName %></a></h2>
-                        <div class="rating-result" title="90%">
-                            <span>
-                            </span>
-                        </div>
-                        <div class="product-price">
-                            <span>&#8377;<%= product.productPrice %></span>
-                            <span class="old-price"> &#8377; <%= product.productOldPrice %></span>
-                        </div>
-                    </div>
-                </div>
-                <% } %>
-                <% }) %>
 
-                
+                <% products.forEach(product=>{ %>
+                    <% if(product.productStatus && product.productCategory.active && (new Date() - new
+                        Date(product.createdAt)) < ( 7 * 4* 24 * 60 * 60 * 1000)) { %>
+                        <div class="product-cart-wrap small hover-up">
+                            <div class="product-img-action-wrap">
+                                <div class="product-img product-img-zoom">
+                                    <a href="/products">
+                                        <img class="default-img" src="<%= product.productImageUrls[0] %>" alt="">
+                                        <img class="hover-img" src="<%= product.productImageUrls[1] %>" alt="">
+                                    </a>
+                                </div>
+                                <div class="product-action-1">
+                                    <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal"
+                                        data-bs-target="#quickViewModal">
+                                        <i class="fi-rs-eye"></i></a>
+                                    <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="/wishlists"
+                                        tabindex="0"><i class="fi-rs-heart"></i></a>
+                                    <a aria-label="Compare" class="action-btn small hover-up" href="" tabindex="0"><i
+                                            class="fi-rs-shuffle"></i></a>
+                                </div>
+                                <div class="product-badges product-badges-position product-badges-mrg">
+                                    <span class="new">New</span>
+                                </div>
+                            </div>
+                            <div class="product-content-wrap">
+                                <h2><a href="/"><%- product.productName %></a></h2>
+                                <div class="rating-result" title="90%">
+                                    <span>
+                                    </span>
+                                </div>
+                                <div class="product-price">
+                                    <span>&#8377;<%= product.productPrice %></span>
+                                    <span class="old-price"> &#8377; <%= product.productOldPrice %></span>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                            <% }) %>
+
+
             </div>
         </div>
     </div>

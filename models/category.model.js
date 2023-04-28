@@ -15,16 +15,19 @@ async function fetchCategories() {
 
 async function addCategory(name) {
   try {
+    const isCategoryExist = await categoryDatabase.findOne({ name });
+    if (isCategoryExist) {
+      return { status: false, message: 'Category name already exist!' };
+    }
     const category = new categoryDatabase({
       name: name,
       active: true,
     });
     const result = await category.save();
-
     if (result) {
-      return { status: true };
+      return { status: true, message: 'Category added sucessfully' };
     } else {
-      return { status: false };
+      return { status: false, message: 'Category not added!Server error' };
     }
   } catch (error) {
     throw new Error(`Error adding categories: ${error.message}`);
@@ -37,7 +40,6 @@ async function updateCategory(categoryId, updateStatus) {
       { _id: categoryId },
       { $set: { active: updateStatus } }
     );
-    console.log('Update result:', category);
     if (category.modifiedCount > 0) {
       return { status: true };
     } else {

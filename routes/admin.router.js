@@ -55,6 +55,7 @@ adminRouter.put('/edit-product',isAdminLoggedIn,httpPutProductDetails);
 adminRouter.put('/product-status/:id',isAdminLoggedIn,httpPutProduct);
 
 
+
 adminRouter.get('*', httpGet404);
 
 module.exports = adminRouter;

@@ -42,10 +42,10 @@
                                     <%= user.phone %>
                                 </td>
                                 <% if (user.status) { %>
-                                    <td><button class="btn btn-primary block-user" data-user-id="<%= user._id %>"
+                                    <td><button class="btn btn-danger block-user" data-user-id="<%= user._id %>"
                                             data-action="block">Block</button></td>
                                     <% } else { %>
-                                        <td><button class="btn btn-danger block-user" data-user-id="<%= user._id %>"
+                                        <td><button class="btn btn-primary block-user" data-user-id="<%= user._id %>"
                                                 data-action="unblock">Unblock</button></td>
                                         <% } %>
 
@@ -78,33 +78,45 @@
     $(document).on('click', '.block-user', function () {
         const userId = $(this).data('user-id');
         const action = $(this).data('action');
-        $.ajax({
-            url: '/admin/user-status',
-            type: 'PUT',
-            data:{
-                action:action,id:userId
-            },
-            success: function (data) {
-                var userRow = $(`tr[data-user-id="${userId}"]`);
-                if (data.status === 200) {
-                    var button = $('[data-user-id="' + userId + '"]');
-                    if (action === 'block') {
-                        button.text('Unblock').removeClass('btn-primary').addClass('btn-danger').data('action', 'unblock');
-                    } else {
-                        button.text('Block').removeClass('btn-danger').addClass('btn-primary').data('action', 'block');
+        swal({
+            title: "Are you sure?",
+            text: action=='block'?"This action will prevent the user from accessing the system and performing any actions.":"This action will allow the user to access the system and perform actions again.",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    url: '/admin/user-status',
+                    type: 'PUT',
+                    data: {
+                        action: action, id: userId
+                    },
+                    success: function (data) {
+                        var userRow = $(`tr[data-user-id="${userId}"]`);
+                        if (data.status === 200) {
+                            var button = $('[data-user-id="' + userId + '"]');
+                            if (action === 'block') {
+                                button.text('Unblock').removeClass('btn-danger').addClass('btn-primary').data('action', 'unblock');
+                            } else {
+                                button.text('Block').removeClass('btn-primary').addClass('btn-danger').data('action', 'block');
+                            }
+                            callAlertify('warning', `User ${action}ed successfully👍`);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        var message;
+                        if (xhr.status === 404) {
+                            message = 'User not found';
+                        } else {
+                            message = 'Failed to update user status due to server error';
+                        }
+                        callAlertify('error: ' + message)
                     }
-                    callAlertify('warning',`User ${action}ed successfully👍`);
-                } 
-            },
-            error: function (xhr, status, error) {
-                var message;
-                if (xhr.status === 404) {
-                    message = 'User not found';
-                } else {
-                    message = 'Failed to update user status due to server error';
-                }
-                callAlertify('error: ' + message)
+                });
+
             }
         });
+
     });
 </script>

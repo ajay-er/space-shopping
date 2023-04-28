@@ -71,36 +71,43 @@
                 type: 'post',
                 url: '/login',
                 data: { email: email.value.trim(), password: passwordInput.value.trim() },
-                success:  (response) => {
+                success: (response) => {
+                    if (response.message === 'User is blocked') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: "Your access to this account has been blocked by the administrator. Please contact the administrator for further information.",
+                        })
+                        return;
+                    }
 
-                    console.log(response.message);
-                    document.getElementById('passwordError').style.color = 'red';
                     if (response.message === 'Invalid password') {
+                        document.getElementById('passwordError').style.color = 'red';
                         document.getElementById('passwordError').innerHTML = response.message;
                         setTimeout(() => {
                             document.getElementById('passwordError').innerHTML = "";
                         }, 5000)
                     } else if (response.message === 'Invalid email') {
+                        document.getElementById('emailError').style.color = 'red';
+
                         document.getElementById('emailError').innerHTML = response.message;
                         setTimeout(() => {
                             document.getElementById('emailError').innerHTML = "";
                         }, 5000)
                     } else {
-                       
-                            window.location.href = '/';
-                     
+                        window.location.href = '/';
                     }
                 }
 
             })
         } catch (error) {
-            console.error(error);
+            callAlertify('error','Invalid credentials');
         }
     });
 
 
 
-   
+
 
 
 </script>

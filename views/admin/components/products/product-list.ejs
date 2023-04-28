@@ -41,7 +41,7 @@
         </header> <!-- card-header end// -->
         <div class="card-body">
             <% product.forEach((product,index)=> { %>
-                <% if(product.productStatus &&  product.productCategory.active) { %>
+                <% if(product.productStatus && product.productCategory.active) { %>
                     <article class="itemlist">
                         <div class="row align-items-center">
 
@@ -91,8 +91,6 @@
                     </article> <!-- itemlist  .// -->
                     <% } %>
                         <% }); %>
-
-
         </div>
     </div> <!-- card end// -->
     <div class="pagination-area mt-30 mb-50">
@@ -116,7 +114,7 @@
 
         swal({
             title: "Are you sure?",
-            text: "Once deleted, you will able to recover fron unlisted page!",
+            text: "Once deleted, you will able to recover from unlisted page!",
             icon: "warning",
             buttons: true,
             dangerMode: true,
