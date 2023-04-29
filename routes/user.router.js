@@ -42,7 +42,7 @@ userRouter.get('/signup', isLoggedOut, httpGetSignup);
 userRouter.post('/signup', httpPostSignup);
 userRouter.post('/signup-otp', httpSignupOtpVerify);
 
-userRouter.get('/product', httpGetProductpage);
+userRouter.get('/product/:id', httpGetProductpage);
 
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/logout', httpGetLogout);

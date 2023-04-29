@@ -32,7 +32,7 @@
                                     <div class="product-cart-wrap mb-30">
                                         <div class="product-img-action-wrap">
                                             <div class="product-img product-img-zoom">
-                                                <a href="/product">
+                                                <a href="/product/<%= product._id %>">
                                                     <img class="default-img" src="<%= product.productImageUrls[0] %>"
                                                         alt="">
                                                     <img class="hover-img" src="<%= product.productImageUrls[1] %>"
@@ -44,7 +44,7 @@
                                                     data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
                                                         class="fi-rs-eye"></i></a>
                                                 <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                    href="/wishlist"><i class="fi-rs-heart"></i></a>
+                                                    href="/wishlist/<%= product._id %>"><i class="fi-rs-heart"></i></a>
                                                 <a aria-label="Compare" class="action-btn hover-up"><i
                                                         class="fi-rs-shuffle"></i></a>
                                             </div>
@@ -54,7 +54,7 @@
                                         </div>
                                         <div class="product-content-wrap">
                                             <div class="product-category">
-                                                <a href="/product">
+                                                <a href="/product/<%= product._id %>">
                                                     <div class="product-category">
                                                         <a href="/all-products">
                                                             <%= product.productCategory.name %>
@@ -62,7 +62,7 @@
                                                     </div>
                                                 </a>
                                             </div>
-                                            <h2><a href="/product"><%- product.productName %></a></h2>
+                                            <h2><a href="/product/<%= product._id %>"><%- product.productName %></a></h2>
                                             <div class="rating-result" title="90%">
                                                 <span>
                                                     <span>90%</span>
@@ -74,7 +74,7 @@
                                             </div>
                                             <div class="product-action-1 show">
                                                 <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                    href="user-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    href="/cart//<%= product._id %>"><i class="fi-rs-shopping-bag-add"></i></a>
                                             </div>
                                         </div>
                                     </div>
@@ -95,7 +95,7 @@
                                     <div class="product-cart-wrap mb-30">
                                         <div class="product-img-action-wrap">
                                             <div class="product-img product-img-zoom">
-                                                <a href="/product">
+                                                <a href="/product/<%= product._id %>">
                                                     <img class="default-img" src="<%= product.productImageUrls[0] %>"
                                                         alt="">
                                                     <img class="hover-img" src="<%= product.productImageUrls[1] %>"
@@ -107,7 +107,7 @@
                                                     data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
                                                         class="fi-rs-eye"></i></a>
                                                 <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                    href="/wishlist"><i class="fi-rs-heart"></i></a>
+                                                    href="/wishlist/<%= product._id %>"><i class="fi-rs-heart"></i></a>
                                                 <a aria-label="Compare" class="action-btn hover-up"><i
                                                         class="fi-rs-shuffle"></i></a>
                                             </div>
@@ -117,7 +117,7 @@
                                         </div>
                                         <div class="product-content-wrap">
                                             <div class="product-category">
-                                                <a href="/product">
+                                                <a href="/product/<%= product._id %>">
                                                     <div class="product-category">
                                                         <a href="/all-products">
                                                             <%= product.productCategory.name %>
@@ -125,7 +125,7 @@
                                                     </div>
                                                 </a>
                                             </div>
-                                            <h2><a href="/product"><%- product.productName %></a></h2>
+                                            <h2><a href="/product/<%= product._id %>"><%- product.productName %></a></h2>
                                             <div class="rating-result" title="90%">
                                                 <span>
                                                     <span>90%</span>
@@ -137,7 +137,7 @@
                                             </div>
                                             <div class="product-action-1 show">
                                                 <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                    href="/cart"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    href="/cart/<%= product._id %>"><i class="fi-rs-shopping-bag-add"></i></a>
                                             </div>
                                         </div>
                                     </div>
@@ -160,7 +160,7 @@
                                     <div class="product-cart-wrap mb-30">
                                         <div class="product-img-action-wrap">
                                             <div class="product-img product-img-zoom">
-                                                <a href="/product">
+                                                <a href="/product/<%= product._id %>">
                                                     <img class="default-img" src="<%= product.productImageUrls[0] %>"
                                                         alt="">
                                                     <img class="hover-img" src="<%= product.productImageUrls[1] %>"
@@ -172,7 +172,7 @@
                                                     data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
                                                         class="fi-rs-eye"></i></a>
                                                 <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                    href="/wishlist"><i class="fi-rs-heart"></i></a>
+                                                    href="/wishlist/<%= product._id %>"><i class="fi-rs-heart"></i></a>
                                                 <a aria-label="Compare" class="action-btn hover-up"><i
                                                         class="fi-rs-shuffle"></i></a>
                                             </div>
@@ -182,7 +182,7 @@
                                         </div>
                                         <div class="product-content-wrap">
                                             <div class="product-category">
-                                                <a href="/product">
+                                                <a href="/product/<%= product._id %>">
                                                     <div class="product-category">
                                                         <a href="/all-products">
                                                             <%= product.productCategory.name %>
@@ -190,7 +190,7 @@
                                                     </div>
                                                 </a>
                                             </div>
-                                            <h2><a href="/product"><%- product.productName %></a></h2>
+                                            <h2><a href="/product/<%= product._id %>"><%- product.productName %></a></h2>
                                             <div class="rating-result" title="90%">
                                                 <span>
                                                     <span>90%</span>
@@ -202,7 +202,7 @@
                                             </div>
                                             <div class="product-action-1 show">
                                                 <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                    href="/cart"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    href="/cart/<%= product._id %>"><i class="fi-rs-shopping-bag-add"></i></a>
                                             </div>
                                         </div>
                                     </div>

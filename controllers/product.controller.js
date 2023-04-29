@@ -73,6 +73,7 @@ async function httpGetEditProduct(req, res) {
   }
 }
 
+//soft delete
 async function httpPutProduct(req, res) {
   try {
     const productId = req.params.id;
@@ -92,6 +93,7 @@ async function httpPutProduct(req, res) {
   }
 }
 
+//edit product admin-side ---> pending
 async function httpPutProductDetails(req, res) {
   try {
     console.log(req.body.data);
@@ -100,9 +102,17 @@ async function httpPutProductDetails(req, res) {
   }
 }
 
+//user
 async function httpGetProductpage(req,res){
   try{
-    res.render('user/product');
+    const productId = req.params.id;
+    const productResult = await fetchProduct(productId);
+    const allProductsResult = await fetchAllProducts();
+    if(productResult.status){
+      res.render('user/product',{product:productResult.product,products:allProductsResult.products});
+    }else{
+      res.status(404).render('user/404',{message:'Product not found'});
+    }
   }catch(error){
     handleError(res, error);
   }

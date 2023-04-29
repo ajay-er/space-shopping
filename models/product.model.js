@@ -19,10 +19,10 @@ async function fetchAllProducts() {
 async function fetchProduct(productId){
   try{
     const product = await productDatabase.findById(productId);
-    if (product) {
-      return { status: true, product };
-    } else {
+    if (!product.productStatus) {
       return { status: false };
+    } else {
+      return { status: true, product };
     }
   }catch(error){
     throw new Error(`Error fetching product: ${error.message}`);
