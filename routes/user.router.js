@@ -24,7 +24,10 @@ const {
   httpGet404,
 } = require('../controllers/user.controller');
 
-const { httpGetProductpage } = require('../controllers/product.controller');
+const {
+  httpGetProductpage,
+  httpGetAllProducts,
+} = require('../controllers/product.controller');
 
 const middlewareCategory = require('../middlewares/category.middleware');
 
@@ -43,6 +46,7 @@ userRouter.post('/signup', httpPostSignup);
 userRouter.post('/signup-otp', httpSignupOtpVerify);
 
 userRouter.get('/product/:id', httpGetProductpage);
+userRouter.get('/shop', httpGetAllProducts);
 
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/logout', httpGetLogout);

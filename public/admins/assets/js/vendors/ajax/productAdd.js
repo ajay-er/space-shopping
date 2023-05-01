@@ -1,12 +1,12 @@
 //add-products
 const form = document.getElementById('myForm');
 const submitButton = document.getElementById('add-product-btn');
+const images = [];
 
 submitButton.addEventListener('click', (event) => {
   event.preventDefault();
   submitButton.disabled = true;
   const formData = new FormData(form);
-
   const productName = document.getElementById('productName').value;
   const productDescription =
     document.getElementById('productDescription').value;
@@ -44,6 +44,7 @@ submitButton.addEventListener('click', (event) => {
       submitButton.disabled = false;
       callAlertify('success', 'Product added successfully!');
       event.target.form.reset();
+      document.getElementById('image-preview').innerHTML = '';
     })
     .catch((error) => {
       callAlertify('error', 'Error adding product');
@@ -52,48 +53,56 @@ submitButton.addEventListener('click', (event) => {
     });
 });
 
-// //image section
-// const imagePreview = document.getElementById('image-preview');
-// const fileInput = document.getElementById('productImage');
+//add images
+function imageSelect() {
+  const imageInput = document.getElementById('productImage');
+  const selectedImages = imageInput.files;
+  if (images.length + selectedImages.length > 4) {
+    callAlertify('error', `You can only select 4 images`);
+    imageInput.value = '';
+    return;
+  }
+  for (i = 0; i < selectedImages.length; i++) {
+    if (checkDuplicate(selectedImages[i].name)) {
+      images.push({
+        name: selectedImages[i].name,
+        url: URL.createObjectURL(selectedImages[i]),
+        file: selectedImages[i],
+      });
+    } else {
+      callAlertify('warning', `${selectedImages[i].name} is already added`);
+    }
+  }
+  document.getElementById('image-preview').innerHTML = imageShow();
+}
 
-// fileInput.addEventListener('change', (event) => {
-//   const fileList = event.target.files;
-  
-//   // Clear the preview
-//   imagePreview.innerHTML = '';
-  
-//   // Loop through the file list and display each image
-//   for (let i = 0; i < fileList.length; i++) {
-//     const file = fileList[i];
-    
-//     // Create a new image element
-//     const image = document.createElement('img');
-//     image.classList.add('preview-image');
-//     image.file = file;
-    
-//     // Create a remove button for the image
-//     const removeButton = document.createElement('button');
-//     removeButton.classList.add('btn', 'btn-danger', 'mt-2');
-//     removeButton.innerText = 'Remove';
-//     removeButton.addEventListener('click', (event) => {
-//       event.preventDefault();
-//       imagePreview.removeChild(imageContainer);
-//     });
-    
-//     // Create a container for the image and remove button
-//     const imageContainer = document.createElement('div');
-//     imageContainer.classList.add('preview-image-container');
-//     imageContainer.appendChild(image);
-//     imageContainer.appendChild(removeButton);
-    
-//     // Add the container to the preview
-//     imagePreview.appendChild(imageContainer);
-    
-//     // Display the image
-//     const reader = new FileReader();
-//     reader.onload = (event) => {
-//       image.src = event.target.result;
-//     };
-//     reader.readAsDataURL(file);
-//   }
-// });
+function imageShow() {
+  let image = '';
+  images.forEach((item) => {
+    image += `<div class="image_container d-flex justify-content-center position-relative">
+              <img src="${item.url}" alt="img">
+              <span class="position-absolute" onclick="deleteImage(${images.indexOf(
+                item
+              )})">&times;</span>
+            </div>`;
+  });
+  return image;
+}
+
+function deleteImage(index) {
+  images.splice(index, 1);
+  document.getElementById('image-preview').innerHTML = imageShow();
+}
+
+function checkDuplicate(name) {
+  let img = true;
+  if (images.length > 0) {
+    for (j = 0; j < images.length; j++) {
+      if (images[j].name == name) {
+        img = false;
+        break;
+      }
+    }
+  }
+  return img;
+}

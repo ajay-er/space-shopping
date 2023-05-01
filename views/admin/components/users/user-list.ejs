@@ -48,8 +48,6 @@
                                         <td><button class="btn btn-primary block-user" data-user-id="<%= user._id %>"
                                                 data-action="unblock">Unblock</button></td>
                                         <% } %>
-
-
                             </tr>
                             <% }); %>
 
@@ -78,9 +76,11 @@
     $(document).on('click', '.block-user', function () {
         const userId = $(this).data('user-id');
         const action = $(this).data('action');
+
+
         swal({
             title: "Are you sure?",
-            text: action=='block'?"This action will prevent the user from accessing the system and performing any actions.":"This action will allow the user to access the system and perform actions again.",
+            text: action == 'block' ? "This action will prevent the user from accessing the system and performing any actions." : "This action will allow the user to access the system and perform actions again.",
             icon: "warning",
             buttons: true,
             dangerMode: true,

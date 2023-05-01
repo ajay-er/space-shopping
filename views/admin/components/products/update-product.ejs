@@ -74,7 +74,7 @@
                       <% product.productImageUrls.forEach((imageUrl,index)=> { %>
                         <div class="col-sm mb-4 text-center">
                           <div class="image-preview" data-index="<%= index %>">
-                            <img src="<%= imageUrl %>" alt="image">
+                            <img src="<%= imageUrl %>" alt="image" id="imagePreview">
                           </div>
                           <div>
                             <button type="button" class="btn btn-danger btn-sm delete-image-btn"
@@ -101,6 +101,7 @@
     </div>
   </form>
 </section>
+
 <style>
   input[type="file"] {
     display: none;
@@ -110,6 +111,41 @@
     background-color: rgb(8, 117, 250) !important;
   }
 </style>
+
+
+
+
+
+<script>
+const fileInput = document.getElementById('productImage');
+
+fileInput.addEventListener('change', (event) => {
+  const files = event.target.files;
+  if (files && files[0]) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const newImageUrl = e.target.result;
+      // update the image preview and image URL in the product object
+      const imagePreview = document.querySelector('.image-preview');
+      imagePreview.querySelector('img').src = newImageUrl;
+      const imageIndex = imagePreview.dataset.index;
+      product.productImageUrls[imageIndex] = newImageUrl;
+    };
+    reader.readAsDataURL(files[0]);
+  }
+});
+
+</script>
+
+
+
+
+
+
+
+
+
+
 
 <!-- 
 <script>
@@ -169,6 +205,10 @@
 
  -->
 
+
+
+
+<!-- 
 <script>
 
 const imagePreview = document.getElementById('image-preview');
@@ -216,7 +256,7 @@ fileInput.addEventListener('change', (event) => {
    }
 });
 
-</script>
+</script> -->
 
 
 

@@ -8,7 +8,6 @@
 <body>
 
     <div class="screen-overlay"></div>
-    <!-- aside -->
     <%- include("./layouts/sidebar.ejs") %>
 
         <main class="main-wrap">
@@ -18,12 +17,7 @@
                         <div class="col-sm-12">
                             <div class="w-50 mx-auto text-center">
                                 <img src="/admins/assets/imgs/theme/404.png" width="350" alt="Page Not Found">
-                                <% if (!message) { %>
                                     <h3 class="mt-40 mb-15">Oops! Page not found</h3>
-                                    <% } else { %>
-                                        <h3 class="mt-40 mb-15"><%= message || 'Oops!Something goes wrong' %></h3>
-                                <% } %>
-
                                 <p>It's looking like you may have taken a wrong turn. Don't worry... it happens to the
                                     best of us. Here's a little tip that might help you get back on track.</p>
                                 <a href="index.html" class="btn btn-primary mt-4"><i
@@ -31,7 +25,7 @@
                             </div>
                         </div>
                     </div>
-                </section> <!-- content-main end// -->
+                </section> 
                 <%- include("./layouts/admin-footer.ejs") %>
         </main>
         <%- include("./components/script/script.ejs") %>

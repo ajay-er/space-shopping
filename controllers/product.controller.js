@@ -118,6 +118,15 @@ async function httpGetProductpage(req,res){
   }
 }
 
+async function httpGetAllProducts(req,res){
+  try{
+    const allProductsResult = await fetchAllProducts();
+    res.render('user/all-products',{products:allProductsResult.products});    
+  }catch(error){
+    handleError(res,error);
+  }
+}
+
 module.exports = {
   httpGetProducts,
   httpGetAddProduct,
@@ -126,4 +135,6 @@ module.exports = {
   httpPutProduct,
   httpPutProductDetails,
   httpGetProductpage,
+  httpGetAllProducts,
+  
 };

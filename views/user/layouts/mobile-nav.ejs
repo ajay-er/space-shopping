@@ -26,13 +26,13 @@
                     </a>
                     <div class="categori-dropdown-wrap categori-dropdown-active-small">
                         <ul>
-                            <li><a href="/user-grid-right.html"><i class="evara-font-dress"></i>Women's Clothing</a></li>
-                            <li><a href="/user-grid-right.html"><i class="evara-font-tshirt"></i>Men's Clothing</a></li>
-                            <li> <a href="/user-grid-right.html"><i class="evara-font-smartphone"></i> Cellphones</a>
-                            </li>
-                            <li><a href="/user-grid-right.html"><i class="evara-font-desktop"></i>Computer & Office</a>
-                            </li>
-
+                            <% categories.forEach(category=> { %>
+                                <% if (category.active) { %>
+                                    <li><a href="">
+                                            <%= category.name %>
+                                        </a></li>
+                                <% } %>
+                                <% }) %>
                         </ul>
                     </div>
                 </div>
@@ -41,13 +41,8 @@
                     <ul class="mobile-menu">
                         <li class="menu-item-has-children"><a href="/">Home</a>
                         </li>
-                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">user</a>
-                            <ul class="dropdown">
-                                <li><a href="/user-grid-right.html">ANIME & MANGA</a></li>
-                                <li><a href="/user-grid-right.html">COMICS & SUPERHEROS</a></li>
-                                <li><a href="/user-grid-right.html">RETRO TOYS</a></li>
-                                <li><a href="/user-grid-right.html">SPORTS</a></li>
-                            </ul>
+                        <li class="menu-item-has-children"><span ></span><a href="#">user</a>
+                           
                         </li>
                         <li class="menu-item-has-children"><a href="/">About</a>
                         </li>
