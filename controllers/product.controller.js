@@ -103,7 +103,7 @@ async function httpPutProductDetails(req, res) {
 }
 
 //user
-async function httpGetProductpage(req,res){
+async function httpGetProduct(req,res){
   try{
     const productId = req.params.id;
     const productResult = await fetchProduct(productId);
@@ -134,7 +134,7 @@ module.exports = {
   httpGetEditProduct,
   httpPutProduct,
   httpPutProductDetails,
-  httpGetProductpage,
+  httpGetProduct,
   httpGetAllProducts,
   
 };

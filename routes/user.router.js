@@ -25,14 +25,20 @@ const {
 } = require('../controllers/user.controller');
 
 const {
-  httpGetProductpage,
+  httpGetProduct,
   httpGetAllProducts,
 } = require('../controllers/product.controller');
 
-const middlewareCategory = require('../middlewares/category.middleware');
+const {
+  httpGetCart,
+  httpPostToCart,
+} = require('../controllers/cart.controller');
 
+//category middleware
+const middlewareCategory = require('../middlewares/category.middleware');
 userRouter.use(middlewareCategory);
 
+//user routes
 userRouter.get('/', httpGetHome);
 userRouter.get('/login', isLoggedOut, httpGetLogin);
 userRouter.post('/login', httpPostLoginVerify);
@@ -42,11 +48,14 @@ userRouter.get('/otp-verify', isLoggedOut, httpGetOtpVerify);
 userRouter.post('/otp-verify', isLoggedOut, httpPostVerifyOtp);
 
 userRouter.get('/signup', isLoggedOut, httpGetSignup);
-userRouter.post('/signup', httpPostSignup);
-userRouter.post('/signup-otp', httpSignupOtpVerify);
+userRouter.post('/signup', isLoggedOut, httpPostSignup);
+userRouter.post('/signup-otp', isLoggedOut, httpSignupOtpVerify);
 
-userRouter.get('/product/:id', httpGetProductpage);
+userRouter.get('/product/:id', httpGetProduct);
 userRouter.get('/shop', httpGetAllProducts);
+
+userRouter.get('/cart', isLoggedIn, httpGetCart);
+userRouter.post('/cart', isLoggedIn, httpPostToCart);
 
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/logout', httpGetLogout);

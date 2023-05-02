@@ -18,13 +18,19 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  status:{
-    type:Boolean,
+  status: {
+    type: Boolean,
     required: true,
   },
-  address:[{
-    type:Object
-  }]
+  address: [
+    {
+      type: Object,
+    },
+  ],
+  cart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cart',
+  },
 });
 
 module.exports = mongoose.model('User', userSchema);

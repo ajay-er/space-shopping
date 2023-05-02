@@ -21,7 +21,7 @@ submitButton.addEventListener('click', (event) => {
     !productPrice ||
     !productOldPrice ||
     !stocks ||
-    productCategory === 'Add to Category'
+    productCategory === 'Add to Category' || images.length ===0
   ) {
     callAlertify('warning', 'Please fill in all required fields');
     setTimeout(() => {
@@ -32,6 +32,7 @@ submitButton.addEventListener('click', (event) => {
 
   const url = '/admin/add-products';
   submitButton.disabled = true;
+
 
   axios
     .post(url, formData, {
@@ -73,8 +74,11 @@ function imageSelect() {
       callAlertify('warning', `${selectedImages[i].name} is already added`);
     }
   }
+  // Clear the image preview before generating new HTML
+  document.getElementById('image-preview').innerHTML = '';
   document.getElementById('image-preview').innerHTML = imageShow();
 }
+
 
 function imageShow() {
   let image = '';
