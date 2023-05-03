@@ -93,8 +93,9 @@
                                                     </span>
                                                 </div>
                                                 <div class="product-action-1 show">
-                                                    <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                        href="/cart/<%= product._id %>"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    <a aria-label="Add To Cart" class="action-btn hover-up addTocartButton" data-product-id="<%= product._id %>"
+                                                    ><i class="fi-rs-shopping-bag-add"></i></a>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -162,8 +163,8 @@
                                                     </span>
                                                 </div>
                                                 <div class="product-action-1 show">
-                                                    <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                        href="/cart/<%= product._id %>"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    <a aria-label="Add To Cart" class="addTocartButton action-btn hover-up" data-product-id="<%= product._id %>"
+                                                        ><i class="fi-rs-shopping-bag-add"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -235,16 +236,13 @@
                                                     </span>
                                                 </div>
                                                 <div class="product-action-1 show">
-                                                    <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                        href="/cart/<%= product._id %>"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    <a aria-label="Add To Cart" class="addTocartButton action-btn hover-up" data-product-id="<%= product._id %>"
+                                                       ><i class="fi-rs-shopping-bag-add"></i></a>
                                                 </div>
                                             </div>
                                         </div>
                                         <% } %>
                                             <% }) %>
-
-
-
 
                             </div>
                         </div>

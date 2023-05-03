@@ -112,8 +112,8 @@
                                                 <span class="old-price">&#8377;  <%= product.productOldPrice %></span>
                                             </div>
                                             <div class="product-action-1 show">
-                                                <a aria-label="Add To Cart" class="action-btn hover-up"
-                                                    href="/cart/<%= product._id %>"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                <a aria-label="Add To Cart" data-product-id="<%= product._id %>" class="addTocartButton action-btn hover-up"
+                                                    ><i class="fi-rs-shopping-bag-add"></i></a>
                                             </div>
                                         </div>
                                     </div>

@@ -57,9 +57,70 @@ async function addItemToCart(userId, productId, quantity) {
   }
 }
 
+async function removeItemFromCart(userId, productId) {
+  try {
+    const product = await productDatabase
+      .findById(productId)
+      .select('productPrice');
 
+    if (!product) {
+      return { status: false, message: 'product not found' };
+    }
 
+    let cart = await cartDatabase.findOne({ user: userId });
+    if (cart) {
+      // If cart already exists, check if the product is in the cart
+      const itemIndex = cart.items.findIndex((item) =>
+        item.product.equals(productId)
+      );
+      if (itemIndex > -1) {
+        // If product is in cart, remove it
+        cart.items.splice(itemIndex, 1);
+        cart.total = cart.items.reduce((acc, item) => acc + item.price, 0);
+        await cart.save();
+        return { status: true, message: 'product removed from cart' };
+      } else {
+        return { status: false, message: 'product not found in cart' };
+      }
+    } else {
+      return { status: false, message: 'cart not found' };
+    }
+  } catch (error) {
+    throw new Error('Something went wrong while removing product from cart');
+  }
+}
+
+async function fetchCartProducts(userId) {
+  try {
+    const cart = await cartDatabase
+      .findOne({ user: userId })
+      .populate('items.product');
+
+    if (!cart) {
+      return { status: false, cart };
+    } else {
+      return { status: true, cart };
+    }
+  } catch (error) {
+    throw new Error('Something went wrong while fetching products to cart');
+  }
+}
+
+async function clearCartItems(userId) {
+  const cart = await cartDatabase.findOne({user:userId});
+  if (!cart) {
+    return { status: false, message: 'Cart not found' };
+  }else{
+    cart.items = [];
+    cart.total = 0;
+    await cart.save();
+    return { status: true, message: 'Cart cleared successfully' };
+  }
+}
 
 module.exports = {
   addItemToCart,
+  removeItemFromCart,
+  fetchCartProducts,
+  clearCartItems,
 };

@@ -32,11 +32,9 @@ const {
 const {
   httpGetCart,
   httpPostToCart,
+  httpRemoveFromCart,
+  httpClearCart,
 } = require('../controllers/cart.controller');
-
-//category middleware
-const middlewareCategory = require('../middlewares/category.middleware');
-userRouter.use(middlewareCategory);
 
 //user routes
 userRouter.get('/', httpGetHome);
@@ -56,6 +54,8 @@ userRouter.get('/shop', httpGetAllProducts);
 
 userRouter.get('/cart', isLoggedIn, httpGetCart);
 userRouter.post('/cart', isLoggedIn, httpPostToCart);
+userRouter.delete('/cart',isLoggedIn,httpRemoveFromCart);
+userRouter.delete('/clear-cart',isLoggedIn,httpClearCart);
 
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/logout', httpGetLogout);

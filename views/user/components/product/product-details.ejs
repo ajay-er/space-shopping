@@ -48,7 +48,7 @@
             </div>
             <div class="product-extra-link2">
                     <% if (product.stocks > 0) { %>
-                        <button type="submit" id="addToCartButton" class="button button-add-to-cart">Add to Cart</button>
+                        <button type="submit" id="addToCartButton" class="addTocartButton button button-add-to-cart" data-product-id="<%= product._id %>">Add to Cart</button>
                     <% } else { %>
                         <button class="button notify-me-btn">Notify Me</button>
                     <% } %>
