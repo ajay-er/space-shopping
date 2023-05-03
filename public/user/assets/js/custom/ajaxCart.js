@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       let quantity = 1;
 
+    
       const productId = cartButton.getAttribute('data-product-id');
       const url = '/cart';
       const response = await fetch(url, {

@@ -107,14 +107,42 @@ async function fetchCartProducts(userId) {
 }
 
 async function clearCartItems(userId) {
-  const cart = await cartDatabase.findOne({user:userId});
-  if (!cart) {
-    return { status: false, message: 'Cart not found' };
-  }else{
-    cart.items = [];
-    cart.total = 0;
-    await cart.save();
-    return { status: true, message: 'Cart cleared successfully' };
+  try {
+    const cart = await cartDatabase.findOne({ user: userId });
+    if (!cart) {
+      return { status: false, message: 'Cart not found' };
+    } else {
+      cart.items = [];
+      cart.total = 0;
+      await cart.save();
+      return { status: true, message: 'Cart cleared successfully' };
+    }
+  } catch (error) {
+    throw new Error('Something went wrong while clearing products in the cart');
+  }
+}
+
+async function updateCartDetails(quantity, productId, userId) {
+  try {
+    const cart = await cartDatabase.findOne({ user: userId });
+    if (cart) {
+      const item = cart.items.find((item) => item.product.equals(productId));
+
+      item.quantity = quantity;
+
+      cart.total = cart.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+      console.log(cart);
+
+      await cart.save();
+      return { status: true, total: cart.total };
+    } else {
+      return { status: false, message: 'cart not found' };
+    }
+  } catch (error) {
+    throw new Error(`Error updating cart for user with ID: ${userId}`, error);
   }
 }
 
@@ -123,4 +151,5 @@ module.exports = {
   removeItemFromCart,
   fetchCartProducts,
   clearCartItems,
+  updateCartDetails,
 };

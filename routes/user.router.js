@@ -33,6 +33,7 @@ const {
   httpGetCart,
   httpPostToCart,
   httpRemoveFromCart,
+  httpUpdateQuantity,
   httpClearCart,
 } = require('../controllers/cart.controller');
 
@@ -55,6 +56,7 @@ userRouter.get('/shop', httpGetAllProducts);
 userRouter.get('/cart', isLoggedIn, httpGetCart);
 userRouter.post('/cart', isLoggedIn, httpPostToCart);
 userRouter.delete('/cart',isLoggedIn,httpRemoveFromCart);
+userRouter.patch('/cart',isLoggedIn,httpUpdateQuantity);
 userRouter.delete('/clear-cart',isLoggedIn,httpClearCart);
 
 userRouter.get('/account', httpGetAccount);

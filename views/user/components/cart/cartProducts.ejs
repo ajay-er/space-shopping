@@ -17,18 +17,20 @@
                 <tr data-item-id="<%= item.product._id %>">
                     <td class="image product-thumbnail"><img src="<%= item.product.productImageUrls[0] %>" alt="#"></td>
                     <td class="product-des product-name">
-                        <h5 class="product-name"><a href="/product/<#%=product._id%>">
+                        <h5 class="product-name"><a href="/product/<%= item.product._id %>">
                                 <%= item.product.productName %>
                             </a></h5>
                         </p>
                     </td>
                     <td class="price" data-title="Price"><span>&#8377;<%= item.product.productPrice %></span></td>
                     <td class="text-center" data-title="Stock">
-                        <div class="detail-qty border radius  m-auto">
+                        <div class="detail-qty border radius  m-auto" data-productid="<%= item.product._id %>">
                             <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                            <span class="qty-val">
+                            <span class="qty-val qty-<%= item.product._id %>" id="qty-<%= item.product._id %>"
+                                data-quantity="<%= item.quantity %>">
                                 <%= item.quantity %>
                             </span>
+
                             <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
                         </div>
                     </td>
@@ -57,6 +59,7 @@
 </div>
 
 <script>
+
     const clearCartLink = document.getElementById('clearCartLink');
     clearCartLink.addEventListener('click', (event) => {
         event.preventDefault();
@@ -135,51 +138,66 @@
         })
     }
 
-    document.querySelectorAll(".qty-up, .qty-down").forEach(function (button) {
-        button.addEventListener("click", function () {
-            var itemId = this.closest("tr").getAttribute("data-id");
-            var quantityElement = this.parentNode.querySelector(".qty-val");
-            var quantity = parseInt(quantityElement.textContent);
 
-            if (this.classList.contains('qty-up')) {
-                quantity++;
-            } else {
-                quantity--;
-            }
 
-            if (quantity > 100) {
-                quantity = 100;
-            } else if (quantity < 1) {
-                quantity = 1;
-            }
+    // Get all the quantity divs
+const quantityDivs = document.querySelectorAll('.detail-qty');
 
-            // fetch("/api/cart/items/" + itemId, {
-            //     method: "PATCH",
-            //     headers: {
-            //         "Content-Type": "application/json"
-            //     },
-            //     body: JSON.stringify({ quantity: quantity })
-            // })
-            //   .then(function (response) {
-            //     if (response.ok) {
-            //       return response.json();
-            //     }
-            //     throw new Error("Network response was not ok.");
-            //   })
-            //   .then(function (data) {
-            //     quantityElement.textContent = quantity;
-            //     button.closest("tr").querySelector(".text-right span").textContent = data.totalPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
-            //   })
-            //   .catch(function (error) {
-            //     console.error("There was a problem with the fetch operation:", error);
-            //   });
+// Loop through each quantity div and add event listeners to the up and down buttons
+quantityDivs.forEach((quantityDiv) => {
+    const productId = quantityDiv.dataset.productid;
+    const qtySpan = quantityDiv.querySelector(`.qty-${productId}`);
+    const qtyUpBtn = quantityDiv.querySelector('.qty-up');
+    const qtyDownBtn = quantityDiv.querySelector('.qty-down');
 
-            var price = Number(this.closest("tr").querySelector('#subtotal').getAttribute('data-price'));
-            var subtotalElement = this.closest("tr").querySelector('#subtotalValue');
-            var subtotal = price * quantity;
-            subtotalElement.textContent = subtotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
-        });
+    qtyUpBtn.addEventListener('click', () => {
+        const currentQty = parseInt(qtySpan.dataset.quantity);
+        const newQty = currentQty + 1;
+        qtySpan.dataset.quantity = newQty;
+        qtySpan.textContent = newQty;
+        updateProductQuantity(productId, newQty);
     });
+
+    qtyDownBtn.addEventListener('click', () => {
+        const currentQty = parseInt(qtySpan.dataset.quantity);
+        if (currentQty > 1) {
+            const newQty = currentQty - 1;
+            qtySpan.dataset.quantity = newQty;
+            qtySpan.textContent = newQty;
+            updateProductQuantity(productId, newQty);
+        }
+    });
+});
+
+function updateProductQuantity(productId, quantity) {
+    fetch("/cart", {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            quantity: quantity,
+            productId: productId
+        })
+    })
+    .then(function (response) {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error("Network response was not ok.");
+    })
+    .then(function (data) {
+        console.log('success');
+    })
+    .catch(function (error) {
+        console.error("There was a problem with the updating product operation:", error);
+    });
+
+    var price = Number(document.querySelector(`tr[data-item-id="${productId}"] #subtotal`).getAttribute('data-price'));
+    var subtotalElement = document.querySelector(`tr[data-item-id="${productId}"] #subtotalValue`);
+    var subtotal = price * quantity;
+    subtotalElement.textContent = subtotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+}
 
 
 </script>

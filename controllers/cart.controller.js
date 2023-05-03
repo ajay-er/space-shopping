@@ -5,6 +5,7 @@ const {
   removeItemFromCart,
   fetchCartProducts,
   clearCartItems,
+  updateCartDetails,
 } = require('../models/cart.model');
 
 async function httpGetCart(req, res) {
@@ -97,9 +98,28 @@ async function httpClearCart(req,res){
   }
 }
 
+async function httpUpdateQuantity(req,res){
+  try{
+    const { quantity, productId } = req.body;
+    const userId = req.session.user._id;
+    
+    const cartResult = await updateCartDetails(quantity, productId, userId);
+
+    if(cartResult.status){
+      return res.json({success:true,message:'product updated'})
+    }else{
+      return res.json({success:false,message: cartResult.message})
+    }
+
+  }catch(error){
+    handleError(res,error);
+  }
+}
+
 module.exports = {
   httpGetCart,
   httpPostToCart,
   httpRemoveFromCart,
   httpClearCart,
+  httpUpdateQuantity,
 };
