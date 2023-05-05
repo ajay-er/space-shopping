@@ -5755,7 +5755,7 @@ h6.post-title {
 .cart-dropdown-wrap ul li .shopping-cart-img {
   -webkit-box-flex: 0;
   -ms-flex: 0 0 80px;
-  flex: 0 0 80px;
+  flex: 0 0 50px;
   margin-right: 20px;
 }
 
@@ -5768,7 +5768,7 @@ h6.post-title {
 }
 
 .cart-dropdown-wrap ul li .shopping-cart-title h4 {
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1;
   margin: 0 0 9px;

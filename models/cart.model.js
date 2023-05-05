@@ -21,17 +21,19 @@ async function addItemToCart(userId, productId, quantity) {
       if (itemIndex > -1) {
         // If product already in cart, update its quantity and price
         cart.items[itemIndex].quantity += quantity;
-        cart.items[itemIndex].price =
-          product.productPrice * cart.items[itemIndex].quantity;
+        cart.items[itemIndex].price = product.productPrice;
       } else {
         // If product not in cart, add new item to the items array
         cart.items.push({
           product: productId,
-          quantity,
-          price: product.productPrice * quantity,
+          quantity:quantity,
+          price: product.productPrice,
         });
       }
-      cart.total = cart.items.reduce((acc, item) => acc + item.price, 0);
+      cart.total = cart.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
       await cart.save();
       return {
         status: true,
@@ -76,9 +78,16 @@ async function removeItemFromCart(userId, productId) {
       if (itemIndex > -1) {
         // If product is in cart, remove it
         cart.items.splice(itemIndex, 1);
-        cart.total = cart.items.reduce((acc, item) => acc + item.price, 0);
+        cart.total = cart.items.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        );
         await cart.save();
-        return { status: true, message: 'product removed from cart' };
+        return {
+          status: true,
+          message: 'product removed from cart',
+          total: cart.total,
+        };
       } else {
         return { status: false, message: 'product not found in cart' };
       }
@@ -97,9 +106,12 @@ async function fetchCartProducts(userId) {
       .populate('items.product');
 
     if (!cart) {
-      return { status: false, cart };
+      return { status: false, cart, total: 0 };
     } else {
-      return { status: true, cart };
+      const total = cart.items.reduce((acc, item) => {
+        return acc + item.quantity * item.price;
+      }, 0);
+      return { status: true, cart, total };
     }
   } catch (error) {
     throw new Error('Something went wrong while fetching products to cart');
@@ -134,12 +146,16 @@ async function updateCartDetails(quantity, productId, userId) {
         (acc, item) => acc + item.price * item.quantity,
         0
       );
-      console.log(cart);
 
       await cart.save();
-      return { status: true, total: cart.total };
+
+      return {
+        status: true,
+        message: 'cart updated!',
+        total: cart.total,
+      };
     } else {
-      return { status: false, message: 'cart not found' };
+      return { status: false, message: 'cart not found!' };
     }
   } catch (error) {
     throw new Error(`Error updating cart for user with ID: ${userId}`, error);

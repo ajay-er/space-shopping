@@ -1,4 +1,5 @@
 const { fetchCategories } = require('../models/category.model');
+const { fetchCartProducts } = require('../models/cart.model');
 const { handleError } = require('./error.handler');
 
 async function categoryMiddleware(req, res, next) {
@@ -7,19 +8,31 @@ async function categoryMiddleware(req, res, next) {
     res.locals.categories = categoryResult.categories;
     next();
   } catch (error) {
-    handleError(res,error)
+    handleError(res, error);
   }
 }
 
-async function LoggedInMiddleware(req, res, next) {
+async function loggedInMiddleware(req, res, next) {
   try {
-    if(req.session.user){
-      res.locals.user= req.session.user;
+    if (req.session.user) {
+      res.locals.user = req.session.user;
     }
     next();
   } catch (error) {
-    handleError(res,error)
+    handleError(res, error);
   }
 }
 
-module.exports = { categoryMiddleware, LoggedInMiddleware };
+async function cartProducts(req, res, next) {
+  try {
+    if (req.session.user) {
+      const cartResult = await fetchCartProducts(req.session.user._id);
+      res.locals.cart = cartResult.cart;
+    }
+    next();
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
+module.exports = { categoryMiddleware, loggedInMiddleware, cartProducts };

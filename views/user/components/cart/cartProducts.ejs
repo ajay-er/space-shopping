@@ -128,6 +128,7 @@
                             return;
                         }
                         cartItem.remove();
+                        updateSubtotalAndTotal(data.total);
 
                     })
                     .catch(error => {
@@ -139,65 +140,76 @@
     }
 
 
-
     // Get all the quantity divs
-const quantityDivs = document.querySelectorAll('.detail-qty');
+    const quantityDivs = document.querySelectorAll('.detail-qty');
 
-// Loop through each quantity div and add event listeners to the up and down buttons
-quantityDivs.forEach((quantityDiv) => {
-    const productId = quantityDiv.dataset.productid;
-    const qtySpan = quantityDiv.querySelector(`.qty-${productId}`);
-    const qtyUpBtn = quantityDiv.querySelector('.qty-up');
-    const qtyDownBtn = quantityDiv.querySelector('.qty-down');
+    // Loop through each quantity div and add event listeners to the up and down buttons
+    quantityDivs.forEach((quantityDiv) => {
+        const productId = quantityDiv.dataset.productid;
+        const qtySpan = quantityDiv.querySelector(`.qty-${productId}`);
+        const qtyUpBtn = quantityDiv.querySelector('.qty-up');
+        const qtyDownBtn = quantityDiv.querySelector('.qty-down');
 
-    qtyUpBtn.addEventListener('click', () => {
-        const currentQty = parseInt(qtySpan.dataset.quantity);
-        const newQty = currentQty + 1;
-        qtySpan.dataset.quantity = newQty;
-        qtySpan.textContent = newQty;
-        updateProductQuantity(productId, newQty);
-    });
-
-    qtyDownBtn.addEventListener('click', () => {
-        const currentQty = parseInt(qtySpan.dataset.quantity);
-        if (currentQty > 1) {
-            const newQty = currentQty - 1;
+        qtyUpBtn.addEventListener('click', () => {
+            const currentQty = parseInt(qtySpan.dataset.quantity);
+            const newQty = currentQty + 1;
             qtySpan.dataset.quantity = newQty;
             qtySpan.textContent = newQty;
             updateProductQuantity(productId, newQty);
-        }
-    });
-});
+        });
 
-function updateProductQuantity(productId, quantity) {
-    fetch("/cart", {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            quantity: quantity,
-            productId: productId
+        qtyDownBtn.addEventListener('click', () => {
+            const currentQty = parseInt(qtySpan.dataset.quantity);
+            if (currentQty > 1) {
+                const newQty = currentQty - 1;
+                qtySpan.dataset.quantity = newQty;
+                qtySpan.textContent = newQty;
+                updateProductQuantity(productId, newQty);
+            }
+        });
+    });
+
+    function updateProductQuantity(productId, quantity) {
+        fetch("/cart", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                quantity: quantity,
+                productId: productId
+            })
         })
-    })
-    .then(function (response) {
-        if (response.ok) {
-            return response.json();
-        }
-        throw new Error("Network response was not ok.");
-    })
-    .then(function (data) {
-        console.log('success');
-    })
-    .catch(function (error) {
-        console.error("There was a problem with the updating product operation:", error);
-    });
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error("Network response was not ok.");
+            })
+            .then(function (data) {
+                console.log(data);
+                updateSubtotalAndTotal( data.total);
+               
+            })
+            .catch(function (error) {
+                console.error("There was a problem with the updating product operation:", error);
+            });
 
-    var price = Number(document.querySelector(`tr[data-item-id="${productId}"] #subtotal`).getAttribute('data-price'));
-    var subtotalElement = document.querySelector(`tr[data-item-id="${productId}"] #subtotalValue`);
-    var subtotal = price * quantity;
-    subtotalElement.textContent = subtotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+        var price = Number(document.querySelector(`tr[data-item-id="${productId}"] #subtotal`).getAttribute('data-price'));
+        var subtotalElement = document.querySelector(`tr[data-item-id="${productId}"] #subtotalValue`);
+        var subtotal = price * quantity;
+        subtotalElement.textContent = subtotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+    }
+
+    function updateSubtotalAndTotal(subtotal) {
+    var subtotalElement = document.querySelector('#sub-total');
+    var shippingChargeElement = document.querySelector('#shipping-charge');
+    var totalElement = document.querySelector('#total');
+
+    subtotalElement.textContent = '₹' + subtotal.toFixed(2);
+
+    var total = subtotal
+    totalElement.textContent = '₹' + total.toFixed(2);
 }
-
 
 </script>

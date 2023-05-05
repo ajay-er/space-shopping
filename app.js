@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const {categoryMiddleware, LoggedInMiddleware} = require('./middlewares/custom.middleware');
+const {categoryMiddleware, loggedInMiddleware,cartProducts} = require('./middlewares/custom.middleware');
 
 const path = require('path');
 
@@ -39,7 +39,8 @@ app.use(
 
 //custom middlewares
 app.use(categoryMiddleware);
-app.use(LoggedInMiddleware);
+app.use(loggedInMiddleware);
+app.use(cartProducts);
 
 //view engine setup
 app.set('view engine', 'ejs');
