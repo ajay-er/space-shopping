@@ -101,168 +101,177 @@
 
 
                                             <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                                <ul>
-                                                    <% cart.items.forEach(item => { %>
-                                                      <li>
-                                                        <div class="shopping-cart-img">
-                                                          <a href="/product"><img alt="<%= item.product.productName %>"
-                                                            src="<%= item.product.productImageUrls[0] %>"></a>
-                                                        </div>
-                                                        <div class="shopping-cart-title">
-                                                          <h4><a href="/product/<%= item.product._id %>"><%= item.product.productName %></a></h4>
-                                                          <h4><span><%= item.quantity %> × </span>₹<%= item.price %></h4>
-                                                        </div>
-                                                        <div class="shopping-cart-delete">
-                                                          <a ><i class="fi-rs-cross-small"></i></a>
-                                                        </div>
-                                                      </li>
-                                                    <% }) %>
-                                                  </ul>
-                                                  <div class="shopping-cart-footer">
+                                                <ul class="shopping-cart-list">
+                                                    <% cart.items.forEach(item=> { %>
+                                                        <li data-product-id="<%= item.product._id %>">
+                                                            <div class="shopping-cart-img">
+                                                                <a href="/product"><img
+                                                                        alt="<%= item.product.productName %>"
+                                                                        src="<%= item.product.productImageUrls[0] %>"></a>
+                                                            </div>
+                                                            <div class="shopping-cart-title">
+                                                                <h4><a href="/product/<%= item.product._id %>">
+                                                                        <%= item.product.productName %>
+                                                                    </a></h4>
+                                                                <h4><span id="qty-navbar-<%= item.product._id %>">
+                                                                        <%= item.quantity %> ×
+                                                                    </span>₹<%= item.price %>
+                                                                </h4>
+                                                            </div>
+                                                            <div class="shopping-cart-delete">
+                                                                <a onclick="removeProduct('<%= item.product._id %>')"><i
+                                                                        class="fi-rs-cross-small"></i></a>
+                                                            </div>
+                                                        </li>
+                                                        <% }) %>
+                                                </ul>
+                                                <div class="shopping-cart-footer">
                                                     <div class="shopping-cart-total">
-                                                      <h4>Total <span>₹<%= cart.total %></span></h4>
+                                                        <h4>Total <span id="nav-sub-total">₹<%= cart.total %></span>
+                                                        </h4>
                                                     </div>
                                                     <div class="shopping-cart-button">
-                                                      <a href="/cart" class="outline">View cart</a>
-                                                      <a href="/checkout">Checkout</a>
+                                                        <a href="/cart" class="outline">View cart</a>
+                                                        <a href="/checkout">Checkout</a>
                                                     </div>
-                                                  </div>
-                                                  
+                                                </div>
 
-                                            <% } %>
+                                                <% } %>
 
-
+                                            </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="header-bottom header-bottom-bg-color sticky-bar">
-                <div class="container">
-                    <div class="header-wrap header-space-between position-relative  main-nav">
-                        <div class="logo logo-width-1 d-block d-lg-none">
-                            <a href="/"><img src="/user/assets/imgs/theme/logo.svg" alt="logo"></a>
-                        </div>
-                        <div class="header-nav d-none d-lg-flex">
-                            <div class="main-categori-wrap d-none d-lg-block">
-                                <a class="categori-button-active" href="#">
-                                    <span class="fi-rs-apps"></span> Browse Categories
-                                </a>
-                                <div class="categori-dropdown-wrap categori-dropdown-active-large">
-                                    <ul>
-                                        <% categories.forEach(category=> { %>
-                                            <% if (category.active) { %>
-                                                <li><a href="">
-                                                        <%= category.name %>
-                                                    </a></li>
-                                                <% } %>
-                                                    <% }) %>
-                                    </ul>
+                <div class="header-bottom header-bottom-bg-color sticky-bar">
+                    <div class="container">
+                        <div class="header-wrap header-space-between position-relative  main-nav">
+                            <div class="logo logo-width-1 d-block d-lg-none">
+                                <a href="/"><img src="/user/assets/imgs/theme/logo.svg" alt="logo"></a>
+                            </div>
+                            <div class="header-nav d-none d-lg-flex">
+                                <div class="main-categori-wrap d-none d-lg-block">
+                                    <a class="categori-button-active" href="#">
+                                        <span class="fi-rs-apps"></span> Browse Categories
+                                    </a>
+                                    <div class="categori-dropdown-wrap categori-dropdown-active-large">
+                                        <ul>
+                                            <% categories.forEach(category=> { %>
+                                                <% if (category.active) { %>
+                                                    <li><a href="">
+                                                            <%= category.name %>
+                                                        </a></li>
+                                                    <% } %>
+                                                        <% }) %>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
+                                    <nav>
+                                        <ul>
+                                            <li><a href="/">Home</a>
+                                            </li>
+
+                                            <li><a href="/shop">Shop </a>
+
+                                            </li>
+                                            <li>
+                                                <a href="/about">About</a>
+                                            </li>
+                                            <li>
+                                                <a href="/contact">Contact</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
-                            <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
-                                <nav>
-                                    <ul>
-                                        <li><a href="/">Home</a>
-                                        </li>
-
-                                        <li><a href="/shop">Shop </a>
-
-                                        </li>
-                                        <li>
-                                            <a href="/about">About</a>
-                                        </li>
-                                        <li>
-                                            <a href="/contact">Contact</a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                            <div class="hotline d-none d-lg-block">
+                                <p><i class="fi-rs-headset"></i><span>Hotline</span> 1900 - 888 </p>
                             </div>
-                        </div>
-                        <div class="hotline d-none d-lg-block">
-                            <p><i class="fi-rs-headset"></i><span>Hotline</span> 1900 - 888 </p>
-                        </div>
-                        <div class="header-action-right d-block d-lg-none">
-                            <div class="header-action-2">
-                                <div class="header-action-icon-2">
-                                    <a href="/account">
-                                        <img class="svgInject" alt="space"
-                                            src="/user/assets/imgs/theme/icons/icon-account.svg">
-                                        <span class="pro-count white">2</span>
-                                    </a>
-                                </div>
-                                <div class="header-action-icon-2">
-                                    <a href="/wishlist">
-                                        <img alt="space" src="/user/assets/imgs/theme/icons/icon-heart.svg">
-                                        <span class="pro-count white">4</span>
-                                    </a>
-                                </div>
-                                <div class="header-action-icon-2">
-                                    <a class="mini-cart-icon" href="/cart">
-                                        <img alt="space" src="/user/assets/imgs/theme/icons/icon-cart.svg">
-                                        <span class="pro-count white">2</span>
-                                    </a>
+                            <div class="header-action-right d-block d-lg-none">
+                                <div class="header-action-2">
+                                    <div class="header-action-icon-2">
+                                        <a href="/account">
+                                            <img class="svgInject" alt="space"
+                                                src="/user/assets/imgs/theme/icons/icon-account.svg">
+                                            <span class="pro-count white">2</span>
+                                        </a>
+                                    </div>
+                                    <div class="header-action-icon-2">
+                                        <a href="/wishlist">
+                                            <img alt="space" src="/user/assets/imgs/theme/icons/icon-heart.svg">
+                                            <span class="pro-count white">4</span>
+                                        </a>
+                                    </div>
+                                    <div class="header-action-icon-2">
+                                        <a class="mini-cart-icon" href="/cart">
+                                            <img alt="space" src="/user/assets/imgs/theme/icons/icon-cart.svg">
+                                            <span class="pro-count white">2</span>
+                                        </a>
 
 
 
-                                    <% if (locals.user) { %>
+                                        <% if (locals.user) { %>
 
-                                        <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                            <ul>
-                                                <li>
-                                                    <div class="shopping-cart-img">
-                                                        <a href="/user-product-right.html"><img alt="Evara"
-                                                                src="/user/assets/imgs/user/thumbnail-3.jpg"></a>
+                                            <div class="cart-dropdown-wrap cart-dropdown-hm2">
+                                                <ul>
+                                                    <li>
+                                                        <div class="shopping-cart-img">
+                                                            <a href="/user-product-right.html"><img alt="Evara"
+                                                                    src="/user/assets/imgs/user/thumbnail-3.jpg"></a>
+                                                        </div>
+                                                        <div class="shopping-cart-title">
+                                                            <h4><a href="/">Plain Striola Shirts</a>
+                                                            </h4>
+                                                            <h3><span>1 × </span>$800.00</h3>
+                                                        </div>
+                                                        <div class="shopping-cart-delete">
+                                                            <a href="#"><i class="fi-rs-cross-small"></i></a>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="shopping-cart-img">
+                                                            <a href="/user-product-right.html"><img alt="cart"
+                                                                    src="/user/assets/imgs/user/thumbnail-4.jpg"></a>
+                                                        </div>
+                                                        <div class="shopping-cart-title">
+                                                            <h4><a href="/user-product-right.html">Macbook Pro 2022</a>
+                                                            </h4>
+                                                            <h3><span>1 × </span>$3500.00</h3>
+                                                        </div>
+                                                        <div class="shopping-cart-delete">
+                                                            <a href="#"><i class="fi-rs-cross-small"></i></a>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <div class="shopping-cart-footer">
+                                                    <div class="shopping-cart-total">
+                                                        <h4>Total <span>$383.00</span></h4>
                                                     </div>
-                                                    <div class="shopping-cart-title">
-                                                        <h4><a href="/">Plain Striola Shirts</a>
-                                                        </h4>
-                                                        <h3><span>1 × </span>$800.00</h3>
+                                                    <div class="shopping-cart-button">
+                                                        <a href="/user-cart.html">View cart</a>
+                                                        <a href="/user-checkout.html">Checkout</a>
                                                     </div>
-                                                    <div class="shopping-cart-delete">
-                                                        <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="shopping-cart-img">
-                                                        <a href="/user-product-right.html"><img alt="cart"
-                                                                src="/user/assets/imgs/user/thumbnail-4.jpg"></a>
-                                                    </div>
-                                                    <div class="shopping-cart-title">
-                                                        <h4><a href="/user-product-right.html">Macbook Pro 2022</a></h4>
-                                                        <h3><span>1 × </span>$3500.00</h3>
-                                                    </div>
-                                                    <div class="shopping-cart-delete">
-                                                        <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                            <div class="shopping-cart-footer">
-                                                <div class="shopping-cart-total">
-                                                    <h4>Total <span>$383.00</span></h4>
-                                                </div>
-                                                <div class="shopping-cart-button">
-                                                    <a href="/user-cart.html">View cart</a>
-                                                    <a href="/user-checkout.html">Checkout</a>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <% } %>
+                                            <% } %>
 
-                                </div>
-                                <div class="header-action-icon-2 d-block d-lg-none">
-                                    <div class="burger-icon burger-icon-white">
-                                        <span class="burger-icon-top"></span>
-                                        <span class="burger-icon-mid"></span>
-                                        <span class="burger-icon-bottom"></span>
+                                    </div>
+                                    <div class="header-action-icon-2 d-block d-lg-none">
+                                        <div class="burger-icon burger-icon-white">
+                                            <span class="burger-icon-top"></span>
+                                            <span class="burger-icon-mid"></span>
+                                            <span class="burger-icon-bottom"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 </header>
 <%- include("./mobile-nav.ejs") %>
+
+<script src="/user/assets/js/custom/ajaxCart.js"></script>

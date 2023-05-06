@@ -16,34 +16,40 @@
                         <div class="container">
 
                             <% if (items.length===0) { %>
-                                  <div class="row">
+                                <div class="row">
                                     <div class="col-12 d-flex justify-content-center">
-                                      <img src="/user/assets/imgs/theme/cart.png" alt="Responsive Image" class="img-fluid mx-auto d-block max-width-100vh " style="max-height: 50vh;">
+                                        <img src="/user/assets/imgs/theme/cart.png" alt="Responsive Image"
+                                            class="img-fluid mx-auto d-block max-width-100vh "
+                                            style="max-height: 50vh;">
                                     </div>
-                                  </div>
+                                </div>
                                 <% } else { %>
                                     <div class="row">
                                         <div class="col-12">
-                                            
-                                                <%- include("./components/cart/cartProducts.ejs") %>
-        
-                                                    <div class="divider center_icon mt-50 mb-50"><i
-                                                            class="fi-rs-fingerprint"></i></div>
-                                                    <div class="row mb-50">
-        
-                                                        <%- include("./components/cart/calculateShipping.ejs") %>
-                                                            <%- include("./components/cart/cartTotal.ejs") %>
-        
-                                                    </div>
+
+                                            <%- include("./components/cart/cartProducts.ejs") %>
+
+                                                <div class="divider center_icon mt-50 mb-50"><i
+                                                        class="fi-rs-fingerprint"></i></div>
+                                                <div class="row mb-50">
+
+                                                    <%- include("./components/cart/calculateShipping.ejs") %>
+                                                        <%- include("./components/cart/cartTotal.ejs") %>
+
+                                                </div>
                                         </div>
                                     </div>
 
-                            <% } %>
+                                    <% } %>
                         </div>
                     </section>
             </main>
-
-            <%- include("./components/script/script.ejs") %>
+            <%- include("./layouts/footer.ejs")%>
+                <!-- cutom ajax -->
+                
+                <%- include("./script/script.ejs") %>
+                
+                <script src="/user/assets/js/custom/ajaxCart.js"></script>
 </body>
 
 </html>

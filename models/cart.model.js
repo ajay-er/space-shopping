@@ -6,7 +6,7 @@ async function addItemToCart(userId, productId, quantity) {
   try {
     const product = await productDatabase
       .findById(productId)
-      .select('productPrice');
+      .select('productPrice productImageUrls productName _id');
 
     if (!product) {
       return { status: false, message: 'product not found' };
@@ -26,10 +26,11 @@ async function addItemToCart(userId, productId, quantity) {
         // If product not in cart, add new item to the items array
         cart.items.push({
           product: productId,
-          quantity:quantity,
+          quantity: quantity,
           price: product.productPrice,
         });
       }
+
       cart.total = cart.items.reduce(
         (acc, item) => acc + item.price * item.quantity,
         0
@@ -38,6 +39,7 @@ async function addItemToCart(userId, productId, quantity) {
       return {
         status: true,
         message: 'product added to cart',
+        productData: product,
       };
     }
 
@@ -47,13 +49,17 @@ async function addItemToCart(userId, productId, quantity) {
       items: [
         {
           product: productId,
-          quantity,
-          price: product.productPrice * quantity,
+          quantity: quantity,
+          price: product.productPrice,
         },
       ],
     });
     await userDatabase.findByIdAndUpdate(userId, { cart: newCart._id });
-    return { status: true, message: 'product added to cart' };
+    return {
+      status: true,
+      message: 'product added to cart',
+      productData: product,
+    };
   } catch (error) {
     throw new Error('Something wrong while adding product');
   }

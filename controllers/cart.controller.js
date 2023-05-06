@@ -49,11 +49,11 @@ async function httpPostToCart(req, res) {
     if (cartResult.status) {
       res
         .status(200)
-        .json({ success: cartResult.status, message: cartResult.message });
+        .json({ success: cartResult.status, message: cartResult.message ,product:cartResult.productData });
     } else {
       res
         .status(404)
-        .json({ success: cartResult.status, message: cartResult.message });
+        .json({ success: cartResult.status, message: cartResult.message,product: [] });
     }
   } catch (error) {
     handleError(res, error);

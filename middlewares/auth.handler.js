@@ -3,7 +3,7 @@ function isLoggedIn(req, res, next) {
   if (req.session.userloggedIn) {
     next();
   } else {
-      return res.redirect('/login');
+       res.redirect('/login');
   }
 }
 
