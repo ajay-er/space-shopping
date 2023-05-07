@@ -37,6 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
               `li[data-product-id="${data.product._id}"]`,
             )
 
+            //cart count
+            const countElement1 = document.getElementById('cart-count1');
+            const countElement2 = document.getElementById('cart-count2');
+
             // get the current navbar subtotal
             const navSubtotalElement = document.querySelector('#nav-sub-total')
             const currentNavSubtotal = parseFloat(navSubtotalElement.textContent.replace('₹', ''))
@@ -51,6 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
               const currentQuantity = parseInt(quantityEl.textContent)
               quantityEl.textContent = `${currentQuantity + 1} ×`
             } else {
+              //increasing count
+              countElement1.textContent = parseInt(countElement1.textContent) + 1;
+              countElement2.textContent = parseInt(countElement2.textContent) + 1;
+              
               // create a new cart item and append it to the cart list
               const cartList = document.querySelector('.shopping-cart-list')
               const newCartItem = document.createElement('li')

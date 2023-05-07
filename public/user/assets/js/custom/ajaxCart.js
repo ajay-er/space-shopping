@@ -41,10 +41,21 @@ function removeProduct(productId) {
               window.location.reload();
               return;
             }
+
+            
             cartItem.remove();
           }
-
+          
           dropdownItem.remove();
+          
+          const countElement1 = document.getElementById('cart-count1');
+          const countElement2 = document.getElementById('cart-count2');
+          const count1 = parseInt(countElement1.textContent) ;
+          const count2 = parseInt(countElement1.textContent) ;
+          if(count1 > 0 && count2 > 0){
+            countElement1.textContent = count1 - 1;
+            countElement2.textContent = count2 - 1;
+          }
 
           updateSubtotalAndTotal(data.total);
         })

@@ -50,9 +50,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/admin', adminRouter);
 app.use('/', userRouter);
 
+console.clear()
+
 async function startServer() {
   await mongoConnect();
-
   app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}🚀`);
   });

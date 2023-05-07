@@ -42,7 +42,7 @@
       if (xhr.status === 200) {
         window.location.href = '/otp-verify';
       } else if (xhr.status === 400) {
-        errorMsg = "Phone number already registered";
+        errorMsg = "Phone number not registered";
         document.getElementById("errors").innerHTML = '<span style="color:red">' + errorMsg + '</span>';
         setTimeout(() => {
           document.getElementById("errors").innerHTML = "";

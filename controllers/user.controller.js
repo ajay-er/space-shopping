@@ -9,7 +9,7 @@ const {
 const { fetchAllProducts } = require('../models/product.model');
 
 const { handleError } = require('../middlewares/error.handler');
-const validateSignup = require('../config/joi');
+const {validateSignup} = require('../config/joi');
 
 
 async function httpGetHome(req, res) {
@@ -131,8 +131,8 @@ async function httpSignupOtpVerify(req, res) {
 
 async function httpPostSignup(req, res) {
   try {
-    const validation = await validateSignup(req.body);
-
+    const {} = await validateSignup(req.body);
+    
     if (validation.error) {
       return res
         .status(400)
