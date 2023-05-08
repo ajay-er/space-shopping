@@ -37,6 +37,12 @@ const {
   httpClearCart,
 } = require('../controllers/cart.controller');
 
+
+const {
+  httpGetCheckout,
+} = require('../controllers/order.controller');
+
+
 //user routes
 userRouter.get('/', httpGetHome);
 userRouter.get('/login', isLoggedOut, httpGetLogin);
@@ -58,6 +64,9 @@ userRouter.post('/cart', isLoggedIn, httpPostToCart);
 userRouter.delete('/cart',isLoggedIn,httpRemoveFromCart);
 userRouter.patch('/cart',isLoggedIn,httpUpdateQuantity);
 userRouter.delete('/clear-cart',isLoggedIn,httpClearCart);
+
+userRouter.get('/checkout',isLoggedIn,httpGetCheckout);
+
 
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/logout', httpGetLogout);

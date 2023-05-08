@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.22"
   },
   "dependencies": {
@@ -26,8 +27,8 @@
     "express-session": "^1.17.3",
     "joi": "^17.9.1",
     "mongoose": "^7.0.3",
-    "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "razorpay": "^0.0.0",
     "twilio": "^4.10.0"
   }
 }
