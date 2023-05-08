@@ -2,17 +2,21 @@
     <div class="mb-25">
         <h4>Billing Details</h4>
     </div>
-    <form method="post">
+    <form  id="addressForm">
         <div class="form-group">
             <input type="text" required="" name="fname" placeholder="First name *">
+            <div class="error" id="fnameError" ></div>
+
         </div>
         <div class="form-group">
             <input type="text" required="" name="lname" placeholder="Last name *">
+            <div class="error" id="lnameError" ></div>
+
         </div>
 
         <div class="form-group">
             <div class="custom_select">
-                <select class="form-control select-active">
+                <select class="form-control select-active" name="country" >
                     <option value="">Select an option...</option>
                     <option value="AX">Aland Islands</option>
                     <option value="AF">Afghanistan</option>
@@ -259,44 +263,60 @@
                     <option value="ZM">Zambia</option>
                     <option value="ZW">Zimbabwe</option>
                 </select>
+                <div class="error" id="countryError"></div>
+
             </div>
         </div>
         <div class="form-group">
-            <input type="text" name="billing_address" required="" placeholder="Address *">
+            <input type="text" name="billing_address1" required="" placeholder="Address *">
+            <div class="error" id="billingAddressError1"></div>
+
         </div>
         <div class="form-group">
             <input type="text" name="billing_address2" required="" placeholder="Address line2">
+            <div class="error" id="billingAddressError2"></div>
+
         </div>
         <div class="form-group">
             <input required="" type="text" name="city" placeholder="City / Town *">
+            <div class="error" id="cityError"></div>
+
         </div>
         <div class="form-group">
-            <input required="" type="text" name="state" placeholder="State / County *">
+            <input required="" type="text" name="state" placeholder="State *">
+            <div class="error" id="stateError"></div>
+
         </div>
         <div class="form-group">
             <input required="" type="text" name="zipcode" placeholder="Postcode / ZIP *">
+            <div class="error" id="postError"></div>
+
         </div>
         <div class="form-group">
             <input required="" type="text" name="phone" placeholder="Phone *">
+            <div class="error" id="phoneError"></div>
+
         </div>
         <div class="form-group">
             <input required="" type="text" name="email" placeholder="Email address *">
+            <div class="error" id="emailError"></div>
+
         </div>
+
         <!-- <div class="form-group">
             <div class="checkbox">
                 <div class="custome-checkbox">
                     <input class="form-check-input" type="checkbox" name="checkbox" id="createaccount">
                     <label class="form-check-label label_info" data-bs-toggle="collapse" href="#collapsePassword" data-target="#collapsePassword" aria-controls="collapsePassword" for="createaccount"><span>Create an account?</span></label>
-
-                   
-
                 </div>
             </div>
         </div> -->
         <!-- <div id="collapsePassword" class="form-group create-account collapse in">
             <input required="" type="password" placeholder="Password" name="password">
         </div> -->
-        <div class="ship_detail">
+
+        
+        <!-- <div class="ship_detail">
             <div class="form-group">
                 <div class="chek-form">
                     <div class="custome-checkbox">
@@ -578,13 +598,14 @@
                     <input required="" type="text" name="city" placeholder="City / Town *">
                 </div>
                 <div class="form-group">
-                    <input required="" type="text" name="state" placeholder="State / County *">
+                    <input required="" type="text" name="state" placeholder="State*">
                 </div>
                 <div class="form-group">
                     <input required="" type="text" name="zipcode" placeholder="Postcode / ZIP *">
                 </div>
             </div>
-        </div>
+        </div> -->
+        
         <div class="mb-20">
             <h5>Additional information</h5>
         </div>

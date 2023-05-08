@@ -15,16 +15,15 @@ async function fetchAllProducts() {
   }
 }
 
-
-async function fetchProduct(productId){
-  try{
+async function fetchProduct(productId) {
+  try {
     const product = await productDatabase.findById(productId);
     if (!product.productStatus) {
       return { status: false };
     } else {
       return { status: true, product };
     }
-  }catch(error){
+  } catch (error) {
     throw new Error(`Error fetching product: ${error.message}`);
   }
 }
@@ -51,7 +50,7 @@ async function addNewProduct(dataBody, dataFiles) {
 
   try {
     const imageUrlList = [];
-   
+
     for (let i = 0; i < dataFiles.length; i++) {
       let locaFilePath = dataFiles[i].path;
       let response = await cloudinary.uploader.upload(locaFilePath, {
@@ -73,15 +72,18 @@ async function addNewProduct(dataBody, dataFiles) {
   }
 }
 
-async function updateProductStatus(productId){
-  try{
-    const product = await productDatabase.findByIdAndUpdate({_id:productId},{$set:{productStatus:false}});
+async function updateProductStatus(productId) {
+  try {
+    const product = await productDatabase.findByIdAndUpdate(
+      { _id: productId },
+      { $set: { productStatus: false } },
+    );
     if (product) {
       return { status: true, product };
     } else {
       return { status: false };
     }
-  }catch(error){
+  } catch (error) {
     throw new Error(`Error updating product: ${error.message}`);
   }
 }

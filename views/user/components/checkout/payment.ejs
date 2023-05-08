@@ -14,39 +14,44 @@
                 <tbody id="td">
                     <% cart.items.forEach(item=> { %>
 
-                    <tr data-item-id="<%= item.product._id %>">
+                        <tr data-item-id="<%= item.product._id %>">
 
-                        <td class="image product-thumbnail"><img  alt="<%= item.product.productName %>"
-                            src="<%= item.product.productImageUrls[0] %>">
-                        </td>
+                            <td class="image product-thumbnail"><img alt="<%= item.product.productName %>"
+                                    src="<%= item.product.productImageUrls[0] %>">
+                            </td>
 
-                        <td>
-                            <h5 class="product-name"><a  href="/product/<%= item.product._id %>">
-                                <%= item.product.productName %></a></h5> <span qty-navbar-<%= item.product._id %>" class="product-qty">x <%= item.quantity %> </span>
-                        </td>
+                            <td>
+                                <h5 class="product-name"><a href="/product/<%= item.product._id %>">
+                                        <%= item.product.productName %>
+                                    </a></h5> <span qty-navbar-<%=item.product._id %>" class="product-qty">x <%=
+                                        item.quantity %> </span>
+                            </td>
 
-                        <td class="price" data-title="Price" id="subtotal" 
-                        data-price="<%= item.product.productPrice %>">₹<%= item.price %></td>
+                            <td class="price" data-title="Price" id="subtotal"
+                                data-price="<%= item.product.productPrice %>">₹<%= item.price %>
+                            </td>
 
-                        <div style="display:none;" class="shopping-cart-delete">
-                            <a onclick="removeProduct('<%= item.product._id %>')"></a>
-                        </div>
+                            <div style="display:none;" class="shopping-cart-delete">
+                                <a onclick="removeProduct('<%= item.product._id %>')"></a>
+                            </div>
 
-                    </tr>
-                    <% }) %>
+                        </tr>
+                        <% }) %>
 
-                    <tr>
-                        <th>SubTotal</th>
-                        <td class="product-subtotal" colspan="2">₹<%= cart.total %></td>
-                    </tr>
-                    <tr>
-                        <th>Shipping</th>
-                        <td colspan="2"><em>Free Shipping</em></td>
-                    </tr>
-                    <tr>
-                        <th>Total</th>
-                        <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900">₹<%= cart.total %></span></td>
-                    </tr>
+                            <tr>
+                                <th>SubTotal</th>
+                                <td class="product-subtotal" colspan="2">₹<%= cart.total %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Shipping</th>
+                                <td colspan="2"><em>Free Shipping</em></td>
+                            </tr>
+                            <tr>
+                                <th>Total</th>
+                                <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900">₹<%=
+                                            cart.total %></span></td>
+                            </tr>
 
                 </tbody>
             </table>
@@ -58,30 +63,208 @@
             </div>
             <div class="payment_option">
                 <div class="custome-radio">
-                    <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios3" checked="">
-                    <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse" data-target="#bankTranfer" aria-controls="bankTranfer">Direct Bank Transfer</label>
-                    <div class="form-group collapse in" id="bankTranfer">
-                        <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration. </p>
-                    </div>
+                    <input class="form-check-input" required="" type="radio" name="payment_option" id="bankTransfer"
+                        checked="">
+                    <label class="form-check-label" for="bankTransfer" data-bs-toggle="collapse"
+                        data-target="#bankTranfer" aria-controls="bankTranfer">Direct Bank Transfer</label>
                 </div>
                 <div class="custome-radio">
-                    <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios4" checked="">
-                    <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#checkPayment" aria-controls="checkPayment">Cash on delivery</label>
-                    <div class="form-group collapse in" id="checkPayment">
-                        <p class="text-muted mt-5">Please send your cheque to Store Name, Store Street, Store Town, Store State / County, Store Postcode. </p>
-                    </div>
+                    <input class="form-check-input" required="" type="radio" name="payment_option" id="cashOnDelivery"
+                        checked="">
+                    <label class="form-check-label" for="cashOnDelivery" data-bs-toggle="collapse"
+                        data-target="#checkPayment" aria-controls="checkPayment">Cash on delivery</label>
                 </div>
                 <div class="custome-radio">
-                    <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios5" checked="">
-                    <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#razorpay" aria-controls="razorpay">Razorpay</label>
-                    <div class="form-group collapse in" id="razorpay">
-                        <p class="text-muted mt-5">Pay via Razorpay; you can pay with your credit card if you don't have a PayPal account.</p>
-                    </div>
+                    <input class="form-check-input" required="" type="radio" name="payment_option" id="razorpay"
+                        checked="">
+                    <label class="form-check-label" for="razorpay" data-bs-toggle="collapse" data-target="#razorpay"
+                        aria-controls="razorpay">Razorpay</label>
                 </div>
             </div>
         </div>
-        <a href="#" class="btn btn-fill-out btn-block mt-30">Place Order</a>
+        <button type="submit" id="placePayment" class="btn btn-fill-out btn-block mt-30">Place Order</button>
     </div>
 </div>
+
+
+
+
+<script>
+
+
+
+    document.getElementById('placePayment').addEventListener('click', (event) => {
+        event.preventDefault();
+
+        const fnameError = document.querySelector('#fnameError');
+        const lnameError = document.querySelector('#lnameError');
+        const countryError = document.querySelector('#countryError');
+        const billingAddressError1 = document.querySelector('#billingAddressError1');
+        const billingAddressError2 = document.querySelector('#billingAddressError2');
+        const cityError = document.querySelector('#cityError');
+        const stateError = document.querySelector('#stateError');
+        const postError = document.querySelector('#postError');
+        const phoneError = document.querySelector('#phoneError');
+        const emailError = document.querySelector('#emailError');
+
+
+        const form = document.querySelector('#addressForm');
+        fnameError.innerHTML = ''
+        lnameError.innerHTML = ''
+        countryError.innerHTML = ''
+        billingAddressError1.innerHTML = ''
+        billingAddressError2.innerHTML = ''
+        cityError.innerHTML = ''
+        stateError.innerHTML = ''
+        postError.innerHTML = ''
+        phoneError.innerHTML = ''
+        emailError.innerHTML = ''
+
+        const formData = new FormData(form);
+
+
+        let hasError = false;
+
+        if (formData.get('fname').trim() === '') {
+            hasError = true;
+            fnameError.innerHTML += '<p style="color:red">Please enter your first name.</p>';
+            setTimeout(() => {
+                fnameError.innerHTML = ''
+            }, 5000);
+            return;
+        }
+
+        if (formData.get('lname').trim() === '') {
+            hasError = true;
+            lnameError.innerHTML += '<p style="color:red">Please enter your last name.</p>';
+            setTimeout(() => {
+                lnameError.innerHTML = ''
+            }, 5000);
+            return;
+
+        }
+        if (formData.get('country').trim() === '') {
+            hasError = true;
+            countryError.innerHTML += '<p style="color:red">Please select any country.</p>';
+            setTimeout(() => {
+                countryError.innerHTML = ''
+
+            }, 5000);
+            return;
+
+        }
+
+        if (formData.get('billing_address').trim() === '') {
+            hasError = true;
+            billingAddressError1.innerHTML += '<p style="color:red">Please enter your billing address.</p>';
+            setTimeout(() => {
+                billingAddressError1.innerHTML = '';
+            }, 5000);
+            return;
+
+        }
+        if (formData.get('billing_address2').trim() === '') {
+            hasError = true;
+            billingAddressError2.innerHTML += '<p style="color:red">Please enter your street address.</p>';
+            setTimeout(() => {
+                billingAddressError2.innerHTML = '';
+            }, 5000);
+            return;
+
+        }
+
+        if (formData.get('city').trim() === '') {
+            hasError = true;
+            cityError.innerHTML = '<p style="color:red">Please enter your city/town.</p>';
+            setTimeout(() => {
+                cityError.innerHTML = '';
+            }, 5000);
+            return;
+
+        }
+
+        if (formData.get('state').trim() === '') {
+            hasError = true;
+            stateError.innerHTML += '<p style="color:red">Please enter your state/province.</p>';
+            setTimeout(() => {
+                stateError.innerHTML = '';
+            }, 5000);
+            return;
+
+        }
+
+        if (formData.get('zipcode').trim() === '') {
+            hasError = true;
+            postError.innerHTML += '<p style="color:red">Please enter your postcode/ZIP code.</p>';
+            setTimeout(() => {
+
+                postError.innerHTML = '';
+            }, 5000);
+            return;
+
+        }
+
+        if (formData.get('phone').trim() === '') {
+            hasError = true;
+            phoneError.innerHTML += '<p style="color:red">Please enter your phone number.</p>';
+            setTimeout(() => {
+                phoneError.innerHTML = '';
+            }, 5000);
+            return;
+
+        }
+
+        if (formData.get('email').trim() === '') {
+            hasError = true;
+            emailError.innerHTML += '<p style="color:red">Please enter your email address.</p>';
+            setTimeout(() => {
+                emailError.innerHTML = '';
+            }, 5000);
+            return;
+
+        }
+
+
+
+        if (!hasError) {
+
+            const paymentOptions = document.getElementsByName("payment_option");
+
+            // Loop through the radio buttons to find the selected one
+            let selectedPaymentOption;
+            for (let i = 0; i < paymentOptions.length; i++) {
+                if (paymentOptions[i].checked) {
+                    selectedPaymentOption = paymentOptions[i].id;
+                    break;
+                }
+            }
+
+            const formObject = {};
+            formData.forEach(function (value, key) {
+                formObject[key] = value;
+            });
+
+            formObject.paymentmethod = selectedPaymentOption;
+            const url = '/checkout';
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(formObject),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+        }
+    });
+
+
+
+</script>
 
 <script src="/user/assets/js/custom/ajaxCart.js"></script>

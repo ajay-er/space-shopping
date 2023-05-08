@@ -20,6 +20,7 @@
 
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
+
         let isValid = true;
         let otpErrorText = "";
 
@@ -38,6 +39,8 @@
             otp.classList.add("is-invalid");
             return;
         }
+
+      
 
         // Verify OTP
         const xhr = new XMLHttpRequest();

@@ -27,8 +27,12 @@ async function checkUserExistOrNot(phoneNumber) {
   try {
     const user = await userDatabase.findOne({ phone: phoneNumber });
     if (user) {
-      await sendOtp(phoneNumber);
-      return true;
+      const result =await sendOtp(phoneNumber);
+      if(result){
+        return true;
+      }else{
+        return false;
+      }
     } else {
       return false;
     }

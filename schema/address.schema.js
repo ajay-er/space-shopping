@@ -1,11 +1,19 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const addressSchema = new mongoose.Schema({
-  name: {
+  fname: {
     type: String,
     required: true,
   },
-  streetAddress: {
+  lname: {
+    type: String,
+    required: true,
+  },
+  billing_address1: {
+    type: String,
+    required: true,
+  },
+  billing_address2: {
     type: String,
     required: true,
   },
@@ -17,7 +25,7 @@ const addressSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  postalCode: {
+  zipcode: {
     type: String,
     required: true,
   },
@@ -25,11 +33,15 @@ const addressSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  phoneNumber: {
+  phone: {
     type: String,
   },
   email: {
     type: String,
+  },
+  paymentmethod: {
+    type: String,
+    required: true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -43,6 +55,6 @@ const addressSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-})
+});
 
-module.exports = mongoose.model('Address', addressSchema)
+module.exports = mongoose.model('Address', addressSchema);

@@ -100,7 +100,8 @@
                                         <% if (locals.user) { %>
                                             <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                                 <ul class="shopping-cart-list">
-                                                    <% cart.items.forEach(item=> { %>
+                                                    
+                                                    <% (cart.items || []).forEach(item => { %>
                                                         <li data-product-id="<%= item.product._id %>">
                                                             <div class="shopping-cart-img">
                                                                 <a href="/product"><img

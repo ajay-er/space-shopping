@@ -82,7 +82,6 @@
             otpError = "OTP is required.";
         } else if (!otpRegex.test(otp.value.trim())) {
             otpError = "Invalid OTP. OTP should be a 6-digit numeric code.";
-
         }
 
 
@@ -197,6 +196,12 @@
 
     $(document).ready(function () {
         $('#otp-button').click(function () {
+            
+            otpButton.disabled = true;
+            setTimeout(() => {
+                otpButton.disabled = false;
+            }, 30000)
+            
             var phone = $('#phone').val();
             $.ajax({
                 type: 'POST',
@@ -211,6 +216,8 @@
                         setTimeout(() => {
                             document.getElementById('phone-error-verify').style.display = 'none';
                         }, 5000)
+                        otpButton.disabled = false;
+
                     } else {
                         document.getElementById('phone-error-verify').style.display = 'none';
                     }

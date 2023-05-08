@@ -22,15 +22,26 @@ const addProductSchema = Joi.object({
   productImage: Joi.any().required(),
 });
 
-function validateSignup(userData) {
-  return signupSchema.validateAsync(userData);
-}
+//address
+const addressValidator = Joi.object({
+  firstname: Joi.string().required(),
+  lastname: Joi.string().required(),
+  country: Joi.string().required(),
+  addressline1: Joi.string().required(),
+  addressline2: Joi.string().required(),
+  city: Joi.string().required(),
+  state: Joi.string().required(),
+  postalCode: Joi.string().required(),
+  phoneNumber: Joi.string().optional(),
+  email: Joi.string().email().optional(),
+  user: Joi.string().required(),
+  isShippingAddress: Joi.boolean().optional(),
+  isBillingAddress: Joi.boolean().optional(),
+});
 
-function validateProduct(productData) {
-  return addProductSchema.validateAsync(productData);
-}
 
 module.exports = {
-  validateSignup,
-  validateProduct,
+  signupSchema,
+  addProductSchema,
+  addressValidator,
 };
