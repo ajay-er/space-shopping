@@ -16,7 +16,9 @@ async function fetchAllUsers() {
 async function findUserWithId(userId, action) {
   try {
     const user = await userDatabase.findById( userId );
-    if (user) {
+    if (!user) {
+      return { status: false };
+    } else {
       if (action === 'block') {
         user.status = false;
       } else if (action === 'unblock') {
@@ -25,8 +27,6 @@ async function findUserWithId(userId, action) {
       await user.save();
 
       return { status: true };
-    } else {
-      return { status: false };
     }
   } catch (error) {
     throw new Error(`Error finding user: ${error.message}`);

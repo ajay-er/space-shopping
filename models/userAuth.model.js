@@ -4,7 +4,7 @@ const { hashPassword, comparePassword } = require('../config/security');
 
 async function checkUserWithEmail(email, password) {
   try {
-    const user = await userDatabase.findOne({email:email});
+    const user = await userDatabase.findOne({ email: email });
     if (!user) {
       return { status: false, message: 'Invalid email' };
     }
@@ -22,15 +22,14 @@ async function checkUserWithEmail(email, password) {
   }
 }
 
-
 async function checkUserExistOrNot(phoneNumber) {
   try {
     const user = await userDatabase.findOne({ phone: phoneNumber });
     if (user) {
-      const result =await sendOtp(phoneNumber);
-      if(result){
+      const result = await sendOtp(phoneNumber);
+      if (result) {
         return true;
-      }else{
+      } else {
         return false;
       }
     } else {

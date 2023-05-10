@@ -1,4 +1,4 @@
-<div class="col-md-6">
+<div class="col-md-12">
     <div class="order_review">
         <div class="mb-20">
             <h4>Your Orders</h4>
@@ -8,11 +8,11 @@
                 <thead>
                     <tr>
                         <th colspan="2">Product</th>
-                        <th>Total</th>
+                        <th>price</th>
                     </tr>
                 </thead>
                 <tbody id="td">
-                    <% cart.items.forEach(item=> { %>
+                    <% (cart?.items || []).forEach(item=> { %>
 
                         <tr data-item-id="<%= item.product._id %>">
 
@@ -40,7 +40,7 @@
 
                             <tr>
                                 <th>SubTotal</th>
-                                <td class="product-subtotal" colspan="2">₹<%= cart.total %>
+                                <td class="product-subtotal" colspan="2">₹<%= (cart.total|| 0) %>
                                 </td>
                             </tr>
                             <tr>
@@ -50,7 +50,7 @@
                             <tr>
                                 <th>Total</th>
                                 <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900">₹<%=
-                                            cart.total %></span></td>
+                                            (cart.total || 0) %></span></td>
                             </tr>
 
                 </tbody>
@@ -82,9 +82,16 @@
                 </div>
             </div>
         </div>
-        <button type="submit" id="placePayment" class="btn btn-fill-out btn-block mt-30">Place Order</button>
+        <button type="submit" id="placeOrder" class="btn btn-fill-out btn-block mt-30">Place Order</button>
     </div>
 </div>
+
+
+
+
+<script src="/user/assets/js/custom/ajaxCart.js"></script>
+
+
 
 
 
@@ -92,15 +99,27 @@
 <script>
 
 
+    let selectedAddress = null
+    function selectAddress(addressId) {
+        const cards = document.querySelectorAll(".card");
+        cards.forEach((card) => {
+            if (card.getAttribute("addressId") === addressId) {
+                card.classList.add("active");
+                selectedAddress = card.getAttribute("addressId");
+            } else {
+                card.classList.remove("active");
+            }
 
-    document.getElementById('placePayment').addEventListener('click', (event) => {
+        });
+    }
+
+    const form = document.querySelector('#addNewAddress');
+    form.addEventListener('submit', async (event) => {
         event.preventDefault();
-
         const fnameError = document.querySelector('#fnameError');
         const lnameError = document.querySelector('#lnameError');
         const countryError = document.querySelector('#countryError');
-        const billingAddressError1 = document.querySelector('#billingAddressError1');
-        const billingAddressError2 = document.querySelector('#billingAddressError2');
+        const billingAddressError = document.querySelector('#billingAddressError');
         const cityError = document.querySelector('#cityError');
         const stateError = document.querySelector('#stateError');
         const postError = document.querySelector('#postError');
@@ -108,12 +127,10 @@
         const emailError = document.querySelector('#emailError');
 
 
-        const form = document.querySelector('#addressForm');
         fnameError.innerHTML = ''
         lnameError.innerHTML = ''
         countryError.innerHTML = ''
-        billingAddressError1.innerHTML = ''
-        billingAddressError2.innerHTML = ''
+        billingAddressError.innerHTML = ''
         cityError.innerHTML = ''
         stateError.innerHTML = ''
         postError.innerHTML = ''
@@ -121,7 +138,6 @@
         emailError.innerHTML = ''
 
         const formData = new FormData(form);
-
 
         let hasError = false;
 
@@ -154,24 +170,16 @@
 
         }
 
-        if (formData.get('billing_address').trim() === '') {
+        if (formData.get('street_address').trim() === '') {
             hasError = true;
-            billingAddressError1.innerHTML += '<p style="color:red">Please enter your billing address.</p>';
+            billingAddressError.innerHTML += '<p style="color:red">Please enter your billing address.</p>';
             setTimeout(() => {
-                billingAddressError1.innerHTML = '';
+                billingAddressError.innerHTML = '';
             }, 5000);
             return;
 
         }
-        if (formData.get('billing_address2').trim() === '') {
-            hasError = true;
-            billingAddressError2.innerHTML += '<p style="color:red">Please enter your street address.</p>';
-            setTimeout(() => {
-                billingAddressError2.innerHTML = '';
-            }, 5000);
-            return;
 
-        }
 
         if (formData.get('city').trim() === '') {
             hasError = true;
@@ -224,28 +232,14 @@
 
         }
 
-
-
         if (!hasError) {
-
-            const paymentOptions = document.getElementsByName("payment_option");
-
-            // Loop through the radio buttons to find the selected one
-            let selectedPaymentOption;
-            for (let i = 0; i < paymentOptions.length; i++) {
-                if (paymentOptions[i].checked) {
-                    selectedPaymentOption = paymentOptions[i].id;
-                    break;
-                }
-            }
 
             const formObject = {};
             formData.forEach(function (value, key) {
                 formObject[key] = value;
             });
 
-            formObject.paymentmethod = selectedPaymentOption;
-            const url = '/checkout';
+            const url = '/add-address';
             fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(formObject),
@@ -253,8 +247,70 @@
                     'Content-Type': 'application/json'
                 }
             })
-                .then(response => {
+                .then(async (response) => {
                     console.log(response);
+                    const msg = await response.json()
+                    console.log(msg);
+                    if (msg.message) {
+                        if (msg.message.includes('fname')) {
+                            msg.error = 'Please enter a first name';
+                            callAlert(msg.error)
+                            return;
+                        }
+                        if (msg.message.includes('lname')) {
+                            msg.error = 'Please enter a last name';
+                            callAlert(msg.error)
+                            return;
+                        }
+                        if (msg.message.includes('street_address')) {
+                            msg.error = 'Please enter a street address';
+                            callAlert(msg.error)
+                            return;
+                        }
+                        if (msg.message.includes('city')) {
+                            msg.error = 'Please enter a city';
+                            callAlert(msg.error)
+                            return;
+                        }
+                        if (msg.message.includes('state')) {
+                            msg.error = 'Please enter  a state';
+                            callAlert(msg.error)
+                            return;
+                        }
+                        if (msg.message.includes('zipcode')) {
+                            msg.error = 'Please enter a valid  zip code';
+                            callAlert(msg.error)
+                            return;
+                        }
+                        if (msg.message.includes('country')) {
+                            msg.error = 'Please select a valid country';
+                            callAlert(msg.error)
+                            return;
+                        }
+                        if (msg.message.includes('phone')) {
+                            msg.error = 'Please enter a valid phone number';
+                            callAlert(msg.error)
+                            return;
+                        }
+                        if (msg.message.includes('email')) {
+                            msg.error = 'Please enter a valid email address';
+                            callAlert(msg.error)
+                            return;
+                        }
+
+                    }
+
+                    function callAlert(errorMessage) {
+                        Swal.fire({
+                            title: 'Oops!',
+                            icon: 'error',
+                            text: 'Something went wrong!' + errorMessage,
+                            showCloseButton: true,
+                        })
+                    }
+
+                    window.location.reload();
+
                 })
                 .catch(error => {
                     console.error(error);
@@ -265,6 +321,114 @@
 
 
 
-</script>
 
-<script src="/user/assets/js/custom/ajaxCart.js"></script>
+
+    document.getElementById('placeOrder').addEventListener('click', (event) => {
+        event.preventDefault();
+
+        const selectedcard = document.getElementById('cardBodyId');
+
+        if (!selectedcard || !selectedAddress) {
+            Swal.fire({
+                title: 'Oops!',
+                icon: 'error',
+                text: !selectedcard ? 'please add a address' : 'please select address',
+                showCloseButton: true,
+            })
+            return;
+        }
+
+        const paymentOptions = document.getElementsByName("payment_option");
+        // Loop through the radio buttons to find the selected one
+        let selectedPaymentOption;
+        for (let i = 0; i < paymentOptions.length; i++) {
+            if (paymentOptions[i].checked) {
+                selectedPaymentOption = paymentOptions[i].id;
+                break;
+            }
+        }
+
+        const obj = {
+            paymentmethod: selectedPaymentOption, addressId: selectedAddress
+        }
+
+        fetch('/checkout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj),
+        }).then(async (response) => {
+            return await response.json()
+        }).then((response) => {
+            console.log(response);
+            if (response.success) {
+                if (response.paymethod === 'COD') {
+                    window.location.href = '/'
+                } else if (response.paymethod === 'ONLINE') {
+                    razorpayPayment(response.order)
+                }
+            }
+
+
+        }).catch((error) => {
+            console.log(error);
+        })
+
+    })
+
+
+    function razorpayPayment(order) {
+        var options = {
+            "key": "YOUR_KEY_ID", // Enter the Key ID generated from the Dashboard
+            "amount": order.total, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "space", //your business name
+            "description": "Test Transaction",
+            "image": "/user/assets/imgs/theme/logo.svg",
+            "order_id": order._id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (response) {
+                // alert(response.razorpay_payment_id);
+                // alert(response.razorpay_order_id);
+                // alert(response.razorpay_signature)
+                verifyPayment(response, order);
+            },
+            "prefill": {
+                "name": "Gaurav Kumar", //your customer's name
+                "email": "gaurav.kumar@example.com",
+                "contact": "9000090000"
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+
+        var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response) {
+            window.location.href = '/order-failed'
+        });
+        rzp1.open();
+    }
+
+    function verifyPayment(payment, order) {
+        $.ajax({
+            type: 'post',
+            url: '/verify-payment',
+            data: {
+                payment, order
+            }, success: (response) => {
+                if (response.status) {
+                    window.location.href = '/order-successfull';
+                } else {
+                    window.location.href = '/order-failed';
+                }
+            }
+        })
+    }
+
+
+
+</script>

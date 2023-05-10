@@ -28,31 +28,26 @@ function removeProduct(productId) {
         .then((data) => {
           console.log('Product deleted:', data);
 
-          const dropdownItem = document.querySelector(
-            `li[data-product-id="${productId}"]`
-          );
+          const dropdownItem = document.querySelector(`li[data-product-id="${productId}"]`);
 
           if (window.location.href === 'http://localhost:8000/cart') {
-            const cartItem = document.querySelector(
-              `tr[data-item-id="${productId}"]`
-            );
+            const cartItem = document.querySelector(`tr[data-item-id="${productId}"]`);
 
             if (cartItem.parentElement.rows.length === 2) {
               window.location.reload();
               return;
             }
 
-            
             cartItem.remove();
           }
-          
+
           dropdownItem.remove();
-          
+
           const countElement1 = document.getElementById('cart-count1');
           const countElement2 = document.getElementById('cart-count2');
-          const count1 = parseInt(countElement1.textContent) ;
-          const count2 = parseInt(countElement1.textContent) ;
-          if(count1 > 0 && count2 > 0){
+          const count1 = parseInt(countElement1.textContent);
+          const count2 = parseInt(countElement1.textContent);
+          if (count1 > 0 && count2 > 0) {
             countElement1.textContent = count1 - 1;
             countElement2.textContent = count2 - 1;
           }
@@ -72,8 +67,11 @@ var quantityDivs = document.querySelectorAll('.detail-qty');
 // Loop through each quantity div and add event listeners to the up and down buttons
 quantityDivs.forEach((quantityDiv) => {
   const productId = quantityDiv.dataset.productid;
+
   const qtySpan = quantityDiv.querySelector(`.qty-${productId}`);
+  
   const qtyUpBtn = quantityDiv.querySelector('.qty-up');
+
   const qtyDownBtn = quantityDiv.querySelector('.qty-down');
 
   qtyUpBtn.addEventListener('click', () => {
@@ -87,7 +85,6 @@ quantityDivs.forEach((quantityDiv) => {
     if (navbarQtySpan) {
       navbarQtySpan.textContent = `${newQty} ×`;
     }
-
   });
 
   qtyDownBtn.addEventListener('click', () => {
@@ -102,7 +99,6 @@ quantityDivs.forEach((quantityDiv) => {
       if (navbarQtySpan) {
         navbarQtySpan.textContent = `${newQty} ×`;
       }
-
     }
   });
 });
@@ -129,20 +125,13 @@ function updateProductQuantity(productId, quantity) {
       updateSubtotalAndTotal(data.total);
     })
     .catch(function (error) {
-      console.error(
-        'There was a problem with the updating product operation:',
-        error
-      );
+      console.error('There was a problem with the updating product operation:', error);
     });
 
   var price = Number(
-    document
-      .querySelector(`tr[data-item-id="${productId}"] #subtotal`)
-      .getAttribute('data-price')
+    document.querySelector(`tr[data-item-id="${productId}"] #subtotal`).getAttribute('data-price'),
   );
-  var subtotalElement = document.querySelector(
-    `tr[data-item-id="${productId}"] #subtotalValue`
-  );
+  var subtotalElement = document.querySelector(`tr[data-item-id="${productId}"] #subtotalValue`);
   var subtotal = price * quantity;
   subtotalElement.textContent = subtotal.toLocaleString('en-IN', {
     style: 'currency',

@@ -9,11 +9,11 @@ const addressSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  billing_address1: {
+  country: {
     type: String,
     required: true,
   },
-  billing_address2: {
+  street_address: {
     type: String,
     required: true,
   },
@@ -29,19 +29,11 @@ const addressSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  country: {
-    type: String,
-    required: true,
-  },
   phone: {
     type: String,
   },
   email: {
     type: String,
-  },
-  paymentmethod: {
-    type: String,
-    required: true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

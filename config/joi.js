@@ -23,25 +23,20 @@ const addProductSchema = Joi.object({
 });
 
 //address
-const addressValidator = Joi.object({
-  firstname: Joi.string().required(),
-  lastname: Joi.string().required(),
-  country: Joi.string().required(),
-  addressline1: Joi.string().required(),
-  addressline2: Joi.string().required(),
-  city: Joi.string().required(),
-  state: Joi.string().required(),
-  postalCode: Joi.string().required(),
-  phoneNumber: Joi.string().optional(),
-  email: Joi.string().email().optional(),
-  user: Joi.string().required(),
-  isShippingAddress: Joi.boolean().optional(),
-  isBillingAddress: Joi.boolean().optional(),
+const addressSchema = Joi.object({
+  fname: Joi.string().trim().pattern(/^[A-Za-z]+(?:[\s-][A-Za-z]+)*$/).required(),
+  lname: Joi.string().trim().pattern(/^[A-Za-z]+(?:[\s-][A-Za-z]+)*$/).required(),
+  country: Joi.string().trim().required(),
+  street_address: Joi.string().trim().required(),
+  city: Joi.string().trim().required(),
+  state: Joi.string().trim().required(),
+  zipcode: Joi.string().trim().pattern(/^\d+$/).required(),
+  phone: Joi.string().trim().optional(),
+  email: Joi.string().trim().email().optional(),
 });
-
 
 module.exports = {
   signupSchema,
   addProductSchema,
-  addressValidator,
+  addressSchema,
 };

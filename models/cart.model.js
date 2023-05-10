@@ -110,7 +110,7 @@ async function fetchCartProducts(userId) {
     const cart = await cartDatabase
       .findOne({ user: userId })
       .populate('items.product');
-
+      
     if (!cart) {
       return { status: false, cart, total: 0 };
     } else {

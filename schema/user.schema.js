@@ -22,11 +22,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
-  address: [
-    {
-      type: Object,
-    },
-  ],
+  address: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Address',
+  },
   cart: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Cart',

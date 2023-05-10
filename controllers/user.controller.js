@@ -133,7 +133,6 @@ async function httpPostSignup(req, res) {
     })
 
     if (validation.error) {
-      console.log('😝')
       return res.status(400).json({ error: validation.error.details[0].message })
     }
 

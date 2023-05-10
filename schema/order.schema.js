@@ -17,6 +17,10 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
+      price: {
+        type: Number,
+        required: true,
+      }
     },
   ],
   shippingAddress: {
@@ -24,17 +28,22 @@ const orderSchema = new mongoose.Schema({
     ref: 'Address',
     required: true,
   },
-  payment: {
+  paymentmethod: {
+    type: String,
+    required: true,
+  },
+  transactionId: {
     type: String,
     required: true,
   },
   status: {
     type: String,
-    enum: ['pending', 'processing', 'shipped', 'delivered','canceled'],
+    enum: ['pending', 'processing', 'shipped', 'delivered', 'canceled'],
     default: 'pending',
   },
   total: {
     type: Number,
+    required: true,
   },
   date: {
     type: Date,

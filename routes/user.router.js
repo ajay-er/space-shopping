@@ -40,7 +40,9 @@ const {
 
 const {
   httpGetCheckout,
-  httpPostCheckout
+  httpPostCheckout,
+  httpAddAddress,
+  httpVerifyPayment
 } = require('../controllers/order.controller');
 
 
@@ -68,6 +70,8 @@ userRouter.delete('/clear-cart',isLoggedIn,httpClearCart);
 
 userRouter.get('/checkout',isLoggedIn,httpGetCheckout);
 userRouter.post('/checkout',isLoggedIn,httpPostCheckout);
+userRouter.post('/add-address',isLoggedIn,httpAddAddress)
+userRouter.post('/verify-payment',isLoggedIn,httpVerifyPayment);
 
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/logout', httpGetLogout);

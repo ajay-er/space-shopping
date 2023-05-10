@@ -94,6 +94,7 @@
                     },
                     success: function (data) {
                         var userRow = $(`tr[data-user-id="${userId}"]`);
+                        console.log(userRow);
                         if (data.status === 200) {
                             var button = $('[data-user-id="' + userId + '"]');
                             if (action === 'block') {

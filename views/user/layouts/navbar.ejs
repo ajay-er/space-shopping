@@ -83,7 +83,7 @@
                                                 src="/user/assets/imgs/theme/icons/icon-heart.svg">
                                             <% if (locals.user) { %>
                                                 <span class="pro-count blue" id="wishlist-count">
-                                                    <%= locals.wishlist?.items?.length ?? 0 %>
+                                                    <%= locals.wishlist?.items?.length ?? 0.00 %>
                                                 </span>
                                                 <% } %>
                                         </a>
@@ -97,11 +97,10 @@
                                                 </span>
                                                 <% } %>
                                         </a>
-                                        <% if (locals.user) { %>
+                                        <% if (locals.user  ) { %>
                                             <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                                 <ul class="shopping-cart-list">
-                                                    
-                                                    <% (cart.items || []).forEach(item => { %>
+                                                        <% (locals.cart?.items || []).forEach(item => { %>
                                                         <li data-product-id="<%= item.product._id %>">
                                                             <div class="shopping-cart-img">
                                                                 <a href="/product"><img
@@ -124,15 +123,17 @@
                                                         </li>
                                                         <% }) %>
 
+
                                                 </ul>
                                                 <div class="shopping-cart-footer">
                                                     <div class="shopping-cart-total">
-                                                        <h4>Total <span id="nav-sub-total">₹<%= cart.total %></span>
+                                                        <h4>Total <span id="nav-sub-total">₹<%= (cart?.total||0.00) %></span>
                                                         </h4>
                                                     </div>
                                                     <div class="shopping-cart-button">
                                                         <a href="/cart" class="outline">View cart</a>
-                                                        <a href="/checkout">Checkout</a>
+                                                            <a  href="/checkout">Checkout</a>
+                                                          
                                                     </div>
                                                 </div>
 
@@ -224,11 +225,11 @@
                                             <% } %>
                                     </a>
 
-                                    <% if (locals.user) { %>
+                                    <% if (locals.user  ) { %>
 
                                         <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                             <ul class="shopping-cart-list">
-                                                <% cart.items.forEach(item=> { %>
+                                                    <% (locals.cart?.items || []).forEach(item => { %>
                                                     <li data-product-id="<%= item.product._id %>">
                                                         <div class="shopping-cart-img">
                                                             <a href="/product"><img
@@ -253,13 +254,16 @@
                                             </ul>
                                             <div class="shopping-cart-footer">
                                                 <div class="shopping-cart-total">
-                                                    <h4>Total <span id="nav-sub-total">₹<%= cart.total %></span>
+                                                    <h4>Total <span id="nav-sub-total">₹<%= (cart?.total||0.00)  %></span>
                                                     </h4>
                                                 </div>
-                                                <div class="shopping-cart-button">
-                                                    <a href="/cart" class="outline">View cart</a>
-                                                    <a href="/checkout">Checkout</a>
-                                                </div>
+                                              
+                                                    <div class="shopping-cart-button">
+                                                        <a href="/cart" class="outline">View cart</a>
+                                                        
+                                                            <a href="/checkout">Checkout</a>
+                                                    </div>
+                                                    
                                             </div>
 
                                         </div>
