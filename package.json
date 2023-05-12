@@ -28,7 +28,7 @@
     "joi": "^17.9.1",
     "mongoose": "^7.0.3",
     "multer": "^1.4.5-lts.1",
-    "razorpay": "^0.0.0",
+    "razorpay": "^2.8.6",
     "twilio": "^4.10.0"
   }
 }

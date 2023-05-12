@@ -40,7 +40,7 @@
 
                             <tr>
                                 <th>SubTotal</th>
-                                <td class="product-subtotal" colspan="2">₹<%= (cart.total|| 0) %>
+                                <td class="product-subtotal" colspan="2">₹<%= (cart?.total|| 0) %>
                                 </td>
                             </tr>
                             <tr>
@@ -50,7 +50,7 @@
                             <tr>
                                 <th>Total</th>
                                 <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900">₹<%=
-                                            (cart.total || 0) %></span></td>
+                                            (cart?.total || 0) %></span></td>
                             </tr>
 
                 </tbody>
@@ -91,10 +91,7 @@
 
 <script src="/user/assets/js/custom/ajaxCart.js"></script>
 
-
-
-
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
 
@@ -320,9 +317,6 @@
     });
 
 
-
-
-
     document.getElementById('placeOrder').addEventListener('click', (event) => {
         event.preventDefault();
 
@@ -364,12 +358,11 @@
             console.log(response);
             if (response.success) {
                 if (response.paymethod === 'COD') {
-                    window.location.href = '/'
+                    window.location.href = '/order-successfull';
                 } else if (response.paymethod === 'ONLINE') {
                     razorpayPayment(response.order)
                 }
             }
-
 
         }).catch((error) => {
             console.log(error);
@@ -379,14 +372,15 @@
 
 
     function razorpayPayment(order) {
+        console.log(order);
         var options = {
-            "key": "YOUR_KEY_ID", // Enter the Key ID generated from the Dashboard
-            "amount": order.total, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "key": "rzp_test_YNltnS1mdzdtvV", // Enter the Key ID generated from the Dashboard
+            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             "currency": "INR",
             "name": "space", //your business name
             "description": "Test Transaction",
             "image": "/user/assets/imgs/theme/logo.svg",
-            "order_id": order._id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             "handler": function (response) {
                 // alert(response.razorpay_payment_id);
                 // alert(response.razorpay_order_id);
@@ -407,6 +401,7 @@
         };
 
         var rzp1 = new Razorpay(options);
+
         rzp1.on('payment.failed', function (response) {
             window.location.href = '/order-failed'
         });
@@ -420,15 +415,14 @@
             data: {
                 payment, order
             }, success: (response) => {
-                if (response.status) {
-                    window.location.href = '/order-successfull';
+                const id = order.receipt;
+                if (response.success) {
+                    window.location.href = `/order-successfull/${id}`;
                 } else {
-                    window.location.href = '/order-failed';
+                    window.location.href = `/order-failed/${id}`;
                 }
             }
         })
     }
-
-
 
 </script>

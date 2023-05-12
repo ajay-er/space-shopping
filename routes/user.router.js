@@ -18,7 +18,6 @@ const {
   httpPostVerifyOtp,
   httpSignupOtpVerify,
   httpPostSignup,
-
   httpGetAccount,
   httpGetLogout,
   httpGet404,
@@ -42,7 +41,9 @@ const {
   httpGetCheckout,
   httpPostCheckout,
   httpAddAddress,
-  httpVerifyPayment
+  httpVerifyPayment,
+  httpSuccessPage,
+  httpFailedPage
 } = require('../controllers/order.controller');
 
 
@@ -71,7 +72,10 @@ userRouter.delete('/clear-cart',isLoggedIn,httpClearCart);
 userRouter.get('/checkout',isLoggedIn,httpGetCheckout);
 userRouter.post('/checkout',isLoggedIn,httpPostCheckout);
 userRouter.post('/add-address',isLoggedIn,httpAddAddress)
+
 userRouter.post('/verify-payment',isLoggedIn,httpVerifyPayment);
+userRouter.get('/order-successfull/:id',isLoggedIn,httpSuccessPage);
+userRouter.get('/order-failed/:id',isLoggedIn,httpFailedPage);
 
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/logout', httpGetLogout);

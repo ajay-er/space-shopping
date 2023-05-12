@@ -13,11 +13,10 @@ async function addItemToCart(userId, productId, quantity) {
     }
 
     let cart = await cartDatabase.findOne({ user: userId });
+
     if (cart) {
       // If cart already exists, check if the product is already in the cart
-      const itemIndex = cart.items.findIndex((item) =>
-        item.product.equals(productId)
-      );
+      const itemIndex = cart.items.findIndex((item) => item.product.equals(productId));
       if (itemIndex > -1) {
         // If product already in cart, update its quantity and price
         cart.items[itemIndex].quantity += quantity;
@@ -31,10 +30,8 @@ async function addItemToCart(userId, productId, quantity) {
         });
       }
 
-      cart.total = cart.items.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0
-      );
+      cart.total = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+      console.log(cart.total);
       await cart.save();
       return {
         status: true,
@@ -53,6 +50,7 @@ async function addItemToCart(userId, productId, quantity) {
           price: product.productPrice,
         },
       ],
+      total: product.productPrice,
     });
     await userDatabase.findByIdAndUpdate(userId, { cart: newCart._id });
     return {
@@ -67,9 +65,7 @@ async function addItemToCart(userId, productId, quantity) {
 
 async function removeItemFromCart(userId, productId) {
   try {
-    const product = await productDatabase
-      .findById(productId)
-      .select('productPrice');
+    const product = await productDatabase.findById(productId).select('productPrice');
 
     if (!product) {
       return { status: false, message: 'product not found' };
@@ -78,16 +74,11 @@ async function removeItemFromCart(userId, productId) {
     let cart = await cartDatabase.findOne({ user: userId });
     if (cart) {
       // If cart already exists, check if the product is in the cart
-      const itemIndex = cart.items.findIndex((item) =>
-        item.product.equals(productId)
-      );
+      const itemIndex = cart.items.findIndex((item) => item.product.equals(productId));
       if (itemIndex > -1) {
         // If product is in cart, remove it
         cart.items.splice(itemIndex, 1);
-        cart.total = cart.items.reduce(
-          (acc, item) => acc + item.price * item.quantity,
-          0
-        );
+        cart.total = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
         await cart.save();
         return {
           status: true,
@@ -107,10 +98,8 @@ async function removeItemFromCart(userId, productId) {
 
 async function fetchCartProducts(userId) {
   try {
-    const cart = await cartDatabase
-      .findOne({ user: userId })
-      .populate('items.product');
-      
+    const cart = await cartDatabase.findOne({ user: userId }).populate('items.product');
+
     if (!cart) {
       return { status: false, cart, total: 0 };
     } else {
@@ -148,10 +137,7 @@ async function updateCartDetails(quantity, productId, userId) {
 
       item.quantity = quantity;
 
-      cart.total = cart.items.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0
-      );
+      cart.total = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
       await cart.save();
 
@@ -168,10 +154,24 @@ async function updateCartDetails(quantity, productId, userId) {
   }
 }
 
+async function cartProductTotal(userId) {
+  try {
+    const cart = await cartDatabase.findOne({ user: userId });
+    if (cart && cart.total > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw new Error('Error finding cart count!');
+  }
+}
+
 module.exports = {
   addItemToCart,
   removeItemFromCart,
   fetchCartProducts,
   clearCartItems,
   updateCartDetails,
+  cartProductTotal,
 };

@@ -9,11 +9,11 @@ const { handleError } = require('../middlewares/error.handler');
 
 async function getAddresses(userId, res) {
   try {
-    const addresses = await addressDatabase.find({user:userId});
+    const addresses = await addressDatabase.find({ user: userId });
     if (!addresses) {
       return { status: false };
     } else {
-      return { status: true, addresses:addresses };
+      return { status: true, addresses: addresses };
     }
   } catch (error) {
     handleError(res, error);
@@ -61,8 +61,6 @@ async function addAdrress(addressData, userId, res) {
 
 async function addOrderDetails(addressId, paymentMethod, userId, res) {
   try {
-    console.log('🥲');
-
     if (!['razorpay', 'cashOnDelivery', 'bankTransfer'].includes(paymentMethod)) {
       throw new Error('Invalid payment method');
     }
@@ -70,31 +68,77 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
     //fetching the cart items and total
     const cartResult = await cartDatabase.findOne({ user: userId }).select('items total');
 
-    //crate transaction id
-    const transactionId = crypto
-      .createHash('sha256')
-      .update(`${Date.now()}-${Math.floor(Math.random() * 12939)}`)
-      .digest('hex')
-      .substr(0, 16);
+    if(cartResult){
 
-    const orderStatus = (paymentMethod === 'cashOnDelivery')? 'processing': 'pending';
-
-    const order = new orderDatabase({
-      user: userId,
-      items: cartResult.items,
-      shippingAddress: addressId,
-      paymentmethod: paymentMethod,
-      total: cartResult.total,
-      transactionId: transactionId,
-      status:orderStatus
-    });
-
-   await order.save();
-    await cartDatabase.deleteOne({ user: userId });
-
-    return { status: true,order:order};
+      //crate transaction id
+      const transactionId = crypto
+        .createHash('sha256')
+        .update(`${Date.now()}-${Math.floor(Math.random() * 12939)}`)
+        .digest('hex')
+        .substr(0, 16);
+  
+      const orderStatus = paymentMethod === 'cashOnDelivery' ? 'processing' : 'pending';
+  
+      const order = new orderDatabase({
+        user: userId,
+        items: cartResult.items,
+        shippingAddress: addressId,
+        paymentmethod: paymentMethod,
+        total: cartResult.total,
+        transactionId: transactionId,
+        status: orderStatus,
+      });
+  
+      await order.save();
+      await cartDatabase.deleteOne({ user: userId });
+  
+      return { status: true, order: order };
+    }else{
+      return {status:false}
+    }
   } catch (error) {
     handleError(res, error);
+  }
+}
+
+async function verifyPayment(razorData, res) {
+  try {
+    var expectedSignature = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
+    expectedSignature.update(
+      razorData['payment[razorpay_order_id]'] + '|' + razorData['payment[razorpay_payment_id]'],
+    );
+
+    expectedSignature = expectedSignature.digest('hex');
+
+    if (expectedSignature === razorData['payment[razorpay_signature]']) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
+async function changePaymentStatus(orderId, paymentDetails, res) {
+  try {
+    const changePaymentStatus = await orderDatabase.updateOne(
+      { _id: orderId },
+      {
+        $set: {
+          status: 'processing',
+          paymentResponse: paymentDetails,
+        },
+      },
+    );
+
+    if (changePaymentStatus.modifiedCount > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    handleError(res, error, res);
   }
 }
 
@@ -102,4 +146,6 @@ module.exports = {
   addOrderDetails,
   getAddresses,
   addAdrress,
+  verifyPayment,
+  changePaymentStatus,
 };

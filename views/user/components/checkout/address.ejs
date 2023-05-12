@@ -11,12 +11,15 @@
     .card.mb-3.dash {
         border: 2px dashed #e7e7e7;
     }
+    .my-custom-card-class :hover{
+        background-color: rgb(241, 241, 241);
+    }
 </style>
 
 <div class="row card-row">
     <% addresses.forEach((address,index) => { %>
     <div id="cardBodyId" class="col-md-4">
-        <div class="card mb-3" addressId="<%= address._id %>" onclick="selectAddress('<%= address._id %>')">
+        <div class="card mb-3 my-custom-card-class" addressId="<%= address._id %>" onclick="selectAddress('<%= address._id %>')">
 
             <div class="card-body">
                 <h4 class="card-title">Shipping address <%= ++index %></h4>
@@ -35,7 +38,7 @@
     <% }) %>
     
     <div class="col-md-4"  data-bs-toggle="modal" data-bs-target="#editAddressModal">
-        <div class="card mb-3 dash">
+        <div class="card mb-3 dash my-custom-card-class">
             <div class="card-body">
                  <h4 class="card-title">Add new address</h4>
             </div>
