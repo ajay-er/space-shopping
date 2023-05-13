@@ -59,6 +59,20 @@ async function addAdrress(addressData, userId, res) {
   }
 }
 
+async function deleteAddress(addressId){
+  try{
+    const result = await addressDatabase.findByIdAndDelete(addressId);
+      console.log(result);
+      if(result){
+        return true;
+      }else{
+        return false;
+      }
+  }catch(error){
+    console.log(error);
+  }
+}
+
 async function addOrderDetails(addressId, paymentMethod, userId, res) {
   try {
     if (!['razorpay', 'cashOnDelivery', 'bankTransfer'].includes(paymentMethod)) {
@@ -68,17 +82,16 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
     //fetching the cart items and total
     const cartResult = await cartDatabase.findOne({ user: userId }).select('items total');
 
-    if(cartResult){
-
+    if (cartResult) {
       //crate transaction id
       const transactionId = crypto
         .createHash('sha256')
         .update(`${Date.now()}-${Math.floor(Math.random() * 12939)}`)
         .digest('hex')
         .substr(0, 16);
-  
+
       const orderStatus = paymentMethod === 'cashOnDelivery' ? 'processing' : 'pending';
-  
+
       const order = new orderDatabase({
         user: userId,
         items: cartResult.items,
@@ -88,13 +101,13 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
         transactionId: transactionId,
         status: orderStatus,
       });
-  
+
       await order.save();
       await cartDatabase.deleteOne({ user: userId });
-  
+
       return { status: true, order: order };
-    }else{
-      return {status:false}
+    } else {
+      return { status: false };
     }
   } catch (error) {
     handleError(res, error);
@@ -138,7 +151,43 @@ async function changePaymentStatus(orderId, paymentDetails, res) {
       return false;
     }
   } catch (error) {
-    handleError(res, error, res);
+    handleError(res, error);
+  }
+}
+
+async function fetchUserOrderDetails(userId, res) {
+  try {
+    const orders = await orderDatabase
+      .find({ user: userId })
+      .select('total status transactionId date items');
+      const addresses = await addressDatabase.find({user:userId})
+
+
+      const orderDetails = orders.map(order => ({
+        productCount: order.items.length,
+        date: order.date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }),
+        transactionId: order.transactionId,
+        total: order.total,
+        status: order.status,
+        id:order._id
+      }));
+
+      return {orderDetails:orderDetails,addresses:addresses};
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
+async function cancelOrder(orderId){
+  try{
+   const result =  await orderDatabase.updateOne({_id:orderId},{
+    $set:{
+      status:'canceled'
+    }
+   })
+  return result.modifiedCount === 1
+  }catch(error){
+    console.log(error);
   }
 }
 
@@ -148,4 +197,7 @@ module.exports = {
   addAdrress,
   verifyPayment,
   changePaymentStatus,
+  fetchUserOrderDetails,
+  cancelOrder,
+  deleteAddress,
 };

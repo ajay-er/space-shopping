@@ -43,7 +43,9 @@ const {
   httpAddAddress,
   httpVerifyPayment,
   httpSuccessPage,
-  httpFailedPage
+  httpFailedPage,
+  httpCancelOrder,
+  httpDeleteAddress,
 } = require('../controllers/order.controller');
 
 
@@ -72,10 +74,13 @@ userRouter.delete('/clear-cart',isLoggedIn,httpClearCart);
 userRouter.get('/checkout',isLoggedIn,httpGetCheckout);
 userRouter.post('/checkout',isLoggedIn,httpPostCheckout);
 userRouter.post('/add-address',isLoggedIn,httpAddAddress)
+userRouter.delete('/delete-address',isLoggedIn,httpDeleteAddress)
 
 userRouter.post('/verify-payment',isLoggedIn,httpVerifyPayment);
 userRouter.get('/order-successfull/:id',isLoggedIn,httpSuccessPage);
 userRouter.get('/order-failed/:id',isLoggedIn,httpFailedPage);
+
+userRouter.post('/order-cancel',isLoggedIn,httpCancelOrder)
 
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/logout', httpGetLogout);

@@ -5,6 +5,7 @@ const { hashPassword, comparePassword } = require('../config/security');
 async function checkUserWithEmail(email, password) {
   try {
     const user = await userDatabase.findOne({ email: email });
+
     if (!user) {
       return { status: false, message: 'Invalid email' };
     }
@@ -18,7 +19,7 @@ async function checkUserWithEmail(email, password) {
       return { status: false, message: 'Invalid password' };
     }
   } catch (error) {
-    throw new Error('Error checking user existence');
+    console.log(error);
   }
 }
 

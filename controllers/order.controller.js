@@ -4,6 +4,8 @@ const {
   addAdrress,
   verifyPayment,
   changePaymentStatus,
+  cancelOrder,
+  deleteAddress
 } = require('../models/order.model');
 
 const {cartProductTotal} = require('../models/cart.model');
@@ -104,6 +106,35 @@ async function httpFailedPage(req, res) {
   res.render('user/failed-page');
 }
 
+async function httpCancelOrder(req,res){
+  console.log(req.body);
+  try{
+    const {id} = req.body
+    const cancelResult = await cancelOrder(id);
+    if(cancelResult){
+      res.json({message:'order canceled successfully'})
+    }else{
+      res.json({message:'something wrong! cancelled operation failed'});
+    }
+  }catch(error){
+    handleError(res,error)
+  }
+}
+
+async function httpDeleteAddress(req,res){
+  try{
+    const addressResult = await deleteAddress(req.body.id);
+    if(addressResult){
+      res.redirect('/account');
+    }else{
+      res.redirect('/account');
+    }
+  }catch(error){
+
+  }
+}
+
+
 module.exports = {
   httpGetCheckout,
   httpPostCheckout,
@@ -111,4 +142,6 @@ module.exports = {
   httpVerifyPayment,
   httpSuccessPage,
   httpFailedPage,
+  httpCancelOrder,
+  httpDeleteAddress
 };

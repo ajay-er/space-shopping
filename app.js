@@ -11,6 +11,8 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const { mongoConnect } = require('./config/mongo');
 const cors = require('cors');
+const mongoSanitize = require('express-mongo-sanitize');
+var xss = require('xss-clean')
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +24,9 @@ const userRouter = require('./routes/user.router');
 //global middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(mongoSanitize());
+app.use(xss())
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('short'));
 app.use(cors());
