@@ -73,21 +73,27 @@
                                 <div class="header-action-2">
                                     <div class="header-action-icon-2">
                                         <a href="/account">
-                                            <img class="svgInject" alt="account"
-                                                src="/user/assets/imgs/theme/icons/icon-account.svg">
+                                            <% if (locals.user) { %>
+                                            <img class="svgInject" alt="account" style="border: 2px solid #000000; border-radius: 50%; padding: 2px;"
+                                            src="<%= user?.profileimage %>">
+                                                
+                                            <% }%>
+
+                                            <!-- <img class="svgInject" alt="account"
+                                                src="/user/assets/imgs/theme/icons/icon-account.svg"> -->
                                         </a>
                                     </div>
-                                    <div class="header-action-icon-2">
-                                        <a href="/wishlist">
+                                    <!-- <div class="header-action-icon-2"> -->
+                                        <!-- <a href="/wishlist">
                                             <img class="svgInject" alt="space"
                                                 src="/user/assets/imgs/theme/icons/icon-heart.svg">
-                                            <% if (locals.user) { %>
+                                            <%# if (locals.user) { %>
                                                 <span class="pro-count blue" id="wishlist-count">
-                                                    <%= locals.wishlist?.items?.length ?? 0.00 %>
+                                                    <%#= locals.wishlist?.items?.length ?? 0.00 %>
                                                 </span>
-                                                <% } %>
-                                        </a>
-                                    </div>
+                                                <%# } %>
+                                        </a> -->
+                                    <!-- </div> -->
                                     <div class="header-action-icon-2">
                                         <a class="mini-cart-icon" href="/cart">
                                             <img alt="space" src="/user/assets/imgs/theme/icons/icon-cart.svg">
@@ -200,21 +206,25 @@
                             <div class="header-action-2">
                                 <div class="header-action-icon-2">
                                     <a href="/account">
-                                        <img class="svgInject" alt="space"
-                                            src="/user/assets/imgs/theme/icons/icon-account.svg">
+                                        <!-- <img class="svgInject" alt="account"
+                                            src="/user/assets/imgs/theme/icons/icon-account.svg"> -->
+                                            <% if (locals.user) { %>
+                                            <img class="svgInject" alt="account" style="border: 2px solid #000000; border-radius: 50%; padding: 2px;"
+                                            src="<%= user?.profileimage %>">
+                                            <% } %>
 
                                     </a>
                                 </div>
-                                <div class="header-action-icon-2">
-                                    <a href="/wishlist">
+                                <!-- <div class="header-action-icon-2"> -->
+                                    <!-- <a href="/wishlist">
                                         <img alt="space" src="/user/assets/imgs/theme/icons/icon-heart.svg">
-                                        <% if (locals.user) { %>
+                                        <%# if (locals.user) { %>
                                             <span class="pro-count blue" id="wishlist-count">
-                                                <%= locals.wishlist?.items?.length ?? 0 %>
+                                                <%#= locals.wishlist?.items?.length ?? 0 %>
                                             </span>
-                                            <% } %>
-                                    </a>
-                                </div>
+                                            <%# } %>
+                                    </a> -->
+                                <!-- </div> -->
                                 <div class="header-action-icon-2">
                                     <a class="mini-cart-icon" href="/cart">
                                         <img alt="space" src="/user/assets/imgs/theme/icons/icon-cart.svg">

@@ -1,6 +1,6 @@
 function handleError(res, error) {
   console.error('💥',error);
-  res.status(500).render({error: error.message });
+  res.status(500).json({status:false,message: error?.message });
 }
 
 function multerErrorHandler(err, req, res, next) {

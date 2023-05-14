@@ -1,6 +1,8 @@
 const userDatabase = require('../schema/user.schema');
 const { sendOtp, verifyOtp } = require('../config/twilio');
 const { hashPassword, comparePassword } = require('../config/security');
+const cloudinary = require('../config/cloudinary');
+
 
 async function checkUserWithEmail(email, password) {
   try {
@@ -84,6 +86,7 @@ async function submitSignup({ username, email, phone, password, otp }) {
         phone: phone,
         password: hashedPassword,
         status: true,
+        profileimage: process.env.PROFILE_PIC,
       });
 
       await user.save();
@@ -101,10 +104,64 @@ async function submitSignup({ username, email, phone, password, otp }) {
   }
 }
 
+async function updateUserData(userData, profilePicture, userId) {
+  try {
+    if (typeof userData !== 'object' || typeof userId !== 'string') {
+      throw new Error('Invalid parameters');
+    }
+
+    const user = await userDatabase.findById(userId);
+
+    if (!user) {
+      throw new Error('User does not exist');
+    }
+
+    const isPasswordCorrect = await comparePassword(userData.password, user.password);
+
+    if (!isPasswordCorrect) {
+      throw new Error('Incorrect password');
+    }
+
+    const dataObj = {};
+
+    if (userData.npassword) {
+      dataObj.password = await hashPassword(userData.npassword);
+    }
+
+    if (userData.name) {
+      dataObj.username = userData.name;
+    }
+
+    if (profilePicture) {
+      const response = await cloudinary.uploader.upload(profilePicture.path, {
+        folder: 'space/profile_images',
+        unique_filename: true,
+      });
+      dataObj.profileimage = response.url;
+    }
+
+    const filter = { _id: userId };
+    const update = { $set: dataObj };
+    const result = await userDatabase.updateOne(filter, update);
+
+    if (result.modifiedCount > 0) {
+      return { status: true, message: 'Updated successfully' };
+    } else {
+      throw new Error('Updation failed');
+    }
+  } catch (error) {
+    console.error(error.message);
+    return { status: false, message: error.message };
+  }
+}
+
+
+
 module.exports = {
   checkUserWithEmail,
   checkUserExistOrNot,
   verifyPhoneNumber,
   sendVerificationSignup,
   submitSignup,
+  updateUserData,
 };

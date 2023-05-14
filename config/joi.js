@@ -35,8 +35,18 @@ const addressSchema = Joi.object({
   email: Joi.string().trim().email().optional(),
 });
 
+const updateUserSchema = Joi.object({
+  profileimage: Joi.any().optional(),
+  name: Joi.string().trim().min(2).max(100).optional(),
+  email: Joi.string().trim().email().optional(),
+  password: Joi.string().trim().min(6).max(30).optional(),
+  npassword: Joi.string().trim().min(6).max(30).allow('').optional(),
+  cpassword: Joi.any().valid(Joi.ref('npassword')).allow('').optional(),
+});
+
 module.exports = {
   signupSchema,
   addProductSchema,
   addressSchema,
+  updateUserSchema
 };

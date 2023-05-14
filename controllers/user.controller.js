@@ -4,13 +4,14 @@ const {
   verifyPhoneNumber,
   sendVerificationSignup,
   submitSignup,
+  updateUserData,
 } = require('../models/userAuth.model');
 
 const { fetchAllProducts } = require('../models/product.model');
 const { fetchUserOrderDetails } = require('../models/order.model');
 
 const { handleError } = require('../middlewares/error.handler');
-const { signupSchema } = require('../config/joi');
+const { signupSchema, updateUserSchema } = require('../config/joi');
 
 async function httpGetHome(req, res) {
   try {
@@ -41,7 +42,7 @@ async function httpPostLoginVerify(req, res) {
   console.log(email, password);
   try {
     const userResult = await checkUserWithEmail(email, password);
-  
+
     if (userResult?.status) {
       req.session.userloggedIn = true;
       req.session.user = userResult.user;
@@ -157,9 +158,31 @@ async function httpGetAccount(req, res) {
     const userData = req.session.user;
     if (userData) {
       const orders = await fetchUserOrderDetails(req.session.user._id, res);
-      return res.render('user/account', { userData:userData, orders:orders.orderDetails,addresses:orders.addresses });
+      return res.render('user/account', {
+        userData: userData,
+        orders: orders.orderDetails,
+        addresses: orders.addresses,
+      });
     }
     return res.render('user/account', { userData });
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
+async function httpUpdateUserdata(req, res) {
+  try {
+    const { error, value } = updateUserSchema.validate(req.body);
+    if (error) {
+      throw new Error(error.details[0].message);
+    }
+
+    const updateResult = await updateUserData(value, req.file, req.session.user._id);
+    if (updateResult.status) {
+      return res.json({status:true, message: updateResult?.message });
+    } else {
+      return res.json({status:false, message: updateResult?.message });
+    }
   } catch (error) {
     handleError(res, error);
   }
@@ -193,6 +216,7 @@ module.exports = {
   httpPostVerifyOtp,
   httpSignupOtpVerify,
   httpPostSignup,
+  httpUpdateUserdata,
 
   httpGetAccount,
   httpGetLogout,

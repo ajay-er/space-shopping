@@ -1,6 +1,8 @@
 const express = require('express');
 const userRouter = express.Router();
 
+const upload = require('../config/multer');
+
 const {
   isLoggedIn,
   isLoggedOut,
@@ -19,6 +21,7 @@ const {
   httpSignupOtpVerify,
   httpPostSignup,
   httpGetAccount,
+  httpUpdateUserdata,
   httpGetLogout,
   httpGet404,
 } = require('../controllers/user.controller');
@@ -74,7 +77,8 @@ userRouter.delete('/clear-cart',isLoggedIn,httpClearCart);
 userRouter.get('/checkout',isLoggedIn,httpGetCheckout);
 userRouter.post('/checkout',isLoggedIn,httpPostCheckout);
 userRouter.post('/add-address',isLoggedIn,httpAddAddress)
-userRouter.delete('/delete-address',isLoggedIn,httpDeleteAddress)
+userRouter.delete('/delete-address',isLoggedIn,httpDeleteAddress);
+userRouter.post('/update-userdata',upload.single('profileimage'),isLoggedIn,httpUpdateUserdata);
 
 userRouter.post('/verify-payment',isLoggedIn,httpVerifyPayment);
 userRouter.get('/order-successfull/:id',isLoggedIn,httpSuccessPage);

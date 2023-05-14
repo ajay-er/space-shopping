@@ -1,39 +1,53 @@
 <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
+    <div class="toast-container position-fixed top-0 p-3" style="z-index: 10000; right: 60px;">
+    </div>
     <div class="card">
         <div class="card-header">
             <h5>Account Details</h5>
         </div>
         <div class="card-body">
-            <p>Already have an account? <a href="/login">Log in instead!</a></p>
-            <form method="post" name="enq">
+
+
+            <form id="updateUser">
                 <div class="row">
+
+                    <label>profile picture <span class="required">*</span></label>
+                    <div class="card mb-4 mb-xl-0 profile-picture-card">
+                        <div class="card-body text-center">
+                            <img id="profilePhoto" class="img-account-profile rounded-circle mb-2"
+                                src="<%= user?.profileimage %>" alt="">
+                            <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 1 MB</div>
+                            <input name="profileimage" type="file" id="file">
+                            <label for="file" class="btn" id="uploadProfile">Choose photo</label>
+                        </div>
+                    </div>
+
+
                     <div class="form-group col-md-6">
-                        <label>First Name <span class="required">*</span></label>
-                        <input required="" class="form-control square" name="name" type="text">
+                        <label>Name <span class="required">*</span></label>
+                        <input class="form-control square" name="name" value="<%= user?.username %>" type="text">
                     </div>
-                    <div class="form-group col-md-6">
-                        <label>Last Name <span class="required">*</span></label>
-                        <input required="" class="form-control square" name="phone">
-                    </div>
-                    <div class="form-group col-md-12">
-                        <label>Display Name <span class="required">*</span></label>
-                        <input required="" class="form-control square" name="dname" type="text">
-                    </div>
+
+
                     <div class="form-group col-md-12">
                         <label>Email Address <span class="required">*</span></label>
-                        <input required="" class="form-control square" name="email" type="email">
+                        <input class="form-control square" name="email" value="<%= user?.email %>" type="email">
                     </div>
+
+
                     <div class="form-group col-md-12">
                         <label>Current Password <span class="required">*</span></label>
-                        <input required="" class="form-control square" name="password" type="password">
+                        <input class="form-control square" name="password" type="password">
                     </div>
+
                     <div class="form-group col-md-12">
                         <label>New Password <span class="required">*</span></label>
-                        <input required="" class="form-control square" name="npassword" type="password">
+                        <input class="form-control square" name="npassword" type="password">
                     </div>
+
                     <div class="form-group col-md-12">
                         <label>Confirm Password <span class="required">*</span></label>
-                        <input required="" class="form-control square" name="cpassword" type="password">
+                        <input class="form-control square" name="cpassword" type="password">
                     </div>
                     <div class="col-md-12">
                         <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit">Save</button>
@@ -43,3 +57,73 @@
         </div>
     </div>
 </div>
+
+<style>
+    #profilePhoto {
+        height: 140px;
+    }
+
+    #file {
+        display: none;
+    }
+
+    .img-account-profile {
+        border: 1px solid rgb(0, 0, 0);
+    }
+</style>
+
+<script>
+    const fileInput = document.getElementById('file');
+    const profilePicture = document.getElementById('profilePhoto');
+
+    fileInput.addEventListener('change', function () {
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                profilePicture.src = e.target.result;
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    });
+
+    const form1 = document.getElementById('updateUser');
+    form1.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form1);
+
+        fetch('/update-userdata', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    console.log('update successfully');
+                    location.reload()
+                } else {
+                    console.error(data.message);
+                    const errorMessage = data.message || 'Unknown error';
+                    const toastContainer = document.querySelector('.toast-container');
+                    const toastElement = `
+    <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 10000;">
+      <div class="d-flex">
+        <div class="toast-body">
+          ${errorMessage}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  `;
+                    toastContainer.innerHTML = toastElement;
+                    const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
+                    toast.show();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    });
+
+</script>
