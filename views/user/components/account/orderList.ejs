@@ -30,33 +30,40 @@
                                     </td>
                                     <td>
                                         <% if (order.status==='pending' ) { %>
-                                            <span style="color:#FFA500">
+                                            <span class="badge rounded-pill alert-secondary">
                                                 <%= order.status %>
                                             </span>
                                             <% } else if (order.status==='processing' ) { %>
-                                                <span style="color:#0074D9;">
+                                                <span class="badge rounded-pill alert-warning">
                                                     <%= order.status %>
                                                 </span>
                                                 <% } else if (order.status==='shipped' ) { %>
-                                                    <span style="color:#FFF700;">
+                                                    <span class="badge rounded-pill alert-info">
                                                         <%= order.status %>
                                                     </span>
                                                     <% } else if (order.status==='delivered' ) { %>
-                                                        <span style="color:#008000;">
+                                                        <span class="badge rounded-pill alert-success">
                                                             <%= order.status %>
                                                         </span>
-                                                        <% } else { %>
-                                                            <span style="color: #FF0000;">
+                                                        <% } else if (order.status==='cancelPending' ) { %>
+                                                            <span class="badge rounded-pill "
+                                                                style="background-color:rgb(253, 165, 0); color: rgb(255, 255, 255);">
                                                                 <%= order.status %>
                                                             </span>
-                                                            <% } %>
+                                                            <% } else { %>
+                                                                <span class="badge rounded-pill"
+                                                                    style="background-color:rgb(255, 0, 0); color: rgb(255, 255, 255);">
+                                                                    <%= order.status %>
+                                                                </span>
+                                                                <% } %>
                                     </td>
                                     <td>&#8377;<%= order.total %> for <%= order.productCount %> items</td>
 
-                                    <% if (order.status==='delivered' || order.status==='canceled' ) { %>
+                                    <% if (order.status==='delivered' || order.status==='canceled' ||
+                                        order.status==='cancelPending' ) { %>
                                         <td><a href="#" class="d-block  btn-sm">View</a></td>
                                         <% } else { %>
-                                            <td><a class="cancelBtn d-block btn btn-sm" 
+                                            <td><a class="cancelBtn d-block btn btn-sm"
                                                     onclick="cancelOrder('<%= order.id %>')"
                                                     style=" color: #ffffff;">cancel</a>
                                             </td>
@@ -106,8 +113,12 @@
                         'Content-Type': 'application/json'
                     }
                 }).then((response) => {
-                    console.log(response);
-                    location.reload()
+                    Swal.fire({
+                        title: 'cancelation pending!',
+                    }).then((res)=>{
+                        location.reload()
+                    })
+                    
                 }).catch(error => {
                     console.error(error);
                 })

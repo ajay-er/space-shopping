@@ -182,7 +182,7 @@ async function cancelOrder(orderId){
   try{
    const result =  await orderDatabase.updateOne({_id:orderId},{
     $set:{
-      status:'canceled'
+      status:'cancelPending'
     }
    })
   return result.modifiedCount === 1
@@ -190,6 +190,45 @@ async function cancelOrder(orderId){
     console.log(error);
   }
 }
+
+async function getAllOrders() {
+  try {
+    const orders = await orderDatabase.find().populate('user', 'username');
+  
+    if (!orders) {
+      throw new Error('No orders found');
+    }
+    return { status: true, orders: orders, message: 'Orders found successfully' };
+  } catch (error) {
+    throw new Error('Failed to fetch orders from database');
+  }
+}
+
+
+async function changeOrderStatus(changeStatus,orderId){
+  try{
+
+    if (!['shipped', 'delivered', 'canceled'].includes(changeStatus)) {
+      throw new Error('Invalid status');
+    }
+
+   const orderResult =  await orderDatabase.findByIdAndUpdate(orderId,{
+    $set:{
+      status:changeStatus
+    }
+   });
+
+   if(orderResult){
+    return {status:true,message:'order updated'};
+   }else{
+    return {status:false,message:'something goes wrong updation failed'};
+   }
+
+  }catch(error){
+    throw new Error('failed to change status!something wrong');
+  }
+}
+
 
 module.exports = {
   addOrderDetails,
@@ -200,4 +239,6 @@ module.exports = {
   fetchUserOrderDetails,
   cancelOrder,
   deleteAddress,
+  getAllOrders,
+  changeOrderStatus,
 };

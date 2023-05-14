@@ -29,10 +29,13 @@ const {
   httpPutCategory,
 } = require('../controllers/category.controller');
 
+const {httpGetOrderPage,httpChangeOrderStatus} = require('../controllers/order.controller');
+
 const {
   isAdminLoggedIn,
   isAdminLoggedOut,
 } = require('../middlewares/auth.handler');
+
 
 adminRouter.get('/', isAdminLoggedIn, httpGetDashBoard);
 adminRouter.get('/login', isAdminLoggedOut, httpGetLogin);
@@ -54,6 +57,8 @@ adminRouter.get('/edit-product/:id',isAdminLoggedIn,httpGetEditProduct);
 adminRouter.put('/edit-product',isAdminLoggedIn,httpPutProductDetails);
 adminRouter.put('/product-status/:id',isAdminLoggedIn,httpPutProduct);
 
+adminRouter.get('/orders',isAdminLoggedIn,httpGetOrderPage);
+adminRouter.post('/order-status',isAdminLoggedIn,httpChangeOrderStatus);
 
 
 adminRouter.get('*', httpGet404);

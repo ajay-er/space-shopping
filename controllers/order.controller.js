@@ -5,10 +5,12 @@ const {
   verifyPayment,
   changePaymentStatus,
   cancelOrder,
-  deleteAddress
+  deleteAddress,
+  getAllOrders,
+  changeOrderStatus,
 } = require('../models/order.model');
 
-const {cartProductTotal} = require('../models/cart.model');
+const { cartProductTotal } = require('../models/cart.model');
 
 const { generateRazorpay } = require('../config/razorpay');
 const { handleError } = require('../middlewares/error.handler');
@@ -17,13 +19,13 @@ async function httpGetCheckout(req, res) {
   try {
     const result = await getAddresses(req.session.user._id, res);
     const cartResult = await cartProductTotal(req.session.user._id);
-    if(cartResult){
+    if (cartResult) {
       if (result.status) {
         res.render('user/checkout', { addresses: result.addresses });
       } else {
         res.render('user/checkout', { addresses: [] });
       }
-    }else{
+    } else {
       res.redirect('/cart');
     }
   } catch (error) {
@@ -106,34 +108,62 @@ async function httpFailedPage(req, res) {
   res.render('user/failed-page');
 }
 
-async function httpCancelOrder(req,res){
+async function httpCancelOrder(req, res) {
   console.log(req.body);
-  try{
-    const {id} = req.body
+  try {
+    const { id } = req.body;
     const cancelResult = await cancelOrder(id);
-    if(cancelResult){
-      res.json({message:'order canceled successfully'})
-    }else{
-      res.json({message:'something wrong! cancelled operation failed'});
+    if (cancelResult) {
+      res.json({ message: 'order canceled successfully' });
+    } else {
+      res.json({ message: 'something wrong! cancelled operation failed' });
     }
-  }catch(error){
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
+async function httpDeleteAddress(req, res) {
+  try {
+    const addressResult = await deleteAddress(req.body.id);
+    if (addressResult) {
+      res.redirect('/account');
+    } else {
+      res.redirect('/account');
+    }
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
+
+async function httpGetOrderPage(req, res) {
+  try {
+    const orderResult = await getAllOrders();
+    return res.render('admin/orders', {
+      orders: orderResult.orders,
+      message: orderResult.message,
+    });
+  } catch (error) {
     handleError(res,error)
   }
 }
 
-async function httpDeleteAddress(req,res){
+async function httpChangeOrderStatus(req,res){
   try{
-    const addressResult = await deleteAddress(req.body.id);
-    if(addressResult){
-      res.redirect('/account');
+  const {orderId,status} =  req.body;
+    const result = await changeOrderStatus(status,orderId);
+    if(result.status){
+      return res.json({success:true,message:result.message})
     }else{
-      res.redirect('/account');
-    }
-  }catch(error){
+      return res.json({success:false,message:result.message})
 
+    }
+
+  }catch(error){
+    handleError(res,error)
   }
 }
-
 
 module.exports = {
   httpGetCheckout,
@@ -143,5 +173,7 @@ module.exports = {
   httpSuccessPage,
   httpFailedPage,
   httpCancelOrder,
-  httpDeleteAddress
+  httpDeleteAddress,
+  httpGetOrderPage,
+  httpChangeOrderStatus,
 };

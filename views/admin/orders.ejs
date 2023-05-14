@@ -12,7 +12,41 @@
     <%- include("./layouts/sidebar.ejs") %>
     <main class="main-wrap">
     <%- include("./layouts/header.ejs") %>
-    <%- include("./components/orders/orders-list.ejs") %>
+
+
+
+    <section class="content-main">
+        <%- include('./components/orders/content-header.ejs') %>
+        <div class="card mb-4">
+           
+            <%- include('./components/orders/card-header.ejs') %>
+            <%- include('./components/orders/card-body.ejs') %>
+
+           
+        </div> <!-- card end// -->
+        <div class="pagination-area mt-15 mb-50">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-start">
+                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                    <li class="page-item"><a class="page-link" href="#">02</a></li>
+                    <li class="page-item"><a class="page-link" href="#">03</a></li>
+                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                    <li class="page-item"><a class="page-link" href="#">16</a></li>
+                    <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+                </ul>
+            </nav>
+        </div>
+    </section> <!-- content-main end// -->
+
+
+
+
+
+
+
+
+
+
     <%- include("./layouts/admin-footer.ejs") %>
 </main>
 <%- include("./components/script/script.ejs") %>

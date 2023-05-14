@@ -105,6 +105,8 @@ async function submitSignup({ username, email, phone, password, otp }) {
 }
 
 async function updateUserData(userData, profilePicture, userId) {
+  console.log(typeof userData);
+  console.log(typeof userId);
   try {
     if (typeof userData !== 'object' || typeof userId !== 'string') {
       throw new Error('Invalid parameters');

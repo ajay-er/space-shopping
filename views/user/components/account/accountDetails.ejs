@@ -7,10 +7,8 @@
         </div>
         <div class="card-body">
 
-
             <form id="updateUser">
                 <div class="row">
-
                     <label>profile picture <span class="required">*</span></label>
                     <div class="card mb-4 mb-xl-0 profile-picture-card">
                         <div class="card-body text-center">
@@ -50,7 +48,8 @@
                         <input class="form-control square" name="cpassword" type="password">
                     </div>
                     <div class="col-md-12">
-                        <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit">Save</button>
+                        <button type="submit" class="btn btn-fill-out submit" id="buttonSub" name="submit"
+                            value="Submit">Save</button>
                     </div>
                 </div>
             </form>
@@ -73,6 +72,7 @@
 </style>
 
 <script>
+
     const fileInput = document.getElementById('file');
     const profilePicture = document.getElementById('profilePhoto');
 
@@ -91,6 +91,7 @@
     form1.addEventListener('submit', (event) => {
         event.preventDefault();
 
+        document.getElementById('buttonSub').disabled = true;
         const formData = new FormData(form1);
 
         fetch('/update-userdata', {
@@ -103,19 +104,21 @@
                     console.log('update successfully');
                     location.reload()
                 } else {
+                    document.getElementById('buttonSub').disabled = false;
+
                     console.error(data.message);
                     const errorMessage = data.message || 'Unknown error';
                     const toastContainer = document.querySelector('.toast-container');
                     const toastElement = `
-    <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 10000;">
-      <div class="d-flex">
+                <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 10000;">
+                 <div class="d-flex">
         <div class="toast-body">
           ${errorMessage}
         </div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
-    </div>
-  `;
+         </div>
+         `;
                     toastContainer.innerHTML = toastElement;
                     const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
                     toast.show();
