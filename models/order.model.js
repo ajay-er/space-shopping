@@ -159,7 +159,7 @@ async function fetchUserOrderDetails(userId, res) {
   try {
     const orders = await orderDatabase
       .find({ user: userId })
-      .select('total status transactionId date items');
+      .select('total status transactionId date items').sort({ date: -1 });
       const addresses = await addressDatabase.find({user:userId})
 
 
@@ -191,14 +191,21 @@ async function cancelOrder(orderId){
   }
 }
 
-async function getAllOrders() {
+async function getAllOrders(page,limit) {
   try {
-    const orders = await orderDatabase.find().populate('user', 'username');
+    const orders = await orderDatabase.find()
+      .populate('user', 'username')
+      .skip((page - 1) * limit)
+      .limit(limit);
   
     if (!orders) {
       throw new Error('No orders found');
     }
-    return { status: true, orders: orders, message: 'Orders found successfully' };
+
+    const totalOrders = await orderDatabase.countDocuments();
+    const totalPages = Math.ceil(totalOrders / limit);
+    
+    return { status: true,limit:limit, orders: orders, totalPages: totalPages, currentPage: page, message: 'Orders found successfully' };
   } catch (error) {
     throw new Error('Failed to fetch orders from database');
   }

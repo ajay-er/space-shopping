@@ -9,9 +9,10 @@ const {
   httpPostLogin,
   httpGetLogout,
   httpGetUsers,
-
   httpPutBlockUser,
   httpGet404,
+  httpGetGraphData,
+  httpGetChartData,
 } = require('../controllers/admin.controller');
 
 const {
@@ -60,6 +61,8 @@ adminRouter.put('/product-status/:id',isAdminLoggedIn,httpPutProduct);
 adminRouter.get('/orders',isAdminLoggedIn,httpGetOrderPage);
 adminRouter.post('/order-status',isAdminLoggedIn,httpChangeOrderStatus);
 
+adminRouter.get('/graph',isAdminLoggedIn,httpGetGraphData);
+adminRouter.get('/chart',isAdminLoggedIn,httpGetChartData);
 
 adminRouter.get('*', httpGet404);
 
