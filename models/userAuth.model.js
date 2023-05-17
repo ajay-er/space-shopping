@@ -105,8 +105,7 @@ async function submitSignup({ username, email, phone, password, otp }) {
 }
 
 async function updateUserData(userData, profilePicture, userId) {
-  console.log(typeof userData);
-  console.log(typeof userId);
+  
   try {
     if (typeof userData !== 'object' || typeof userId !== 'string') {
       throw new Error('Invalid parameters');
@@ -147,7 +146,7 @@ async function updateUserData(userData, profilePicture, userId) {
     const result = await userDatabase.updateOne(filter, update);
 
     if (result.modifiedCount > 0) {
-      return { status: true, message: 'Updated successfully' };
+      return { status: true, message: 'Updated successfully'};
     } else {
       throw new Error('Updation failed');
     }
@@ -156,6 +155,7 @@ async function updateUserData(userData, profilePicture, userId) {
     return { status: false, message: error.message };
   }
 }
+
 
 
 

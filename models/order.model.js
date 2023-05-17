@@ -59,16 +59,16 @@ async function addAdrress(addressData, userId, res) {
   }
 }
 
-async function deleteAddress(addressId){
-  try{
+async function deleteAddress(addressId) {
+  try {
     const result = await addressDatabase.findByIdAndDelete(addressId);
-      console.log(result);
-      if(result){
-        return true;
-      }else{
-        return false;
-      }
-  }catch(error){
+    console.log(result);
+    if (result) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
     console.log(error);
   }
 }
@@ -159,80 +159,126 @@ async function fetchUserOrderDetails(userId, res) {
   try {
     const orders = await orderDatabase
       .find({ user: userId })
-      .select('total status transactionId date items').sort({ date: -1 });
-      const addresses = await addressDatabase.find({user:userId})
+      .select('total status transactionId date items')
+      .sort({ date: -1 });
+    const addresses = await addressDatabase.find({ user: userId });
 
+    const orderDetails = orders.map((order) => ({
+      productCount: order.items.length,
+      date: order.date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }),
+      transactionId: order.transactionId,
+      total: order.total,
+      status: order.status,
+      id: order._id,
+    }));
 
-      const orderDetails = orders.map(order => ({
-        productCount: order.items.length,
-        date: order.date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }),
-        transactionId: order.transactionId,
-        total: order.total,
-        status: order.status,
-        id:order._id
-      }));
-
-      return {orderDetails:orderDetails,addresses:addresses};
+    return { orderDetails: orderDetails, addresses: addresses };
   } catch (error) {
     handleError(res, error);
   }
 }
 
-async function cancelOrder(orderId){
-  try{
-   const result =  await orderDatabase.updateOne({_id:orderId},{
-    $set:{
-      status:'cancelPending'
-    }
-   })
-  return result.modifiedCount === 1
-  }catch(error){
+async function cancelOrder(orderId) {
+  try {
+    const result = await orderDatabase.updateOne(
+      { _id: orderId },
+      {
+        $set: {
+          status: 'cancelPending',
+        },
+      },
+    );
+    return result.modifiedCount === 1;
+  } catch (error) {
     console.log(error);
   }
 }
 
-async function getAllOrders(page,limit) {
+async function getAllOrders(page, limit) {
   try {
-    const orders = await orderDatabase.find()
+    const orders = await orderDatabase
+      .find()
       .populate('user', 'username')
       .skip((page - 1) * limit)
       .limit(limit);
-  
+
     if (!orders) {
       throw new Error('No orders found');
     }
 
     const totalOrders = await orderDatabase.countDocuments();
     const totalPages = Math.ceil(totalOrders / limit);
-    
-    return { status: true,limit:limit, orders: orders, totalPages: totalPages, currentPage: page, message: 'Orders found successfully' };
+
+    return {
+      status: true,
+      limit: limit,
+      orders: orders,
+      totalPages: totalPages,
+      currentPage: page,
+      message: 'Orders found successfully',
+    };
   } catch (error) {
     throw new Error('Failed to fetch orders from database');
   }
 }
 
-
-async function changeOrderStatus(changeStatus,orderId){
-  try{
-
+async function changeOrderStatus(changeStatus, orderId) {
+  try {
     if (!['shipped', 'delivered', 'canceled'].includes(changeStatus)) {
       throw new Error('Invalid status');
     }
 
-   const orderResult =  await orderDatabase.findByIdAndUpdate(orderId,{
-    $set:{
-      status:changeStatus
+    const orderResult = await orderDatabase.findByIdAndUpdate(orderId, {
+      $set: {
+        status: changeStatus,
+      },
+    });
+
+    if (orderResult) {
+      return { status: true, message: 'order updated' };
+    } else {
+      return { status: false, message: 'something goes wrong updation failed' };
     }
-   });
-
-   if(orderResult){
-    return {status:true,message:'order updated'};
-   }else{
-    return {status:false,message:'something goes wrong updation failed'};
-   }
-
-  }catch(error){
+  } catch (error) {
     throw new Error('failed to change status!something wrong');
+  }
+}
+
+
+async function getOrderData() {
+  try {
+    const orders = await orderDatabase
+      .find({ status: "delivered" })
+      .populate({
+        path: "items.product",
+        model: "Product",
+      })
+      .populate("shippingAddress")
+      .populate("user");
+
+    const reportData = [];
+
+    for (const order of orders) {
+      for (const item of order.items) {
+        const { product, quantity, price } = item;
+
+        const entry = {
+          date: order.date,
+          product: product.productName,
+          quantity,
+          price,
+        };
+
+        reportData.push(entry);
+      }
+    }
+    return reportData;
+  } catch (error) {
+    throw new Error('Oops! Something went wrong while fetching order data');
   }
 }
 
@@ -248,4 +294,5 @@ module.exports = {
   deleteAddress,
   getAllOrders,
   changeOrderStatus,
+  getOrderData,
 };

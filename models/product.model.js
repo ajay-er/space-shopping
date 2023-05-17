@@ -1,11 +1,19 @@
 const productDatabase = require('../schema/product.schema');
 const cloudinary = require('../config/cloudinary');
 
-async function fetchAllProducts() {
+async function fetchAllProducts(page, limit) {
   try {
     try {
-      const products = await productDatabase.find().populate('productCategory').exec();
-      return { status: true, products };
+      const products = await productDatabase
+        .find()
+        .populate('productCategory')
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+        const totalProducts = await productDatabase.countDocuments();
+        const totalPages = Math.ceil(totalProducts / limit);
+
+      return { status: true, products: products, totalPages: totalPages, currentPage: page,limit:limit };
     } catch (error) {
       console.log(error);
       return { status: false, message: error.message };

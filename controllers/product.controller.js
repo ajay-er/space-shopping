@@ -14,12 +14,19 @@ const {
 
 async function httpGetProducts(req, res) {
   try {
-    const productsResult = await fetchAllProducts()
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const productsResult = await fetchAllProducts(page,limit)
     const categoryResult = await fetchCategories()
+
     if (productsResult.status) {
       return res.render('admin/products', {
         product: productsResult.products,
         categories: categoryResult.categories,
+        totalPages:productsResult.totalPages,
+        currentPage:productsResult.currentPage,
+        limit: productsResult.limit 
       })
     } else {
       return res.render('admin/products', { product: [], categories: [] })

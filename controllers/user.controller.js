@@ -155,7 +155,8 @@ async function httpPostSignup(req, res) {
 
 async function httpGetAccount(req, res) {
   try {
-    const userData = req.session.user;
+
+    const userData = req.session?.user;
     if (userData) {
       const orders = await fetchUserOrderDetails(req.session.user._id, res);
       return res.render('user/account', {

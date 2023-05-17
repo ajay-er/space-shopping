@@ -3,11 +3,18 @@ const orderDatabase = require('../schema/order.schema');
 const productDatabase = require('../schema/product.schema');
 const categoryDatabase = require('../schema/category.schema');
 
-async function fetchAllUsers() {
+async function fetchAllUsers(page, limit) {
   try {
-    const users = await userDatabase.find({});
+    const users = await userDatabase
+      .find({})
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const totalOrders = await userDatabase.countDocuments();
+    const totalPages = Math.ceil(totalOrders / limit);
+
     if (users) {
-      return { status: true, users };
+      return { status: true, users, totalPages, limit, page };
     } else {
       return { status: false };
     }

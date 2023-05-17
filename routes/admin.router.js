@@ -13,6 +13,7 @@ const {
   httpGet404,
   httpGetGraphData,
   httpGetChartData,
+  httpGetReport,
 } = require('../controllers/admin.controller');
 
 const {
@@ -30,13 +31,9 @@ const {
   httpPutCategory,
 } = require('../controllers/category.controller');
 
-const {httpGetOrderPage,httpChangeOrderStatus} = require('../controllers/order.controller');
+const { httpGetOrderPage, httpChangeOrderStatus } = require('../controllers/order.controller');
 
-const {
-  isAdminLoggedIn,
-  isAdminLoggedOut,
-} = require('../middlewares/auth.handler');
-
+const { isAdminLoggedIn, isAdminLoggedOut } = require('../middlewares/auth.handler');
 
 adminRouter.get('/', isAdminLoggedIn, httpGetDashBoard);
 adminRouter.get('/login', isAdminLoggedOut, httpGetLogin);
@@ -52,17 +49,24 @@ adminRouter.put('/user-status', isAdminLoggedIn, httpPutBlockUser);
 
 adminRouter.get('/products', isAdminLoggedIn, httpGetProducts);
 adminRouter.get('/add-products', isAdminLoggedIn, httpGetAddProduct);
-adminRouter.post('/add-products',upload.array('productImage',4), isAdminLoggedIn, httpPostAddProduct);
+adminRouter.post(
+  '/add-products',
+  upload.array('productImage', 4),
+  isAdminLoggedIn,
+  httpPostAddProduct,
+);
 
-adminRouter.get('/edit-product/:id',isAdminLoggedIn,httpGetEditProduct);
-adminRouter.put('/edit-product',isAdminLoggedIn,httpPutProductDetails);
-adminRouter.put('/product-status/:id',isAdminLoggedIn,httpPutProduct);
+adminRouter.get('/edit-product/:id', isAdminLoggedIn, httpGetEditProduct);
+adminRouter.put('/edit-product', isAdminLoggedIn, httpPutProductDetails);
+adminRouter.put('/product-status/:id', isAdminLoggedIn, httpPutProduct);
 
-adminRouter.get('/orders',isAdminLoggedIn,httpGetOrderPage);
-adminRouter.post('/order-status',isAdminLoggedIn,httpChangeOrderStatus);
+adminRouter.get('/orders', isAdminLoggedIn, httpGetOrderPage);
+adminRouter.post('/order-status', isAdminLoggedIn, httpChangeOrderStatus);
 
-adminRouter.get('/graph',isAdminLoggedIn,httpGetGraphData);
-adminRouter.get('/chart',isAdminLoggedIn,httpGetChartData);
+adminRouter.get('/graph', isAdminLoggedIn, httpGetGraphData);
+adminRouter.get('/chart', isAdminLoggedIn, httpGetChartData);
+
+adminRouter.get('/sales-report', isAdminLoggedIn, httpGetReport);
 
 adminRouter.get('*', httpGet404);
 

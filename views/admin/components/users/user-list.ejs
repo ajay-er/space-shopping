@@ -22,8 +22,7 @@
                                 <td width="40%">
                                     <a href="#" class="itemside">
                                         <div class="left">
-                                            <img src="<%= user.profileimage %>" class="img-sm img-avatar"
-                                                alt="Userpic">
+                                            <img src="<%= user.profileimage %>" class="img-sm img-avatar" alt="Userpic">
                                         </div>
                                         <div class="info pl-3">
                                             <h6 id="username" class="mb-0 title">
@@ -59,13 +58,28 @@
     <div class="pagination-area mt-15 mb-50">
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-start">
-                <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                <li class="page-item"><a class="page-link" href="#">02</a></li>
-                <li class="page-item"><a class="page-link" href="#">03</a></li>
-                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                <li class="page-item"><a class="page-link" href="#">16</a></li>
-                <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                </li>
+                <% if(currentPage> 1) { %>
+                    <li class="page-item"><a class="page-link"
+                            href="/admin/users?page=<%=currentPage-1%>&limit=<%=limit%>"><i
+                                class="material-icons md-chevron_left"></i></a></li>
+                    <% } %>
+                        <% for (let i=1; i<=totalPages; i++) { %>
+                            <% if (i===currentPage) { %>
+                                <li class="page-item active"><a class="page-link" href="#">
+                                        <%= i %>
+                                    </a></li>
+                                <% } else { %>
+                                    <li class="page-item"><a class="page-link"
+                                            href="/admin/users?page=<%=i%>&limit=<%=limit%>">
+                                            <%= i %>
+                                        </a></li>
+                                    <% } %>
+                                        <% } %>
+                                            <% if (currentPage < totalPages) { %>
+                                                <li class="page-item"><a class="page-link"
+                                                        href="/admin/users?page=<%=currentPage+1%>&limit=<%=limit%>"><i
+                                                            class="material-icons md-chevron_right"></i></a></li>
+                                                <% } %>
             </ul>
         </nav>
     </div>

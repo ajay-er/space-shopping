@@ -8,6 +8,9 @@ const {
   getDashBoardData,
 } = require('../models/admin.model');
 
+const { generateSalesReport } = require('../config/pdfKit');
+const { getOrderData } = require('../models/order.model');
+
 /**
  * This function renders the admin dashboard page in response to an HTTP GET request.
  * @param req - The `req` parameter is an object that represents the HTTP request made by the client to
@@ -93,9 +96,17 @@ async function httpPostLogin(req, res) {
  */
 async function httpGetUsers(req, res) {
   try {
-    const response = await fetchAllUsers();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const response = await fetchAllUsers(page, limit);
     if (response.status) {
-      res.render('admin/users', { users: response.users });
+      res.render('admin/users', {
+        users: response.users,
+        totalPages: response.totalPages,
+        currentPage: response.currentPage,
+        limit: response.limit,
+      });
     } else {
       throw new Error('Failed to fetch users');
     }
@@ -208,6 +219,15 @@ async function httpGetChartData(req, res) {
   }
 }
 
+async function httpGetReport(req, res) {
+  try {
+    const reportData = await getOrderData();
+     generateSalesReport(reportData, res);
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
 module.exports = {
   httpGetDashBoard,
   httpGetLogin,
@@ -218,4 +238,5 @@ module.exports = {
   httpGet404,
   httpGetGraphData,
   httpGetChartData,
+  httpGetReport,
 };
