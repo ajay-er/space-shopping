@@ -260,6 +260,14 @@ async function httpChangeOrderStatus(req, res) {
   }
 }
 
+async function httpGetWallet(req,res){
+  try{
+    res.render('user/wallet')
+  }catch(error){
+    handleError(res,error);
+  }
+}
+
 module.exports = {
   httpGetCheckout,
   httpPostCheckout,
@@ -272,4 +280,5 @@ module.exports = {
   httpDeleteAddress,
   httpGetOrderPage,
   httpChangeOrderStatus,
+  httpGetWallet
 };
