@@ -68,7 +68,7 @@
                             <div class="row product-grid-3">
 
                                 <% products.forEach(product => { %>
-                                 
+                                  
                                 <div class="col-lg-3 col-md-4">
                                     <div class="product-cart-wrap mb-30">
                                         <div class="product-img-action-wrap">
@@ -123,19 +123,34 @@
                                 
                             </div>
                             <!--pagination-->
-                            <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+                            <div class="pagination-area mt-15 mb-50">
                                 <nav aria-label="Page navigation example">
-                                    <ul class="pagination justify-content-start">
-                                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                                        <li class="page-item"><a class="page-link" href="#"><i
-                                                    class="fi-rs-angle-double-small-right"></i></a></li>
-                                    </ul>
+                                  <ul class="pagination justify-content-start">
+                                    <% if(currentPage> 1) { %>
+                                      <li class="page-item"><a class="page-link"
+                                          href="/shop?page=<%=currentPage-1%>&limit=<%=limit%>"><i
+                                            class="material-icons md-chevron_left"></i></a></li>
+                                      <% } %>
+                                        <% for (let i=1; i<=totalPages; i++) { %>
+                                          <% if (i===currentPage) { %>
+                                            <li class="page-item active"><a class="page-link" href="#">
+                                                <%= i %>
+                                              </a></li>
+                                            <% } else { %>
+                                              <li class="page-item"><a class="page-link"
+                                                  href="/shop?page=<%=i%>&limit=<%=limit%>">
+                                                  <%= i %>
+                                                </a></li>
+                                              <% } %>
+                                                <% } %>
+                                                  <% if (currentPage < totalPages) { %>
+                                                    <li class="page-item"><a class="page-link"
+                                                        href="/shop?page=<%=currentPage+1%>&limit=<%=limit%>"><i
+                                                          class="material-icons md-chevron_right"></i></a></li>
+                                                    <% } %>
+                                  </ul>
                                 </nav>
-                            </div>
+                              </div>
                         </div>
                     </div>
                 </div>

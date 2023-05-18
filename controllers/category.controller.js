@@ -21,7 +21,8 @@ async function httpGetCategories(req, res) {
   try {
     const response = await fetchCategories();
     if (response.status) {
-      res.render('admin/categories', { category: response.categories });
+      res.render('admin/categories', { category: response.categories ,activePage:'categories'
+    });
     } else {
       res.render('admin/categories', { category: [] });
     }

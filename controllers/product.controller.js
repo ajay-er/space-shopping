@@ -26,7 +26,8 @@ async function httpGetProducts(req, res) {
         categories: categoryResult.categories,
         totalPages:productsResult.totalPages,
         currentPage:productsResult.currentPage,
-        limit: productsResult.limit 
+        limit: productsResult.limit,
+        activePage:'products'
       })
     } else {
       return res.render('admin/products', { product: [], categories: [] })
@@ -41,6 +42,7 @@ async function httpGetAddProduct(req, res) {
     const categoryResult = await fetchCategories()
     return res.render('admin/add-products', {
       categories: categoryResult.categories,
+      activePage:'addproduct'
     })
   } catch (error) {
     handleError(res, error)
@@ -76,6 +78,8 @@ async function httpGetEditProduct(req, res) {
       res.render('admin/update-products', {
         categories: categoryResult.categories,
         product: productResult.product,
+        activePage:'products',
+
       })
     } else {
       res.status(404).json({ error: 'Product not found' })
@@ -114,7 +118,7 @@ async function httpPutProductDetails(req, res) {
 async function httpGetProduct(req, res) {
   try {
     const productId = req.params.id
-    const productResult = await fetchProduct(productId)
+    const productResult = await fetchProduct(productId);
     const allProductsResult = await fetchAllProducts()
     if (productResult.status) {
       res.render('user/product', {
@@ -131,8 +135,15 @@ async function httpGetProduct(req, res) {
 
 async function httpGetAllProducts(req, res) {
   try {
-    const allProductsResult = await fetchAllProducts()
-    res.render('user/all-products', { products: allProductsResult.products })
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    
+    const allProductsResult = await fetchAllProducts(page,limit)
+    res.render('user/all-products', { products: allProductsResult.products,
+      totalPages:allProductsResult.totalPages,
+      currentPage:allProductsResult.currentPage,
+      limit: allProductsResult.limit,
+     })
   } catch (error) {
     handleError(res, error)
   }

@@ -29,6 +29,7 @@ async function httpGetDashBoard(req, res) {
       totalProductsCount: result.totalProductsCount,
       totalCategoriesCount: result.totalCategoriesCount,
       currentMonthEarnings: result.currentMonthEarnings,
+      activePage:'dashboard'
     });
   } catch (error) {
     handleError(res, error);
@@ -106,6 +107,7 @@ async function httpGetUsers(req, res) {
         totalPages: response.totalPages,
         currentPage: response.currentPage,
         limit: response.limit,
+        activePage:'users'
       });
     } else {
       throw new Error('Failed to fetch users');

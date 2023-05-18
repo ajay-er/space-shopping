@@ -5,7 +5,7 @@ async function fetchAllProducts(page, limit) {
   try {
     try {
       const products = await productDatabase
-        .find()
+        .find({ productStatus: true })
         .populate('productCategory')
         .skip((page - 1) * limit)
         .limit(limit);
