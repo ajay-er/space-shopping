@@ -56,10 +56,10 @@
                                                                     <%= order.status %>
                                                                 </span>
                                                                 <% } else if (order.status==='returned' ) { %>
-                                                                    <span class="badge rounded-pill "
+                                                                   <a href="/wallet"> <span class="badge rounded-pill "
                                                                         style="background-color:rgb(106, 136, 255); color: rgb(255, 255, 255);">
-                                                                        <%= order.status %>
-                                                                    </span>
+                                                                         Refunded credited
+                                                                    </span></a>
                                                                     <% } else { %>
                                                                         <span class="badge rounded-pill"
                                                                             style="background-color:rgb(255, 0, 0); color: rgb(255, 255, 255);">

@@ -32,6 +32,9 @@ const userSchema = new mongoose.Schema({
   },
   profileimage:{
     type: String,
+  },
+  wallet:{
+    type:Number,
   }
 });
 

@@ -71,6 +71,7 @@
                             </div>
                             <div class="header-action-right">
                                 <div class="header-action-2">
+                                    
                                     <div class="header-action-icon-2">
                                         <a href="/account">
                                             <% if (locals.user) { %>
@@ -81,6 +82,16 @@
 
                                             <!-- <img class="svgInject" alt="account"
                                                 src="/user/assets/imgs/theme/icons/icon-account.svg"> -->
+                                        </a>
+                                    </div>
+
+                                    <div class="header-action-icon-2">
+                                        <a href="/wallet">
+                                            <% if (locals.user) { %>
+                                            <img class="svgInject" alt="account" 
+                                            src="/user/assets/imgs/theme/icons/wallet.svg">
+                                                
+                                            <% }%>
                                         </a>
                                     </div>
                                     <!-- <div class="header-action-icon-2"> -->

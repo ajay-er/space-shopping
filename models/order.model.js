@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const addressDatabase = require('../schema/address.schema');
 const orderDatabase = require('../schema/order.schema');
 const cartDatabase = require('../schema/cart.schema');
+const userDatabase = require('../schema/user.schema');
 
 const { addressSchema } = require('../config/joi');
 const { handleError } = require('../middlewares/error.handler');
@@ -284,6 +285,19 @@ async function changeOrderStatus(changeStatus, orderId) {
         status: changeStatus,
       },
     });
+
+    console.log(orderResult);
+
+    if(changeStatus === 'returned'){
+      const orderResult = await orderDatabase.findById(orderId).select('total user');
+      console.log(orderResult);
+
+     const walletResult =  await userDatabase.findByIdAndUpdate(orderResult.user,{
+        $set: {
+          wallet: orderResult.total,
+        },
+      });  
+    }
 
     if (orderResult) {
       return { status: true, message: 'order updated' };
