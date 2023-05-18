@@ -20,7 +20,7 @@ const orderSchema = new mongoose.Schema({
       price: {
         type: Number,
         required: true,
-      }
+      },
     },
   ],
   shippingAddress: {
@@ -38,13 +38,24 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'processing', 'shipped', 'delivered', 'canceled','cancelPending'],
+    enum: ['pending', 'processing', 'shipped', 'delivered', 'canceled', 'cancelPending','returnPending','returned'],
     default: 'pending',
   },
-  paymentResponse:[],
+  paymentResponse: [],
   total: {
     type: Number,
     required: true,
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['failed', 'success'],
+    default: 'failed',
+  },
+  cancel_reason: {
+    type: String,
+  },
+  return_reason:{
+    type: String,
   },
   date: {
     type: Date,

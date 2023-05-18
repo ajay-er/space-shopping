@@ -5,9 +5,11 @@ const {
   verifyPayment,
   changePaymentStatus,
   cancelOrder,
+  returnOrder,
   deleteAddress,
   getAllOrders,
   changeOrderStatus,
+  setSuccessStatus,
 } = require('../models/order.model');
 
 const { cartProductTotal } = require('../models/cart.model');
@@ -98,7 +100,12 @@ async function httpPostCheckout(req, res) {
 
     if (checkoutResult.status) {
       if (paymentmethod === 'cashOnDelivery') {
-        return res.json({ success: true, paymethod: 'COD', message: 'order details added!' });
+        return res.json({
+          success: true,
+          paymethod: 'COD',
+          message: 'order details added!',
+          orderId: checkoutResult.order._id,
+        });
       } else if (paymentmethod === 'razorpay') {
         const razorPayOrder = await generateRazorpay(checkoutResult.order);
         return res.json({
@@ -163,21 +170,43 @@ async function httpVerifyPayment(req, res) {
  * response to the
  */
 async function httpSuccessPage(req, res) {
+  const id = req.params.id;
+  await setSuccessStatus(id);
   res.render('user/success-page');
 }
 async function httpFailedPage(req, res) {
   res.render('user/failed-page');
 }
 
+/**
+ * This is an asynchronous function that cancels an order and returns a success or failure message in
+ * JSON format.
+ * @param req - The request object containing information about the incoming HTTP request.
+ * @param res - The `res` parameter in the `httpCancelOrder` function is an object representing the
+ * HTTP response that will be sent back to the client. It contains methods and properties that allow
+ * the server to send data, headers, and status codes back to the client.
+ */
 async function httpCancelOrder(req, res) {
-  console.log(req.body);
   try {
-    const { id } = req.body;
-    const cancelResult = await cancelOrder(id);
+    const { id, cancelreason } = req.body;
+    const cancelResult = await cancelOrder(id, cancelreason);
     if (cancelResult) {
-      res.json({ message: 'order canceled successfully' });
+      res.json({ message: 'order canceled successfully', success: true });
     } else {
-      res.json({ message: 'something wrong! cancelled operation failed' });
+      res.json({ success: false, message: 'something wrong! cancelled operation failed' });
+    }
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+async function httpReturnOrder(req, res) {
+  try {
+    const { id, returnReason } = req.body;
+    const cancelResult = await returnOrder(id, returnReason);
+    if (cancelResult) {
+      res.json({ message: 'order return successfully', success: true });
+    } else {
+      res.json({ success: false, message: 'something wrong! return operation failed' });
     }
   } catch (error) {
     handleError(res, error);
@@ -197,39 +226,35 @@ async function httpDeleteAddress(req, res) {
   }
 }
 
-
 async function httpGetOrderPage(req, res) {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
 
-    const orderResult = await getAllOrders(page,limit);
+    const orderResult = await getAllOrders(page, limit);
     return res.render('admin/orders', {
       orders: orderResult.orders,
       message: orderResult.message,
-      totalPages:orderResult.totalPages,
-      currentPage:orderResult.currentPage,
-      limit: orderResult.limit 
-
+      totalPages: orderResult.totalPages,
+      currentPage: orderResult.currentPage,
+      limit: orderResult.limit,
     });
   } catch (error) {
-    handleError(res,error)
+    handleError(res, error);
   }
 }
 
-async function httpChangeOrderStatus(req,res){
-  try{
-  const {orderId,status} =  req.body;
-    const result = await changeOrderStatus(status,orderId);
-    if(result.status){
-      return res.json({success:true,message:result.message})
-    }else{
-      return res.json({success:false,message:result.message})
-
+async function httpChangeOrderStatus(req, res) {
+  try {
+    const { orderId, status } = req.body;
+    const result = await changeOrderStatus(status, orderId);
+    if (result.status) {
+      return res.json({ success: true, message: result.message });
+    } else {
+      return res.json({ success: false, message: result.message });
     }
-
-  }catch(error){
-    handleError(res,error)
+  } catch (error) {
+    handleError(res, error);
   }
 }
 
@@ -241,6 +266,7 @@ module.exports = {
   httpSuccessPage,
   httpFailedPage,
   httpCancelOrder,
+  httpReturnOrder,
   httpDeleteAddress,
   httpGetOrderPage,
   httpChangeOrderStatus,

@@ -243,7 +243,9 @@ async function calculateTotalRevenue() {
 
 async function calculateTotalOrdersCount() {
   try {
-    const totalOrdersCount = await orderDatabase.countDocuments();
+    const totalOrdersCount = await orderDatabase
+      .find({ status: { $in: ['shipped', 'processing'] } })
+      .countDocuments();
     return totalOrdersCount;
   } catch (error) {
     throw new Error(`Error calculating total orders count: ${error.message}`);

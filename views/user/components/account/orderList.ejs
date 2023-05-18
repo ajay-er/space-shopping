@@ -13,7 +13,7 @@
                                 <th>Date</th>
                                 <th>Status</th>
                                 <th>Total</th>
-                                <th>Actions</th>
+                                <th>Actions/Details</th>
                             </tr>
                             <% } %>
 
@@ -29,9 +29,9 @@
                                         <%= order.date %>
                                     </td>
                                     <td>
-                                        <% if (order.status==='pending' ) { %>
-                                            <span class="badge rounded-pill alert-secondary">
-                                                <%= order.status %>
+                                        <% if (order.paymentStatus==='failed' ) { %>
+                                            <span class="badge rounded-pill alert-danger">
+                                                payment failed
                                             </span>
                                             <% } else if (order.status==='processing' ) { %>
                                                 <span class="badge rounded-pill alert-warning">
@@ -50,27 +50,63 @@
                                                                 style="background-color:rgb(253, 165, 0); color: rgb(255, 255, 255);">
                                                                 <%= order.status %>
                                                             </span>
-                                                            <% } else { %>
-                                                                <span class="badge rounded-pill"
-                                                                    style="background-color:rgb(255, 0, 0); color: rgb(255, 255, 255);">
+                                                            <% } else if (order.status==='returnPending' ) { %>
+                                                                <span class="badge rounded-pill "
+                                                                    style="background-color:rgb(255, 212, 133); color: rgb(255, 255, 255);">
                                                                     <%= order.status %>
                                                                 </span>
-                                                                <% } %>
+                                                                <% } else if (order.status==='returned' ) { %>
+                                                                    <span class="badge rounded-pill "
+                                                                        style="background-color:rgb(106, 136, 255); color: rgb(255, 255, 255);">
+                                                                        <%= order.status %>
+                                                                    </span>
+                                                                    <% } else { %>
+                                                                        <span class="badge rounded-pill"
+                                                                            style="background-color:rgb(255, 0, 0); color: rgb(255, 255, 255);">
+                                                                            <%= order.status %>
+                                                                        </span>
+                                                                        <% } %>
                                     </td>
                                     <td>&#8377;<%= order.total %> for <%= order.productCount %> items</td>
 
-                                    <% if (order.status==='delivered' || order.status==='canceled' ||
-                                        order.status==='cancelPending' ) { %>
+                                    <% if (order.status==='canceled' || order.status==='cancelPending' ||  order.status==='returnPending' ||  order.status==='returned'  ) { %>
                                         <td><a href="#" class="d-block  btn-sm">View</a></td>
-                                        <% } else { %>
-                                            <td><a class="cancelBtn d-block btn btn-sm"
-                                                    onclick="cancelOrder('<%= order.id %>')"
-                                                    style=" color: #ffffff;">cancel</a>
+                                        <% } else if(order.paymentStatus==='failed' ){ %>
+                                            <td><a class=" d-block btn btn-sm"
+                                                    style="border: 0px; background-color: rgb(120, 120, 120); color: #ffffff;">Try
+                                                    again</a>
                                             </td>
+                                            <% } else if(order.status==='delivered' ){ %>
 
-                                            <% } %>
+                                                <% const returnDaysLeft=Math.floor((new Date(order.returnDate) - new
+                                                    Date()) / (1000 * 60 * 60 * 24)); %>
+                                                    <td>
+                                                        <% if (returnDaysLeft>0) { %>
+                                                            <a class="d-block btn btn-sm"
+                                                                onclick="returnOrder('<%= order.id %>')"
+                                                                style="border: 0px; background-color: rgb(120, 120, 120); color: #ffffff;">
+                                                                Return- <span class="badge rounded-pill alert-danger">
+                                                                    <%= returnDaysLeft %> days left
+                                                                </span>
+                                                            </a>
+                                                    </td>
+
+                                                    <% } else { %>
+                                                        <td><a href="#" class="d-block  btn-sm">View</a></td>
+
+                                                        <% } %>
+                                                          
+                                                                <% } else { %>
+                                                                    <td><a class="cancelBtn d-block btn btn-sm"
+                                                                            onclick="cancelOrder('<%= order.id %>')"
+                                                                            style="background-color: rgb(255, 0, 0); color: #ffffff;">cancel</a>
+                                                                    </td>
+
+                                                                    <% } %>
+
 
                                 </tr>
+
                                 <% }) %>
 
 
@@ -95,35 +131,94 @@
 
 
     function cancelOrder(orderId) {
-        console.log(orderId);
         Swal.fire({
-            title: 'Cancel your order!Are you sure?',
-            icon: 'warning',
+            title: 'Cancellation',
+            text: 'Please provide a reason for cancellation:',
+            input: 'text',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes!'
+            confirmButtonText: 'Cancel',
+            cancelButtonText: 'Close',
+            reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                const url = '/order-cancel'
-                fetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify({ id: orderId }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then((response) => {
-                    Swal.fire({
-                        title: 'cancelation pending!',
-                    }).then((res)=>{
-                        location.reload()
+                var reason = result.value;
+                if (reason === "") {
+                    Swal.fire('No reason provided!', 'Please enter a reason for cancellation.', 'warning');
+                } else {
+                    const url = '/order-cancel'
+                    fetch(url, {
+                        method: 'POST',
+                        body: JSON.stringify({ id: orderId, cancelreason: reason }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then((response) => {
+                        Swal.fire({
+                            title: 'cancelation pending!',
+                        }).then((res) => {
+                            location.reload()
+                        })
+
+
+                    }).catch(error => {
+                        console.error(error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'An error occurred while processing your return request. Please try again later.',
+                            icon: 'error'
+                        });
                     })
-                    
-                }).catch(error => {
-                    console.error(error);
-                })
+                }
+
+            } else {
+                Swal.fire('Product cancelation failed.', '', 'info');
             }
-        })
+        });
 
     }
+
+    function returnOrder(orderId) {
+        Swal.fire({
+            title: 'Return Order',
+            text: 'Please provide a reason for the return:',
+            input: 'text',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var reason = result.value;
+                if (reason === "") {
+                    Swal.fire('No Return Reason', 'Please enter a reason for the return.', 'warning');
+                } else {
+                    const url = '/order-return';
+                    fetch(url, {
+                        method: 'POST',
+                        body: JSON.stringify({ id: orderId, returnReason: reason }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then((response) => {
+                        Swal.fire({
+                            title: 'return pending!',
+                        }).then((res) => {
+                            location.reload()
+                        })
+
+                    }).catch(error => {
+                        console.error(error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'An error occurred while processing your return request. Please try again later.',
+                            icon: 'error'
+                        });
+                    });
+                }
+            } else {
+                Swal.fire('Return Cancelled', 'You have cancelled the return request.', 'info');
+            }
+        });
+    }
+
 </script>

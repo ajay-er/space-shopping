@@ -62,12 +62,12 @@
                 <h5>Payment</h5>
             </div>
             <div class="payment_option">
-                <div class="custome-radio">
+                <!-- <div class="custome-radio">
                     <input class="form-check-input" required="" type="radio" name="payment_option" id="bankTransfer"
                         checked="">
                     <label class="form-check-label" for="bankTransfer" data-bs-toggle="collapse"
                         data-target="#bankTranfer" aria-controls="bankTranfer">Direct Bank Transfer</label>
-                </div>
+                </div> -->
                 <div class="custome-radio">
                     <input class="form-check-input" required="" type="radio" name="payment_option" id="cashOnDelivery"
                         checked="">
@@ -358,8 +358,8 @@
             console.log(response);
             if (response.success) {
                 if (response.paymethod === 'COD') {
-                    const randomId = Array.from({length: 19}, () => Math.floor(Math.random() * 36).toString(36)).join('');
-                    window.location.href = `/order-successfull/${randomId}`;
+                    const id = response.orderId
+                    window.location.href = `/order-successfull/${id}`;
                 } else if (response.paymethod === 'ONLINE') {
                     razorpayPayment(response.order)
                 }
@@ -404,7 +404,7 @@
         var rzp1 = new Razorpay(options);
 
         rzp1.on('payment.failed', function (response) {
-            window.location.href = '/order-failed'
+            window.location.href = `/order-failed/${order.receipt}`
         });
         rzp1.open();
     }
@@ -417,6 +417,7 @@
                 payment, order
             }, success: (response) => {
                 const id = order.receipt;
+                console.log(order.receipt);
                 if (response.success) {
                     window.location.href = `/order-successfull/${id}`;
                 } else {

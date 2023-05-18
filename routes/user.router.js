@@ -48,6 +48,7 @@ const {
   httpSuccessPage,
   httpFailedPage,
   httpCancelOrder,
+  httpReturnOrder,
   httpDeleteAddress,
 } = require('../controllers/order.controller');
 
@@ -85,6 +86,7 @@ userRouter.get('/order-successfull/:id',isLoggedIn,httpSuccessPage);
 userRouter.get('/order-failed/:id',isLoggedIn,httpFailedPage);
 
 userRouter.post('/order-cancel',isLoggedIn,httpCancelOrder)
+userRouter.post('/order-return',isLoggedIn,httpReturnOrder)
 
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/logout', httpGetLogout);

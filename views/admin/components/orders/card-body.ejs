@@ -1,3 +1,4 @@
+
 <div class="card-body">
     <div class="table-responsive">
         <table class="table table-hover">
@@ -33,34 +34,44 @@
                                 <span class="badge rounded-pill alert-warning">
                                     cancelation pending
                                 </span>
-
-                                <% } else if (order.status==='canceled' ) { %>
+                                <% } else if (order?.paymentStatus==='failed' ) { %>
                                     <span class="badge rounded-pill alert-danger">
-                                        order canceled
+                                        payment failed
                                     </span>
-                                    <% } else if (order.status==='shipped' ) { %>
-                                        <span class="badge rounded-pill alert-info">
-                                            shipped
+                                    <% } else if (order.status==='canceled' ) { %>
+                                        <span class="badge rounded-pill "
+                                            style="background-color: rgb(255, 51, 0); color: rgb(255, 255, 255);"> 
+                                            order canceled
                                         </span>
-                                        <% } else if (order.status==='delivered' ) { %>
-                                            <span class="badge rounded-pill alert-success">
-                                                delivered
+                                        <% } else if (order.status==='shipped' ) { %>
+                                            <span class="badge rounded-pill alert-info">
+                                                shipped
                                             </span>
-                                            <% } else if (order.status==='processing' ) { %>
-                                                <span class="badge rounded-pill alert-dark">
-                                                    processing
+                                            <% } else if (order.status==='delivered' ) { %>
+                                                <span class="badge rounded-pill alert-success">
+                                                    delivered
                                                 </span>
-                                            <% } else if (order.status==='pending' ) { %>
-                                                <span class="badge rounded-pill " style="background-color: rgb(104, 210, 255); color: rgb(0, 0, 0);">
-                                                    pending
-                                                </span>
-                                                <% } %>
-
-
-
+                                                <% } else if (order.status==='processing' ) { %>
+                                                    <span class="badge rounded-pill alert-dark">
+                                                        processing
+                                                    </span>
+                                                    <% } else if (order.status==='pending' ) { %>
+                                                        <span class="badge rounded-pill "
+                                                            style="background-color: rgb(104, 210, 255); color: rgb(0, 0, 0);">
+                                                            pending
+                                                        </span>
+                                                    <% } else if (order.status==='returned' ) { %>
+                                                        <span class="badge rounded-pill "
+                                                            style="background-color: rgb(249, 220, 0); color: rgb(0, 0, 0);">
+                                                            return completed
+                                                        </span>
+                                                    <% } else if (order.status==='returnPending' ) { %>
+                                                        <span class="badge rounded-pill "
+                                                            style="background-color:  rgb(227, 255, 202); color: rgb(0, 0, 0);">
+                                                            return pending
+                                                        </span>
+                                                        <% } %>
                         </td>
-
-
                         <% if (order.paymentmethod==='cashOnDelivery' ) { %>
                             <td><b>COD</b></td>
                             <% } else { %>
@@ -87,6 +98,11 @@
                                                         style="background-color: rgb(2, 220, 100); color: rgb(0, 0, 0);">Shipping
                                                         completed</a>
 
+                                                  <% } else if (order.status==='returnPending' ) { %>
+                                                    <a onclick="changeStatus('<%= order._id %>','returned')"
+                                                        data-deliveredid="<%= order._id %>"
+                                                        class="btn btn-sm  rounded font-sm" style="background-color: cadetblue;">
+                                                        Approve return</a>
 
                                                     <% } else if (order.status==='shipped' ) { %>
 
@@ -105,10 +121,8 @@
                                                                     <i class="material-icons md-more_horiz"></i>
                                                                 </a>
                                                                 <div class="dropdown-menu">
-                                                                    <a class="dropdown-item" href="#">View
+                                                                    <a class="dropdown-item">View
                                                                         detail</a>
-                                                                    <a class="dropdown-item" href="#">Edit
-                                                                        info</a>
                                                                     <a class="dropdown-item text-danger"
                                                                         href="#">Delete</a>
                                                                 </div>
@@ -134,7 +148,7 @@
             body: JSON.stringify({
                 orderId: orderId, status: status
             })
-        }).then(async(res) => {
+        }).then(async (res) => {
             res = await res.json();
             location.reload()
             console.log(res);

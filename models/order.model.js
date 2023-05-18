@@ -155,26 +155,56 @@ async function changePaymentStatus(orderId, paymentDetails, res) {
   }
 }
 
+async function setSuccessStatus(orderId) { 
+  try{
+    const result = await orderDatabase.updateOne(
+      { _id: orderId },
+      {
+        $set: {
+          paymentStatus: 'success',
+        },
+      },
+    );
+    if(result){
+      return true;
+    }
+  }catch(error){
+    throw new Error('failed to change payment status!something wrong');
+  }
+}
+
 async function fetchUserOrderDetails(userId, res) {
   try {
     const orders = await orderDatabase
       .find({ user: userId })
-      .select('total status transactionId date items')
+      .select('total status transactionId date items paymentStatus')
       .sort({ date: -1 });
     const addresses = await addressDatabase.find({ user: userId });
 
-    const orderDetails = orders.map((order) => ({
-      productCount: order.items.length,
-      date: order.date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      }),
-      transactionId: order.transactionId,
-      total: order.total,
-      status: order.status,
-      id: order._id,
-    }));
+    const orderDetails = orders.map((order) => {
+      // Calculate the return date
+      const returnDate = new Date(order.date);
+      returnDate.setDate(returnDate.getDate() + 7);
+
+      return {
+        productCount: order.items.length,
+        date: order.date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        }),
+        returnDate: returnDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+        }),
+        transactionId: order.transactionId,
+        total: order.total,
+        status: order.status,
+        paymentStatus: order.paymentStatus,
+        id: order._id,
+      };
+    });
 
     return { orderDetails: orderDetails, addresses: addresses };
   } catch (error) {
@@ -182,17 +212,34 @@ async function fetchUserOrderDetails(userId, res) {
   }
 }
 
-async function cancelOrder(orderId) {
+async function cancelOrder(orderId,cancelReason) {
   try {
     const result = await orderDatabase.updateOne(
       { _id: orderId },
       {
         $set: {
           status: 'cancelPending',
+          cancel_reason:cancelReason
         },
       },
     );
     return result.modifiedCount === 1;
+  } catch (error) {
+    console.log(error);
+  }
+}
+async function returnOrder(orderId,returnreason) {
+  try {
+    const result = await orderDatabase.updateOne(
+      { _id: orderId },
+      {
+        $set: {
+          status: 'returnPending',
+          return_reason:returnreason
+        },
+      },
+    );
+    return result?.modifiedCount === 1;
   } catch (error) {
     console.log(error);
   }
@@ -228,7 +275,7 @@ async function getAllOrders(page, limit) {
 
 async function changeOrderStatus(changeStatus, orderId) {
   try {
-    if (!['shipped', 'delivered', 'canceled'].includes(changeStatus)) {
+    if (!['shipped', 'delivered', 'canceled','returned'].includes(changeStatus)) {
       throw new Error('Invalid status');
     }
 
@@ -291,8 +338,10 @@ module.exports = {
   changePaymentStatus,
   fetchUserOrderDetails,
   cancelOrder,
+  returnOrder,
   deleteAddress,
   getAllOrders,
   changeOrderStatus,
   getOrderData,
+  setSuccessStatus,
 };
