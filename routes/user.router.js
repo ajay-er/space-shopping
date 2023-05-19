@@ -51,6 +51,7 @@ const {
   httpReturnOrder,
   httpDeleteAddress,
   httpGetWallet,
+  httpApplyWallet,
 } = require('../controllers/order.controller');
 
 
@@ -86,9 +87,11 @@ userRouter.post('/verify-payment',isLoggedIn,httpVerifyPayment);
 userRouter.get('/order-successfull/:id',isLoggedIn,httpSuccessPage);
 userRouter.get('/order-failed/:id',isLoggedIn,httpFailedPage);
 
-userRouter.post('/order-cancel',isLoggedIn,httpCancelOrder)
-userRouter.post('/order-return',isLoggedIn,httpReturnOrder)
-userRouter.get('/wallet',isLoggedIn,httpGetWallet)
+userRouter.post('/order-cancel',isLoggedIn,httpCancelOrder);
+userRouter.post('/order-return',isLoggedIn,httpReturnOrder);
+
+userRouter.get('/wallet',isLoggedIn,httpGetWallet);
+userRouter.put('/apply-wallet',isLoggedIn,httpApplyWallet);
 
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/logout', httpGetLogout);

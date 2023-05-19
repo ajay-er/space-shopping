@@ -43,14 +43,22 @@
                                 <td class="product-subtotal" colspan="2">₹<%= (cart?.total|| 0) %>
                                 </td>
                             </tr>
+                            <% if ( locals.walletAmount) { %>
+                            <tr style="background-color: rgba(170, 239, 255, 0.187);">
+                                <th><a onclick="applyWalletAmount('<%= cart?._id %>')" style="color: rgb(0, 90, 60);"
+                                        id="applyWallet"> Apply wallet amount</a></th>
+                                <td colspan="2"><em id="walletAmount">₹<%= locals.walletAmount %></em></td>
+                            </tr>
+                            <% } %>
+
                             <tr>
                                 <th>Shipping</th>
                                 <td colspan="2"><em>Free Shipping</em></td>
                             </tr>
                             <tr>
                                 <th>Total</th>
-                                <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900">₹<%=
-                                            (cart?.total || 0) %></span></td>
+                                <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900"
+                                        id="totalAmountSpn">₹<%= (cart?.total || 0) %></span></td>
                             </tr>
 
                 </tbody>
@@ -94,6 +102,44 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
+
+    let walletApplied = false;
+    function applyWalletAmount(id) {
+        fetch('/apply-wallet', {
+            method: 'put',
+            body: JSON.stringify({ id, walletApplied }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => {
+            return res.json()
+        }).then(res => {
+            console.log(res);
+
+            if (res.success) {
+                const applyWalletElement = document.getElementById('applyWallet');
+                const walletAmountElement = document.getElementById('walletAmount');
+                const totalAmountSpnElement = document.getElementById('totalAmountSpn');
+
+                if (walletApplied) {
+                    applyWalletElement.innerHTML = 'Apply wallet amount';
+                    walletAmountElement.innerHTML = `₹${res.walletAmount}`;
+                    totalAmountSpnElement.innerHTML = `₹${res.total}`;
+                    walletApplied = false;
+                } else {
+                    applyWalletElement.innerHTML = 'Remove wallet amount';
+                    walletAmountElement.innerHTML = `Wallet amount ₹${res.walletAmount} applied`;
+                    totalAmountSpnElement.innerHTML = `₹${res.total}`;
+                    walletApplied = true;
+                }
+            } else {
+                // Handle error condition here
+            }
+
+        }).catch(error => {
+            console.log(error);
+        })
+    }
 
 
     let selectedAddress = null

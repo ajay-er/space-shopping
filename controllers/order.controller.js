@@ -10,6 +10,11 @@ const {
   getAllOrders,
   changeOrderStatus,
   setSuccessStatus,
+  getWallet,
+  getUserData,
+  updateCart,
+  getWalletAndUpdate,
+  updateWalletAmout,
 } = require('../models/order.model');
 
 const { cartProductTotal } = require('../models/cart.model');
@@ -32,11 +37,15 @@ async function httpGetCheckout(req, res) {
   try {
     const result = await getAddresses(req.session.user._id, res);
     const cartResult = await cartProductTotal(req.session.user._id);
+    const userWallet = await getUserData(req.session.user._id);
     if (cartResult) {
       if (result.status) {
-        res.render('user/checkout', { addresses: result.addresses });
+        res.render('user/checkout', {
+          addresses: result.addresses,
+          walletAmount: userWallet.amount,
+        });
       } else {
-        res.render('user/checkout', { addresses: [] });
+        res.render('user/checkout', { addresses: [], walletAmount: userWallet.amount });
       }
     } else {
       res.redirect('/cart');
@@ -238,8 +247,7 @@ async function httpGetOrderPage(req, res) {
       totalPages: orderResult.totalPages,
       currentPage: orderResult.currentPage,
       limit: orderResult.limit,
-      activePage:'orders'
-
+      activePage: 'orders',
     });
   } catch (error) {
     handleError(res, error);
@@ -260,11 +268,119 @@ async function httpChangeOrderStatus(req, res) {
   }
 }
 
-async function httpGetWallet(req,res){
-  try{
-    res.render('user/wallet')
-  }catch(error){
-    handleError(res,error);
+async function httpGetWallet(req, res) {
+  try {
+    const walletAmount = await getWallet(req.session.user._id);
+    if (walletAmount.status) {
+      return res.render('user/wallet', {
+        walletAmount: walletAmount.amount,
+        walletPending: walletAmount.pendingWallet,
+      });
+    } else {
+      return res.render('user/wallet', {
+        walletAmount: walletAmount.amount,
+        walletPending: walletAmount.pendingWallet,
+      });
+    }
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
+// async function httpApplyWalllet(req, res) {
+//   try {
+//     const { id, walletApplied } = req.body;
+
+//     if (!walletApplied) {
+//       const result = await getWalletAndUpdate(req.session.user._id);
+//       if (result.status) {
+//         const cart = await updateCart(result.amount, id,true);
+//         if (cart.status) {
+//           return res.json({
+//             success: true,
+//             message: cart.message,
+//             total: cart.total,
+//             walletAmount: result.amount,
+//           });
+//         } else {
+//           return res.json({
+//             success: false,
+//             message: cart.message,
+//             total: cart.total,
+//             walletAmount: result.amount,
+//           });
+//         }
+//       } else {
+//         return res.json({
+//           success: false,
+//           amount: result.amount,
+//           message: result.message,
+//           walletAmount: result.amount,
+//         });
+//       }
+//     } else {
+//       const result = await updateWalletAmout(req.session.user._id);
+//       if(result.status){
+
+//         const cart = await updateCart(result.amount, id,false);
+//         if (cart.status) {
+//           return res.json({
+//             success: true,
+//             message: cart.message,
+//             total: cart.total,
+//             walletAmount: result.amount,
+//           });
+//         } else {
+//           return res.json({
+//             success: false,
+//             message: cart.message,
+//             total: cart.total,
+//             walletAmount: result.amount,
+//           });
+//         }
+
+//       }else{
+//         return res.json({
+//           success: false,
+//           amount: result.amount,
+//           message: result.message,
+//           walletAmount: result.amount,
+//         });
+//       }
+//     }
+//   } catch (error) {
+//     handleError(res, error);
+//   }
+// }
+
+async function httpApplyWallet(req, res) {
+  try {
+    const { id, walletApplied } = req.body;
+    const userId = req.session.user._id;
+
+    if (!walletApplied) {
+      const result = await getWalletAndUpdate(userId);
+      const cart = await updateCart(result.amount, id, true);
+
+      return res.json({
+        success: true,
+        message: cart.message,
+        total: cart.total,
+        walletAmount: result.amount,
+      });
+    } else {
+      const result = await updateWalletAmout(userId);
+      const cart = await updateCart(result.amount, id, false);
+
+      return res.json({
+        success: true,
+        message: cart.message,
+        total: cart.total,
+        walletAmount: result.amount,
+      });
+    }
+  } catch (error) {
+    handleError(res, error);
   }
 }
 
@@ -280,5 +396,6 @@ module.exports = {
   httpDeleteAddress,
   httpGetOrderPage,
   httpChangeOrderStatus,
-  httpGetWallet
+  httpGetWallet,
+  httpApplyWallet,
 };

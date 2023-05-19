@@ -156,8 +156,8 @@ async function changePaymentStatus(orderId, paymentDetails, res) {
   }
 }
 
-async function setSuccessStatus(orderId) { 
-  try{
+async function setSuccessStatus(orderId) {
+  try {
     const result = await orderDatabase.updateOne(
       { _id: orderId },
       {
@@ -166,21 +166,28 @@ async function setSuccessStatus(orderId) {
         },
       },
     );
-    if(result){
+    if (result) {
       return true;
     }
-  }catch(error){
+  } catch (error) {
     throw new Error('failed to change payment status!something wrong');
   }
 }
 
-async function fetchUserOrderDetails(userId, res) {
+async function fetchUserOrderDetails(userId, res,page,limit) {
   try {
     const orders = await orderDatabase
       .find({ user: userId })
+      .skip((page - 1) * limit)
+      .limit(limit)
       .select('total status transactionId date items paymentStatus')
-      .sort({ date: -1 });
-    const addresses = await addressDatabase.find({ user: userId });
+      .sort({ date: -1 })
+      
+
+      const totalOrder = await orderDatabase.countDocuments();
+      const totalPages = Math.ceil(totalOrder / limit);
+
+      const addresses = await addressDatabase.find({ user: userId });
 
     const orderDetails = orders.map((order) => {
       // Calculate the return date
@@ -207,20 +214,20 @@ async function fetchUserOrderDetails(userId, res) {
       };
     });
 
-    return { orderDetails: orderDetails, addresses: addresses };
+    return { orderDetails: orderDetails, addresses: addresses,totalPages: totalPages, currentPage: page,limit:limit };
   } catch (error) {
     handleError(res, error);
   }
 }
 
-async function cancelOrder(orderId,cancelReason) {
+async function cancelOrder(orderId, cancelReason) {
   try {
     const result = await orderDatabase.updateOne(
       { _id: orderId },
       {
         $set: {
           status: 'cancelPending',
-          cancel_reason:cancelReason
+          cancel_reason: cancelReason,
         },
       },
     );
@@ -229,14 +236,14 @@ async function cancelOrder(orderId,cancelReason) {
     console.log(error);
   }
 }
-async function returnOrder(orderId,returnreason) {
+async function returnOrder(orderId, returnreason) {
   try {
     const result = await orderDatabase.updateOne(
       { _id: orderId },
       {
         $set: {
           status: 'returnPending',
-          return_reason:returnreason
+          return_reason: returnreason,
         },
       },
     );
@@ -276,7 +283,7 @@ async function getAllOrders(page, limit) {
 
 async function changeOrderStatus(changeStatus, orderId) {
   try {
-    if (!['shipped', 'delivered', 'canceled','returned'].includes(changeStatus)) {
+    if (!['shipped', 'delivered', 'canceled', 'returned'].includes(changeStatus)) {
       throw new Error('Invalid status');
     }
 
@@ -286,17 +293,19 @@ async function changeOrderStatus(changeStatus, orderId) {
       },
     });
 
-    console.log(orderResult);
-
-    if(changeStatus === 'returned'){
+    if (changeStatus === 'returned') {
       const orderResult = await orderDatabase.findById(orderId).select('total user');
-      console.log(orderResult);
+      const { total, user } = orderResult;
+      const userResult = await userDatabase.findById(user);
+      const wallet = userResult.wallet;
 
-     const walletResult =  await userDatabase.findByIdAndUpdate(orderResult.user,{
+      const updatedWallet = wallet + total;
+
+      const walletResult = await userDatabase.findByIdAndUpdate(user, {
         $set: {
-          wallet: orderResult.total,
+          wallet: updatedWallet,
         },
-      });  
+      });
     }
 
     if (orderResult) {
@@ -309,17 +318,16 @@ async function changeOrderStatus(changeStatus, orderId) {
   }
 }
 
-
 async function getOrderData() {
   try {
     const orders = await orderDatabase
-      .find({ status: "delivered" })
+      .find({ status: 'delivered' })
       .populate({
-        path: "items.product",
-        model: "Product",
+        path: 'items.product',
+        model: 'Product',
       })
-      .populate("shippingAddress")
-      .populate("user");
+      .populate('shippingAddress')
+      .populate('user');
 
     const reportData = [];
 
@@ -343,6 +351,163 @@ async function getOrderData() {
   }
 }
 
+async function getWallet(userId) {
+  try {
+    const amount = await userDatabase.findById(userId).select('wallet');
+
+    const pendingOrders = await orderDatabase
+      .find({
+        user: userId,
+        status: 'returnPending',
+      })
+      .select('total');
+
+    let pendingAmount = 0;
+
+    pendingOrders.forEach((order) => {
+      pendingAmount += order.total;
+    });
+
+    if (amount) {
+      return { status: true, amount: amount.wallet, pendingWallet: pendingAmount };
+    } else {
+      return { status: false, amount: 0, pendingWallet: pendingAmount };
+    }
+  } catch (error) {
+    throw new Error('Oops! Something went wrong while fetching wallet');
+  }
+}
+
+async function getUserData(userId) {
+  try {
+    const amount = await userDatabase.findById(userId).select('wallet');
+    if (amount) {
+      return { status: true, amount: amount.wallet };
+    } else {
+      return { status: false, amount: 0 };
+    }
+  } catch (error) {
+    throw new Error('Error finding user!');
+  }
+}
+async function getWalletAndUpdate(userId) {
+  try {
+    const user = await userDatabase.findById(userId).select('wallet old_wallet');
+
+    if (!user || user.wallet === 0) {
+      return { status: false, amount: 0, message: 'empty wallet' };
+    }
+
+    const walletAmount = user.wallet;
+    user.old_wallet = user.wallet;
+    user.wallet = 0;
+    await user.save();
+
+    return { status: true, amount: walletAmount };
+  } catch (error) {
+    throw new Error('Error finding user!');
+  }
+}
+
+async function updateWalletAmout(userId) {
+  try {
+    const user = await userDatabase.findById(userId).select('old_wallet wallet');
+
+    if (!user || user.old_wallet === 0) {
+      return { status: false, amount: 0, message: 'empty wallet' };
+    }
+
+    const walletAmount = user.old_wallet;
+    user.wallet = user.old_wallet;
+    user.old_wallet = 0;
+    await user.save();
+
+    return { status: true, amount: walletAmount };
+  } catch (error) {
+    throw new Error('Error finding user!');
+  }
+}
+
+// async function updateCart(walletAmount, cartId,walletStatus) {
+//   try {
+//     const cart = await cartDatabase.findById(cartId);
+
+//     if (!cart) {
+//       return { status: false, message: 'cart not found' };
+//     }
+
+
+//     if(walletStatus){
+//       const updatedTotal = cart.total - walletAmount;
+  
+//       const updatedCart = await cartDatabase.findByIdAndUpdate(
+//         cartId,
+//         {
+//           $set: {
+//             total: updatedTotal,
+//           },
+//         },
+//         { new: true },
+//       );
+//       if (updatedCart) {
+//         return { status: true, total: updatedCart.total, message: 'total amount updated' };
+//       } else {
+//         return { status: false, total: cart.total, message: 'cart amount not updated' };
+//       }
+//     }else{
+//       const updatedTotal = cart.total + walletAmount;
+  
+//       const updatedCart = await cartDatabase.findByIdAndUpdate(
+//         cartId,
+//         {
+//           $set: {
+//             total: updatedTotal,
+//           },
+//         },
+//         { new: true },
+//       );
+//       if (updatedCart) {
+//         return { status: true, total: updatedCart.total, message: 'total amount updated' };
+//       } else {
+//         return { status: false, total: cart.total, message: 'cart amount not updated' };
+//       }
+//     }
+
+
+
+//   } catch (error) {
+//     throw new Error('something wrong while appling wallet amount');
+//   }
+// }
+
+
+
+
+async function updateCart(walletAmount, cartId, walletStatus) {
+  try {
+    const cart = await cartDatabase.findById(cartId);
+
+    if (!cart) {
+      return { status: false, message: 'Cart not found' };
+    }
+
+    const updatedTotal = walletStatus ? cart.total - walletAmount : cart.total + walletAmount;
+    const updatedCart = await cartDatabase.findByIdAndUpdate(
+      cartId,
+      { $set: { total: updatedTotal } },
+      { new: true }
+    );
+
+    if (updatedCart) {
+      return { status: true, total: updatedCart.total, message: 'Total amount updated' };
+    } else {
+      return { status: false, total: cart.total, message: 'Cart amount not updated' };
+    }
+  } catch (error) {
+    throw new Error('Something went wrong while applying wallet amount');
+  }
+}
+
 
 module.exports = {
   addOrderDetails,
@@ -358,4 +523,9 @@ module.exports = {
   changeOrderStatus,
   getOrderData,
   setSuccessStatus,
+  getWallet,
+  getUserData,
+  updateCart,
+  getWalletAndUpdate,
+  updateWalletAmout,
 };
