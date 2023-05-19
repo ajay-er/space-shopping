@@ -74,7 +74,7 @@ adminRouter.get('/chart', isAdminLoggedIn, httpGetChartData);
 adminRouter.get('/sales-report', isAdminLoggedIn, httpGetReport);
 
 adminRouter.get('/banners', isAdminLoggedIn, httpGetBannerPage);
-// adminRouter.post('/add-banner', upload.single('bannerImage'), isAdminLoggedIn, httpAddBanner);
+adminRouter.post('/add-banner', upload.single('bannerImage'), isAdminLoggedIn, httpAddBanner);
 adminRouter.post('/edit-banner', upload.single('bannerImage'), isAdminLoggedIn, httpEditBanner);
 
 adminRouter.get('*', httpGet404);

@@ -39,6 +39,19 @@ function removeProduct(productId) {
             }
 
             cartItem.remove();
+
+            let arr = false;
+            document.querySelectorAll('.outOfStock').forEach((stock)=>{
+              if(stock.textContent === 'out of stock'){
+                arr = true;
+             }
+             })
+            
+             if(arr){
+              document.getElementById('checkoutBtn').classList.add('disabled')
+            }else{
+               document.getElementById('checkoutBtn').classList.remove('disabled')
+             }
           }
 
           dropdownItem.remove();
@@ -68,17 +81,46 @@ var quantityDivs = document.querySelectorAll('.detail-qty');
 quantityDivs.forEach((quantityDiv) => {
   const productId = quantityDiv.dataset.productid;
 
+  const stockQty = quantityDiv.dataset.stockqty;
+
   const qtySpan = quantityDiv.querySelector(`.qty-${productId}`);
-  
+
+  const outOfStockSpn = document.getElementById(`outOfStock-${productId}`);
+
   const qtyUpBtn = quantityDiv.querySelector('.qty-up');
 
   const qtyDownBtn = quantityDiv.querySelector('.qty-down');
+
+  if(outOfStockSpn.innerHTML==='out of stock'){
+    document.getElementById('checkoutBtn').classList.add('disabled')
+  }
 
   qtyUpBtn.addEventListener('click', () => {
     const currentQty = parseInt(qtySpan.dataset.quantity);
     const newQty = currentQty + 1;
     qtySpan.dataset.quantity = newQty;
     qtySpan.textContent = newQty;
+
+    if(newQty>stockQty){
+      outOfStockSpn.innerHTML = "out of stock"
+    }else{
+      outOfStockSpn.innerHTML = ""
+    }
+
+    let arr = false;
+    document.querySelectorAll('.outOfStock').forEach((stock)=>{
+      if(stock.textContent === 'out of stock'){
+       
+        arr = true;
+     }
+     })
+    
+     if(arr){
+      document.getElementById('checkoutBtn').classList.add('disabled')
+    }else{
+       document.getElementById('checkoutBtn').classList.remove('disabled')
+     }
+
     updateProductQuantity(productId, newQty);
 
     const navbarQtySpan = document.querySelector(`#qty-navbar-${productId}`);
@@ -93,6 +135,28 @@ quantityDivs.forEach((quantityDiv) => {
       const newQty = currentQty - 1;
       qtySpan.dataset.quantity = newQty;
       qtySpan.textContent = newQty;
+
+      if(newQty>stockQty){
+
+        outOfStockSpn.innerHTML = "out of stock"
+      }else{
+        outOfStockSpn.innerHTML = ""
+      }
+
+      let arr = false;
+      document.querySelectorAll('.outOfStock').forEach((stock)=>{
+        if(stock.textContent === 'out of stock'){
+         
+          arr = true;
+       }
+       })
+      
+       if(arr){
+        document.getElementById('checkoutBtn').classList.add('disabled')
+      }else{
+         document.getElementById('checkoutBtn').classList.remove('disabled')
+       }
+
       updateProductQuantity(productId, newQty);
 
       const navbarQtySpan = document.querySelector(`#qty-navbar-${productId}`);

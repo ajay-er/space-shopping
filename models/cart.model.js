@@ -6,7 +6,8 @@ async function addItemToCart(userId, productId, quantity) {
   try {
     const product = await productDatabase
       .findById(productId)
-      .select('productPrice productImageUrls productName _id');
+      .select('productPrice productImageUrls productName _id stocks');
+
 
     if (!product) {
       return { status: false, message: 'product not found' };
@@ -158,9 +159,9 @@ async function cartProductTotal(userId) {
   try {
     const cart = await cartDatabase.findOne({ user: userId });
     if (cart && cart.total > 0) {
-      return true;
+      return {status:true,cart};
     } else {
-      return false;
+      return {status:false};
     }
   } catch (error) {
     throw new Error('Error finding cart count!');

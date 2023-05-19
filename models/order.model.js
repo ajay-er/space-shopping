@@ -4,6 +4,7 @@ const addressDatabase = require('../schema/address.schema');
 const orderDatabase = require('../schema/order.schema');
 const cartDatabase = require('../schema/cart.schema');
 const userDatabase = require('../schema/user.schema');
+const productDatabase = require('../schema/product.schema');
 
 const { addressSchema } = require('../config/joi');
 const { handleError } = require('../middlewares/error.handler');
@@ -63,7 +64,6 @@ async function addAdrress(addressData, userId, res) {
 async function deleteAddress(addressId) {
   try {
     const result = await addressDatabase.findByIdAndDelete(addressId);
-    console.log(result);
     if (result) {
       return true;
     } else {
@@ -102,6 +102,15 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
         transactionId: transactionId,
         status: orderStatus,
       });
+
+      for (const item of cartResult.items) {
+        const quantity = item.quantity;
+        await productDatabase.findByIdAndUpdate(
+          item.product,
+          { $inc: { stocks: -quantity } },
+          { new: true },
+        );
+      }
 
       await order.save();
       await cartDatabase.deleteOne({ user: userId });
@@ -174,20 +183,19 @@ async function setSuccessStatus(orderId) {
   }
 }
 
-async function fetchUserOrderDetails(userId, res,page,limit) {
+async function fetchUserOrderDetails(userId, res, page, limit) {
   try {
     const orders = await orderDatabase
       .find({ user: userId })
       .skip((page - 1) * limit)
       .limit(limit)
       .select('total status transactionId date items paymentStatus')
-      .sort({ date: -1 })
-      
+      .sort({ date: -1 });
 
-      const totalOrder = await orderDatabase.countDocuments();
-      const totalPages = Math.ceil(totalOrder / limit);
+    const totalOrder = await orderDatabase.countDocuments();
+    const totalPages = Math.ceil(totalOrder / limit);
 
-      const addresses = await addressDatabase.find({ user: userId });
+    const addresses = await addressDatabase.find({ user: userId });
 
     const orderDetails = orders.map((order) => {
       // Calculate the return date
@@ -214,7 +222,13 @@ async function fetchUserOrderDetails(userId, res,page,limit) {
       };
     });
 
-    return { orderDetails: orderDetails, addresses: addresses,totalPages: totalPages, currentPage: page,limit:limit };
+    return {
+      orderDetails: orderDetails,
+      addresses: addresses,
+      totalPages: totalPages,
+      currentPage: page,
+      limit: limit,
+    };
   } catch (error) {
     handleError(res, error);
   }
@@ -409,7 +423,7 @@ async function getWalletAndUpdate(userId) {
   }
 }
 
-async function updateWalletAmout(userId) {
+async function updateWalletAmount(userId) {
   try {
     const user = await userDatabase.findById(userId).select('old_wallet wallet');
 
@@ -436,10 +450,9 @@ async function updateWalletAmout(userId) {
 //       return { status: false, message: 'cart not found' };
 //     }
 
-
 //     if(walletStatus){
 //       const updatedTotal = cart.total - walletAmount;
-  
+
 //       const updatedCart = await cartDatabase.findByIdAndUpdate(
 //         cartId,
 //         {
@@ -456,7 +469,7 @@ async function updateWalletAmout(userId) {
 //       }
 //     }else{
 //       const updatedTotal = cart.total + walletAmount;
-  
+
 //       const updatedCart = await cartDatabase.findByIdAndUpdate(
 //         cartId,
 //         {
@@ -473,17 +486,12 @@ async function updateWalletAmout(userId) {
 //       }
 //     }
 
-
-
 //   } catch (error) {
 //     throw new Error('something wrong while appling wallet amount');
 //   }
 // }
 
-
-
-
-async function updateCart(walletAmount, cartId, walletStatus) {
+async function updateCart(walletAmount, cartId, walletStatus,userId) {
   try {
     const cart = await cartDatabase.findById(cartId);
 
@@ -491,12 +499,24 @@ async function updateCart(walletAmount, cartId, walletStatus) {
       return { status: false, message: 'Cart not found' };
     }
 
-    const updatedTotal = walletStatus ? cart.total - walletAmount : cart.total + walletAmount;
+    const updatedTotal = 0;
+    if (cart.total < walletAmount) {
+      walletAmount = walletAmount - cart.total;
+      const user = await userDatabase.findById(userId);
+      user.wallet = walletAmount;
+      await user.save();
+    } else {
+      updatedTotal = walletStatus ? cart.total - walletAmount : cart.total + walletAmount;
+    }
+
+    console.log(updatedTotal);
     const updatedCart = await cartDatabase.findByIdAndUpdate(
       cartId,
       { $set: { total: updatedTotal } },
-      { new: true }
+      { new: true },
     );
+
+    console.log(updatedCart);
 
     if (updatedCart) {
       return { status: true, total: updatedCart.total, message: 'Total amount updated' };
@@ -507,7 +527,6 @@ async function updateCart(walletAmount, cartId, walletStatus) {
     throw new Error('Something went wrong while applying wallet amount');
   }
 }
-
 
 module.exports = {
   addOrderDetails,
@@ -527,5 +546,5 @@ module.exports = {
   getUserData,
   updateCart,
   getWalletAndUpdate,
-  updateWalletAmout,
+  updateWalletAmount,
 };

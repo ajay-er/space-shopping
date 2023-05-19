@@ -92,13 +92,13 @@
                                 <div class="col-md-8 ps-0 ">
                                     <p class="ps-3 textmuted fw-bold h6 mb-0">Wallent balance</p>
                                     <p class="h1 fw-bold d-flex"> <span
-                                            class=" fas fa-dollar-sign textmuted pe-1 h6 align-text-top mt-1"></span><span>&#8377;</span><%= locals.walletAmount %>
+                                            class=" fas fa-dollar-sign textmuted pe-1 h6 align-text-top mt-1"></span><span>&#8377;</span><%= locals.walletAmount?? 0 %>
                                     </p>
                                     <p class="ms-3 px-2 bg-green">Shop now and get new offers</p>
                                 </div>
                                 <div class="col-md-4">
                                     <p class="p-blue"> <span class="fas fa-circle pe-2"></span>Refund pending </p>
-                                    <p class="fw-bold mb-3"><span class="fas fa-dollar-sign pe-1">&#8377;</span><%= walletPending%>
+                                    <p class="fw-bold mb-3"><span class="fas fa-dollar-sign pe-1">&#8377;</span><%= walletPending %>
                                     </p>
                                     <a class="btn btn-sm" href="/shop">
                                         shop now 

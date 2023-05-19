@@ -1,3 +1,10 @@
+<style>
+    a.disabled {
+        pointer-events: none;
+        text-decoration: none;
+        cursor: not-allowed;
+    }
+</style>
 <div class="col-lg-6" style="float: right;">
     <div class="border p-md-4 p-30 border-radius cart-totals">
         <div class="heading_s1 mb-3">
@@ -8,26 +15,27 @@
                 <tbody>
                     <tr>
                         <td class="cart_total_label">Cart Subtotal</td>
-                        <td class="cart_total_amount"><span class="font-lg fw-900 text-brand" id="cart-sub-total">&#8377;<%=
-                                    total %></span></td>
+                        <td class="cart_total_amount"><span class="font-lg fw-900 text-brand"
+                                id="cart-sub-total">&#8377;<%= total %></span></td>
                     </tr>
                     <tr>
                         <td class="cart_total_label">Shipping</td>
-                       
-                            <td class="cart_total_amount"><span id="shipping-charge">
-                                    Free shipping
-                                </span></td>
-                           
+
+                        <td class="cart_total_amount"><span id="shipping-charge">
+                                Free shipping
+                            </span></td>
+
                     </tr>
                     <tr>
                         <td class="cart_total_label">Total</td>
                         <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-brand" id="total">&#8377;
-                                    <%= total  %>
+                                    <%= total %>
                                 </span></strong></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <a href="/checkout" class="btn "> <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
+        <a href="/checkout" id="checkoutBtn" class="btn"> <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
     </div>
 </div>
+

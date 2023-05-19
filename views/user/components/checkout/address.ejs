@@ -26,7 +26,7 @@
         </div>
     </div> -->
     <% addresses.forEach((address,index) => { %>
-    <div id="cardBodyId" class="col-md-3">
+    <div id="cardBodyId" class="col-md-6">
         <div class="card mb-3 my-custom-card-class" addressId="<%= address._id %>" onclick="selectAddress('<%= address._id %>')">
 
             <div class="card-body">
@@ -37,8 +37,6 @@
                         <strong>Phone: </strong> <%=address.phone %><br>
                         <strong>Email: </strong> <%=address.email %><br>
                         <strong>Street: </strong><%=address.street_address %>,<%=address.city %>,<%=address.state %>,<%=address.country %>, <%=address.zipcode %><br>
-                       
-                        
                     </p>
                 </label>
             </div>

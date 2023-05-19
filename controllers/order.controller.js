@@ -14,10 +14,11 @@ const {
   getUserData,
   updateCart,
   getWalletAndUpdate,
-  updateWalletAmout,
+  updateWalletAmount,
 } = require('../models/order.model');
 
 const { cartProductTotal } = require('../models/cart.model');
+const productDatabase = require('../schema/product.schema');
 
 const { generateRazorpay } = require('../config/razorpay');
 const { handleError } = require('../middlewares/error.handler');
@@ -35,20 +36,32 @@ const { handleError } = require('../middlewares/error.handler');
  */
 async function httpGetCheckout(req, res) {
   try {
-    const result = await getAddresses(req.session.user._id, res);
     const cartResult = await cartProductTotal(req.session.user._id);
+
+    if (cartResult.cart) {
+     
+      cartResult.cart.items.forEach(async (item) => {
+        const product = await productDatabase.find({ _id: item.product });
+        if (product[0].stocks < item.quantity) {
+        return  res.redirect('/cart')
+        }
+      });
+      
+    }
+
+    const result = await getAddresses(req.session.user._id, res);
     const userWallet = await getUserData(req.session.user._id);
-    if (cartResult) {
+    if (cartResult.status) {
       if (result.status) {
-        res.render('user/checkout', {
+        return res.render('user/checkout', {
           addresses: result.addresses,
           walletAmount: userWallet.amount,
         });
       } else {
-        res.render('user/checkout', { addresses: [], walletAmount: userWallet.amount });
+        return res.render('user/checkout', { addresses: [], walletAmount: userWallet.amount });
       }
     } else {
-      res.redirect('/cart');
+      return res.redirect('/cart');
     }
   } catch (error) {
     handleError(res, error);
@@ -360,7 +373,7 @@ async function httpApplyWallet(req, res) {
 
     if (!walletApplied) {
       const result = await getWalletAndUpdate(userId);
-      const cart = await updateCart(result.amount, id, true);
+      const cart = await updateCart(result.amount, id, true,userId);
 
       return res.json({
         success: true,
@@ -369,8 +382,8 @@ async function httpApplyWallet(req, res) {
         walletAmount: result.amount,
       });
     } else {
-      const result = await updateWalletAmout(userId);
-      const cart = await updateCart(result.amount, id, false);
+      const result = await updateWalletAmount(userId);
+      const cart = await updateCart(result.amount, id, false,userId);
 
       return res.json({
         success: true,

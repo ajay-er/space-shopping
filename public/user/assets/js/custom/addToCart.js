@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         })
         .then((data) => {
-          console.log(data)
 
           if (data.success) {
             swal.fire('Good job!', 'Product added to cart!', 'success')

@@ -24,11 +24,12 @@
           </td>
           <td class="price" data-title="Price"><span>&#8377;<%= item.product.productPrice %></span></td>
           <td class="text-center" data-title="Stock">
-            <div class="detail-qty border radius  m-auto" data-productid="<%= item.product._id %>">
+            <div class="detail-qty border radius  m-auto" data-stockqty="<%= item.product.stocks %>" data-productid="<%= item.product._id %>">
               <a class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
               <span class="qty-val qty-<%= item.product._id %>" id="qty-<%= item.product._id %>"
                 data-quantity="<%= item.quantity %>">
                 <%= item.quantity %>
+
               </span>
 
               <a class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
@@ -40,8 +41,15 @@
                 currency: 'INR' }) %>
             </span>
           </td>
-          <td class="action" onclick="removeProduct('<%= item.product._id %>')" data-title="Remove"><a
-              class="text-muted"><i class="fi-rs-trash"></i></a></td>
+          <td class="action" onclick="removeProduct('<%= item.product._id %>')" data-title="Remove">
+            <a class="text-muted"><i class="fi-rs-trash"></i></a>
+            <br>
+            <% if (item.product.stocks<item.quantity) { %>
+              <span class="text-danger outOfStock" id="outOfStock-<%= item.product._id %>" class="text-muted">out of stock</span>
+              <% } else { %>
+                <span class="text-danger outOfStock" id="outOfStock-<%= item.product._id %>" class="text-muted"></span>
+              <% } %>
+          </td>
         </tr>
         <% }) %>
           <tr>
@@ -90,3 +98,4 @@
 
 
 </script>
+
