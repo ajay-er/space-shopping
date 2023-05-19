@@ -9,39 +9,45 @@
         </div>
         <nav>
             <ul class="menu-aside">
-                <li class="menu-item <%= activePage === 'dashboard' ? 'active' : '' %>">
+                <li class="menu-item <%= locals.activePage === 'dashboard' ? 'active' : '' %>">
                     <a class="menu-link" href="/admin"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item <%= activePage === 'users' ? 'active' : '' %>">
+                <li class="menu-item <%= locals.activePage === 'users' ? 'active' : '' %>">
                     <a class="menu-link" href="/admin/users"> <i class="icon material-icons md-people"></i>
                         <span class="text">Users</span>
                     </a>
                 </li>
-                <li class="menu-item <%= activePage === 'categories' ? 'active' : '' %>">
+                <li class="menu-item <%= locals.activePage === 'categories' ? 'active' : '' %>">
                     <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-category"></i>
                         <span class="text">Categories</span>
                     </a>
                 </li>
                 
                
-                <li class="menu-item <%= activePage === 'orders' ? 'active' : '' %> ">
+                <li class="menu-item <%= locals.activePage === 'orders' ? 'active' : '' %> ">
                     <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
                    
                 </li>
 
-                <li class="menu-item <%= activePage === 'products' ? 'active' : '' %>">
+                <li class="menu-item <%= locals.activePage === 'products' ? 'active' : '' %>">
                     <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
                 </li>
                 
-                <li class="menu-item <%= activePage === 'addproduct' ? 'active' : '' %>">
+                <li class="menu-item <%= locals.activePage === 'addproduct' ? 'active' : '' %>">
                     <a class="menu-link" href="/admin/add-products"> <i class="icon material-icons md-add_box"></i>
                         <span class="text">Add product</span>
+                    </a>
+                    
+                </li>
+                <li class="menu-item <%= locals.activePage === 'banners' ? 'active' : '' %>">
+                    <a class="menu-link" href="/admin/banners"> <i class="icon material-icons md-photo"></i>
+                        <span class="text">Banners</span>
                     </a>
                     
                 </li>

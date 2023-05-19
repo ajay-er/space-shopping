@@ -9,6 +9,7 @@ const {
 
 const { fetchAllProducts } = require('../models/product.model');
 const { fetchUserOrderDetails } = require('../models/order.model');
+const {getAllBanners} = require('../models/banner.model')
 
 const { handleError } = require('../middlewares/error.handler');
 const { signupSchema, updateUserSchema } = require('../config/joi');
@@ -16,10 +17,12 @@ const { signupSchema, updateUserSchema } = require('../config/joi');
 async function httpGetHome(req, res) {
   try {
     const productResult = await fetchAllProducts();
+    const banner = await getAllBanners();
     if (productResult) {
       res.status(200).render('user/home', {
         products: productResult.products,
         status: true,
+        banner:banner
       });
     } else {
       res.status(500).json({ status: false });

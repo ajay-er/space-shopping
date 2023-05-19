@@ -31,6 +31,12 @@ const {
   httpPutCategory,
 } = require('../controllers/category.controller');
 
+const {
+  httpGetBannerPage,
+  httpEditBanner,
+  httpAddBanner,
+} = require('../controllers/banner.controller');
+
 const { httpGetOrderPage, httpChangeOrderStatus } = require('../controllers/order.controller');
 
 const { isAdminLoggedIn, isAdminLoggedOut } = require('../middlewares/auth.handler');
@@ -65,8 +71,11 @@ adminRouter.post('/order-status', isAdminLoggedIn, httpChangeOrderStatus);
 
 adminRouter.get('/graph', isAdminLoggedIn, httpGetGraphData);
 adminRouter.get('/chart', isAdminLoggedIn, httpGetChartData);
-
 adminRouter.get('/sales-report', isAdminLoggedIn, httpGetReport);
+
+adminRouter.get('/banners', isAdminLoggedIn, httpGetBannerPage);
+// adminRouter.post('/add-banner', upload.single('bannerImage'), isAdminLoggedIn, httpAddBanner);
+adminRouter.post('/edit-banner', upload.single('bannerImage'), isAdminLoggedIn, httpEditBanner);
 
 adminRouter.get('*', httpGet404);
 
