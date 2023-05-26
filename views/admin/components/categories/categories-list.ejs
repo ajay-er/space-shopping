@@ -28,19 +28,18 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>NO</th>
                                     <th>Name</th>
                                     <th>Active</th>
-                                    <th>Order</th>
                                     <th class="text-end">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="categories-table">
+                                <% let num = 1 %>
                                 <% category.forEach((category)=> { %>
                                     <tr>
-                                        <% var randomNum=Math.floor(Math.random() * 1223) + 1; %>
                                             <td>
-                                                <%= randomNum %>
+                                                <%= num++ %>
                                             </td>
                                             <td><b>
                                                     <%= category.name %>
@@ -53,10 +52,7 @@
                                                             id="category-status-<%= category._id %>">Disabled</span>
                                                     </td>
                                                     <% } %>
-                                                        <% var randomNum2=Math.floor(Math.random() * 102); %>
-                                                            <td>
-                                                                <%= randomNum2 %>
-                                                            </td>
+                                                      
                                                             <td class="text-end">
                                                                 <% if(category.active) { %>
                                                                     <button

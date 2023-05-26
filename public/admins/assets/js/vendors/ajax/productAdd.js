@@ -1,12 +1,17 @@
 //add-products
 const form = document.getElementById('myForm');
 const submitButton = document.getElementById('add-product-btn');
-const images = [];
-
+let images = [];
+let selectedImages = []
 submitButton.addEventListener('click', (event) => {
   event.preventDefault();
   submitButton.disabled = true;
   const formData = new FormData(form);
+
+  for (let i = 0; i < images.length; i++) {
+    formData.append('productImage', images[i].file);
+  }
+
   const productName = document.getElementById('productName').value;
   const productDescription =
     document.getElementById('productDescription').value;
@@ -41,14 +46,22 @@ submitButton.addEventListener('click', (event) => {
       },
     })
     .then((response) => {
-      console.log('Product added successfully!');
-      submitButton.disabled = false;
-      callAlertify('success', 'Product added successfully!');
-      event.target.form.reset();
-      document.getElementById('image-preview').innerHTML = '';
+      if(response.data.success){
+        console.log('Product added successfully!');
+        submitButton.disabled = false;
+        callAlertify('success', response.data.message);
+        event.target.form.reset();
+        selectedImages = [];
+        images = []
+        document.getElementById('image-preview').innerHTML = '';
+      }else{
+        callAlertify('error',response.data.message)
+        submitButton.disabled = false;
+      }
     })
     .catch((error) => {
-      callAlertify('error', 'Error adding product');
+      console.log(error);
+      callAlertify('error', 'something wrong internal server error');
       submitButton.disabled = false;
       console.error('Error adding product:', error);
     });
@@ -57,7 +70,8 @@ submitButton.addEventListener('click', (event) => {
 //add images
 function imageSelect() {
   const imageInput = document.getElementById('productImage');
-  const selectedImages = imageInput.files;
+   selectedImages = imageInput.files;
+
   if (images.length + selectedImages.length > 4) {
     callAlertify('error', `You can only select 4 images`);
     imageInput.value = '';
@@ -102,7 +116,7 @@ function checkDuplicate(name) {
   let img = true;
   if (images.length > 0) {
     for (j = 0; j < images.length; j++) {
-      if (images[j].name == name) {
+      if (images[j].name === name) {
         img = false;
         break;
       }

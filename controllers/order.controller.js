@@ -12,9 +12,6 @@ const {
   setSuccessStatus,
   getWallet,
   getUserData,
-  updateCart,
-  getWalletAndUpdate,
-  updateWalletAmount,
 } = require('../models/order.model');
 
 const { cartProductTotal } = require('../models/cart.model');
@@ -300,98 +297,13 @@ async function httpGetWallet(req, res) {
   }
 }
 
-// async function httpApplyWalllet(req, res) {
-//   try {
-//     const { id, walletApplied } = req.body;
-
-//     if (!walletApplied) {
-//       const result = await getWalletAndUpdate(req.session.user._id);
-//       if (result.status) {
-//         const cart = await updateCart(result.amount, id,true);
-//         if (cart.status) {
-//           return res.json({
-//             success: true,
-//             message: cart.message,
-//             total: cart.total,
-//             walletAmount: result.amount,
-//           });
-//         } else {
-//           return res.json({
-//             success: false,
-//             message: cart.message,
-//             total: cart.total,
-//             walletAmount: result.amount,
-//           });
-//         }
-//       } else {
-//         return res.json({
-//           success: false,
-//           amount: result.amount,
-//           message: result.message,
-//           walletAmount: result.amount,
-//         });
-//       }
-//     } else {
-//       const result = await updateWalletAmout(req.session.user._id);
-//       if(result.status){
-
-//         const cart = await updateCart(result.amount, id,false);
-//         if (cart.status) {
-//           return res.json({
-//             success: true,
-//             message: cart.message,
-//             total: cart.total,
-//             walletAmount: result.amount,
-//           });
-//         } else {
-//           return res.json({
-//             success: false,
-//             message: cart.message,
-//             total: cart.total,
-//             walletAmount: result.amount,
-//           });
-//         }
-
-//       }else{
-//         return res.json({
-//           success: false,
-//           amount: result.amount,
-//           message: result.message,
-//           walletAmount: result.amount,
-//         });
-//       }
-//     }
-//   } catch (error) {
-//     handleError(res, error);
-//   }
-// }
 
 async function httpApplyWallet(req, res) {
   try {
     const { id, walletApplied } = req.body;
     const userId = req.session.user._id;
-
-    if (!walletApplied) {
-      const result = await getWalletAndUpdate(userId);
-      const cart = await updateCart(result.amount, id, true,userId);
-
-      return res.json({
-        success: true,
-        message: cart.message,
-        total: cart.total,
-        walletAmount: result.amount,
-      });
-    } else {
-      const result = await updateWalletAmount(userId);
-      const cart = await updateCart(result.amount, id, false,userId);
-
-      return res.json({
-        success: true,
-        message: cart.message,
-        total: cart.total,
-        walletAmount: result.amount,
-      });
-    }
+    
+   
   } catch (error) {
     handleError(res, error);
   }
@@ -410,5 +322,5 @@ module.exports = {
   httpGetOrderPage,
   httpChangeOrderStatus,
   httpGetWallet,
-  httpApplyWallet,
+  httpApplyWallet
 };

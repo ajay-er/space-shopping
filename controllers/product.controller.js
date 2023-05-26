@@ -51,17 +51,18 @@ async function httpGetAddProduct(req, res) {
 
 async function httpPostAddProduct(req, res) {
   try {
-    const validation = addProductSchema.validate(req.body)
+   
+    const validation = addProductSchema.validate( {...req.body,productImage:req.files},{abortEarly:false});
 
     if (validation.error) {
-      return res.status(400).json({ error: validation.error.details[0].message })
+      return res.json({success:false, message: validation.error.details[0].message })
     }
 
     const productResult = await addNewProduct(req.body, req.files)
     if (productResult.status) {
       res.status(200).json({ success: true, message: 'Product added succesfully' })
     } else {
-      res.status(500).json({ status: false, message: 'Failed to add product.' })
+      res.status(500).json({ success: false, message: 'Failed to add product.' })
     }
   } catch (error) {
     handleError(res, error)

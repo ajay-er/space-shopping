@@ -58,7 +58,6 @@ async function addNewProduct(dataBody, dataFiles) {
 
   try {
     const imageUrlList = [];
-
     for (let i = 0; i < dataFiles.length; i++) {
       let locaFilePath = dataFiles[i].path;
       let response = await cloudinary.uploader.upload(locaFilePath, {

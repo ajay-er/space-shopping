@@ -35,9 +35,7 @@ const userSchema = new mongoose.Schema({
   },
   wallet:{
     type:Number,
-  },
-  old_wallet:{
-    type:Number
+    default:0
   }
 });
 

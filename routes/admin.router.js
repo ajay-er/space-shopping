@@ -55,12 +55,7 @@ adminRouter.put('/user-status', isAdminLoggedIn, httpPutBlockUser);
 
 adminRouter.get('/products', isAdminLoggedIn, httpGetProducts);
 adminRouter.get('/add-products', isAdminLoggedIn, httpGetAddProduct);
-adminRouter.post(
-  '/add-products',
-  upload.array('productImage', 4),
-  isAdminLoggedIn,
-  httpPostAddProduct,
-);
+adminRouter.post('/add-products', upload.array('productImage', 4), isAdminLoggedIn, httpPostAddProduct,);
 
 adminRouter.get('/edit-product/:id', isAdminLoggedIn, httpGetEditProduct);
 adminRouter.put('/edit-product', isAdminLoggedIn, httpPutProductDetails);
