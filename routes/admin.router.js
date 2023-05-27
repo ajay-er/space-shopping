@@ -21,6 +21,7 @@ const {
   httpGetAddProduct,
   httpPostAddProduct,
   httpGetEditProduct,
+  httpGetProductImages,
   httpPutProduct,
   httpPutProductDetails,
 } = require('../controllers/product.controller');
@@ -58,7 +59,8 @@ adminRouter.get('/add-products', isAdminLoggedIn, httpGetAddProduct);
 adminRouter.post('/add-products', upload.array('productImage', 4), isAdminLoggedIn, httpPostAddProduct,);
 
 adminRouter.get('/edit-product/:id', isAdminLoggedIn, httpGetEditProduct);
-adminRouter.put('/edit-product', isAdminLoggedIn, httpPutProductDetails);
+adminRouter.get('/getProductImages/:id', isAdminLoggedIn, httpGetProductImages);
+adminRouter.put('/edit-product', upload.array('productImage', 4), isAdminLoggedIn, httpPutProductDetails);
 adminRouter.put('/product-status/:id', isAdminLoggedIn, httpPutProduct);
 
 adminRouter.get('/orders', isAdminLoggedIn, httpGetOrderPage);

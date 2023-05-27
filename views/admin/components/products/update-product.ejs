@@ -1,3 +1,44 @@
+<style>
+  .image_container {
+    position: relative;
+    border: 2px solid #ddd;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .edit-icon {
+    position: absolute;
+    left: 90% !important;
+    top: 70% !important;
+    transform: translateX(-50%) scaleX(-1);
+    font-size: 18px !important;
+    color: rgb(255, 255, 255) !important;
+    cursor: pointer;
+    background-color: rgb(0, 0, 0);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+  .delete-icon {
+    position: absolute;
+    top: 4% !important;
+    left: 83% !important;
+    cursor: pointer;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
+
 <section class="content-main">
   <form id="myForm">
     <div class="row">
@@ -11,6 +52,7 @@
         <div class="card mb-4">
           <div class="card-body">
             <div class="mb-4">
+              <span id="productId" data-productId="<%= product._id %>" hidden></span>
               <label for="productName" class="form-label">Product title</label>
               <input type="text" value="<%-  product.productName %>" class="form-control" id="productName"
                 name="productName" required>
@@ -40,7 +82,7 @@
               <div class="col-lg-4">
                 <div class="mb-4">
                   <label class="form-label">Stocks</label>
-                  <input value="<%-  product.stocks %> " type="text" class="form-control" id="stocks" name="stocks"
+                  <input value="<%-  product.stocks %>" type="text" class="form-control" id="stocks" name="stocks"
                     required>
                 </div>
               </div>
@@ -50,49 +92,47 @@
                 <div class="col-sm-6 mb-3">
                   <label class="form-label">Category</label>
                   <select class="form-select" name="productCategory" id="productCategory" required>
-                    <option selected><%= categories[0].name %></option>
                     <% categories.forEach(category=> { %>
-                      <% if(category.active) { %>
-                        <option>
-                          <%= category.name %>
-                        </option>
-                        <% } %>
-                          <% }); %>
+
+                      <% if(category.name === product?.productCategory?.name ) { %>
+                       <option selected value="<%= category._id %>"><%= category.name %> %></option>
+                       <% } %>
+
+                      <% if(category.active && category.name != product?.productCategory?.name ) { %>
+                        <option value="<%= category._id %>"><%= category.name %></option>
+                      <% } %>
+                    <% }); %>
                   </select>
+                  
                 </div>
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="card mb-4">
-                  <div class="card-header">
-                    <h4>Media</h4>
+            <div class="container mt-3 w-100">
+              <div class="card shadow-sm w-100">
+                <div class="card-body d-flex justify-content-between">
+                  <label>
+                    <h4>Images</h4>
+                  </label>
+                  <input required onchange="imageSelect()" class="d-none" type="file" name="productImage" id="productImage" multiple>
+                  <button type="button" class="btn btn-sm btn-info" onclick="document.getElementById('productImage').click()">Add
+                    images</button>
+                </div>
+                <div class="card-body d-flex flex-wrap justify-content-start" id="image-preview">
+                  <!-- Images loaded from backend -->
+                  <% product.productImageUrls.forEach((imageurl, index) => { %>
+                  <div class="image_container d-flex justify-content-center position-relative">
+                    <img src="<%= imageurl %>" alt="img">
+                    <span class="position-absolute delete-icon" onclick="deleteImage(event, '<%= index %>')">&times;</span>
+                    <span class="position-absolute edit-icon" onclick="changeImage(event, '<%= index %>')">&#9998;</span>
                   </div>
-                  <div class="card-body">
-                    <div class="row">
-                      <% product.productImageUrls.forEach((imageUrl,index)=> { %>
-                        <div class="col-sm mb-4 text-center">
-                          <div class="image-preview" data-index="<%= index %>">
-                            <img src="<%= imageUrl %>" alt="image" id="imagePreview">
-                          </div>
-                          <div>
-                            <button type="button" class="btn btn-danger btn-sm delete-image-btn"
-                              data-url="<%= imageUrl %>">Delete</button>
-                            <label for="productImage" class="btn btn-primary colorChoose">Choose File</label>
-                            <input class="form-control d-none" type="file" name="productImage" id="productImage">
-                          </div>
-                        </div>
-                        <% }); %>
-                    </div>
-                  </div>
+                  <% }); %>
                 </div>
               </div>
             </div>
-
-
+            
             <div>
-              <button type="submit" id="add-product-btn" class="btn btn-md rounded font-sm hover-up">Update</button>
+              <button type="submit" id="update-product-btn" class="btn btn-md rounded font-sm hover-up">Update</button>
             </div>
 
           </div>
@@ -102,169 +142,273 @@
   </form>
 </section>
 
-<style>
-  input[type="file"] {
-    display: none;
-  }
-
-  .colorChoose {
-    background-color: rgb(8, 117, 250) !important;
-  }
-</style>
-
-
-
-
 
 <script>
-const fileInput = document.getElementById('productImage');
+document.getElementById('update-product-btn').addEventListener('click', (event) => {
+  event.preventDefault();
 
-fileInput.addEventListener('change', (event) => {
-  const files = event.target.files;
-  if (files && files[0]) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const newImageUrl = e.target.result;
-      // update the image preview and image URL in the product object
-      const imagePreview = document.querySelector('.image-preview');
-      imagePreview.querySelector('img').src = newImageUrl;
-      const imageIndex = imagePreview.dataset.index;
-      product.productImageUrls[imageIndex] = newImageUrl;
-    };
-    reader.readAsDataURL(files[0]);
+  const imageInput = document.getElementById('productImage');
+  const selectedImages = imageInput.files;
+
+  const form = document.getElementById('myForm');
+  const formData = new FormData(form);
+
+  const productId = document.getElementById('productId').getAttribute('data-productId')
+  formData.delete('productImage');
+  formData.append('productId',productId);
+
+  for (let i = 0; i < selectedImages.length; i++) {
+    formData.append('productImage', selectedImages[i]);
   }
+  
+  const url = '/admin/edit-product'
+
+  axios
+    .put(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((response) => {
+      if(response.data.success){
+        callAlertify('success',response.data.message)
+        window.location.reload();
+      }else{
+        callAlertify('error',response.data.message)
+      }
+    })
+    .catch((error) => {
+     if(error.response.status === 400){
+       callAlertify('error', error.response.data.message);
+    }else{
+       callAlertify('error', 'something wrong internal server error');
+     }
+      console.error('Error adding product:', error);
+    });
+  
 });
 
+  var uploadedImages = [];
+
+  function loadImagesFromBackend(productId) {
+    fetch(`/admin/getProductImages/${productId}`,{
+      method:'get'
+    })
+      .then(response => response.json())
+      .then(data => {
+        
+        uploadedImages = data.productImageUrls;
+        displayImages();
+      })
+      .catch(error => console.error(error));
+
+    displayImages();
+  }
+
+  // Function to display the uploaded images
+  function displayImages() {
+    var previewContainer = document.getElementById('image-preview');
+    previewContainer.innerHTML = '';
+    
+    uploadedImages.forEach((imageUrl, index) => {
+      var imageContainer = document.createElement('div');
+      imageContainer.className = 'image_container d-flex justify-content-center position-relative';
+
+      var image = document.createElement('img');
+      image.src = imageUrl;
+      image.alt = 'img';
+
+      var deleteIcon = document.createElement('span');
+      deleteIcon.className = 'position-absolute delete-icon';
+      deleteIcon.innerHTML = '&times;';
+      deleteIcon.addEventListener('click', function () {
+        deleteImage(index);
+      });
+
+      var editIcon = document.createElement('span');
+      editIcon.className = 'position-absolute edit-icon';
+      editIcon.innerHTML = '&#9998;';
+      editIcon.addEventListener('click', function () {
+        changeImage(index);
+      });
+
+      imageContainer.appendChild(image);
+      imageContainer.appendChild(deleteIcon);
+      imageContainer.appendChild(editIcon);
+
+      previewContainer.appendChild(imageContainer);
+    });
+  }
+
+  // Function to handle image selection
+  function imageSelect() {
+    var fileInput = document.getElementById('productImage');
+    var files = fileInput.files;
+
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      var reader = new FileReader();
+
+      reader.onload = function (event) {
+        var imageUrl = event.target.result;
+        uploadedImages.push(imageUrl);
+        displayImages();
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Function to delete an image
+  function deleteImage(index) {
+    uploadedImages.splice(index, 1);
+    displayImages();
+  }
+
+  // Function to change an image
+  function changeImage(index) {
+    var fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    fileInput.addEventListener('change', function (event) {
+      var file = event.target.files[0];
+      var reader = new FileReader();
+
+      reader.onload = function (event) {
+        var imageUrl = event.target.result;
+        uploadedImages[index] = imageUrl;
+        displayImages();
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    fileInput.click();
+  }
+
+  const productId = document.getElementById('productId');
+  let product = productId.getAttribute('data-productId');
+  loadImagesFromBackend(product);
+
+  
 </script>
 
 
 
 
 
+<!-- <script>
 
+let images = []; 
 
+// Function to handle image selection
+function imageSelect() {
+  const imageInput = document.getElementById('productImage');
+  const selectedImages = imageInput.files;
 
-
-
-
-<!-- 
-<script>
-
-  function updateProduct(event) {
-    event.preventDefault();
-
-    const form = document.getElementById('myForm');
-    const formData = new FormData(form);
-
-    axios.put('/admin/edit-product', {
-      data: {
-        productId: product._id, // replace with the actual product ID
-        ...Object.fromEntries(formData.entries())
-      }
-    })
-      .then(response => {
-        console.log(response.data);
-        // do something after successful update, e.g. show a success message
-      })
-      .catch(error => {
-        console.error(error.response.data);
-        // handle the error, e.g. show an error message
-      });
+  if (images.length + selectedImages.length > 4) {
+    callAlertify('error', `You can only select 4 images`);
+    imageInput.value = '';
+    return;
   }
 
-  const updateBtn = document.getElementById('add-product-btn');
-  updateBtn.addEventListener('click', updateProduct);
-
-
-  //delete
-
-  const deleteImageBtns = document.querySelectorAll('.delete-image-btn');
-
-  deleteImageBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const imageUrl = btn.dataset.url;
-      deleteImage(imageUrl);
-    });
-  });
-
-  function deleteImage(imageUrl) {
-    axios.put('/admin/edit-product', {
-      data: {
-        imageUrl: imageUrl
-      }
-    })
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error(error.response.data);
+  // Iterate over selected images and add them to the images array
+  for (let i = 0; i < selectedImages.length; i++) {
+    const file = selectedImages[i];
+    const url = URL.createObjectURL(file);
+    if (checkDuplicate(file.name)) {
+      images.push({
+        name: file.name,
+        url: url,
+        file: file,
       });
+    } else {
+      callAlertify('warning', `${file.name} is already added`);
+    }
   }
 
-</script>
+  updateImagePreview(); // Update the image preview
+}
 
- -->
+// Function to update the image preview
+function updateImagePreview() {
+  console.log(images);
+  const imagePreviewContainer = document.getElementById('image-preview');
+  imagePreviewContainer.innerHTML = '';
 
-
-
-
-<!-- 
-<script>
-
-const imagePreview = document.getElementById('image-preview');
-const fileInput = document.getElementById('productImage');
-
-fileInput.addEventListener('change', (event) => {
-  const fileList = event.target.files;
-  
-  // Clear the preview
-  imagePreview.innerHTML = '';
-  
-  // Loop through the file list and display each image
-  for (let i = 0; i < fileList.length; i++) {
-    const file = fileList[i];
-    
-    // Create a new image element
-    const image = document.createElement('img');
-    image.classList.add('preview-image');
-    image.file = file;
-    
-    // Create a remove button for the image
-    const removeButton = document.createElement('button');
-    removeButton.classList.add('btn', 'btn-danger', 'mt-2');
-    removeButton.innerText = 'Remove';
-    removeButton.addEventListener('click', (event) => {
-      event.preventDefault();
-      imagePreview.removeChild(imageContainer);
-    });
-    
-    // Create a container for the image and remove button
+  images.forEach((image, index) => {
     const imageContainer = document.createElement('div');
-    imageContainer.classList.add('preview-image-container');
-    imageContainer.appendChild(image);
-    imageContainer.appendChild(removeButton);
-    
-    // Add the container to the preview
-    imagePreview.appendChild(imageContainer);
-    
-    // Display the image
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      image.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-   }
-});
+    imageContainer.className = 'image_container d-flex justify-content-center position-relative';
+
+    const imgElement = document.createElement('img');
+    imgElement.src = image.url;
+    imgElement.alt = 'img';
+
+    const deleteIcon = document.createElement('span');
+    deleteIcon.className = 'position-absolute delete-icon';
+    deleteIcon.innerHTML = '&times;';
+    deleteIcon.addEventListener('click', () => deleteImage(index));
+
+    const editIcon = document.createElement('span');
+    editIcon.className = 'position-absolute edit-icon';
+    editIcon.innerHTML = '&#9998;';
+    editIcon.addEventListener('click', () => changeImage(index));
+
+    imageContainer.appendChild(imgElement);
+    imageContainer.appendChild(deleteIcon);
+    imageContainer.appendChild(editIcon);
+
+    imagePreviewContainer.appendChild(imageContainer);
+  });
+}
+
+// Function to delete an image from the images array
+function deleteImage(index) {
+  images.splice(index, 1);
+  updateImagePreview();
+}
+
+// Function to check for duplicate image name in the images array
+function checkDuplicate(name) {
+  for (let i = 0; i < images.length; i++) {
+    if (images[i].name === name) {
+      return false; // Duplicate found
+    }
+  }
+  return true; // No duplicate found
+}
+
+// Function to handle image change (edit)
+function changeImage(index) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.addEventListener('change', (event) => handleImageChange(event, index));
+  input.click();
+}
+
+// Function to handle the file selection when editing an image
+function handleImageChange(event, index) {
+  const file = event.target.files[0];
+  const url = URL.createObjectURL(file);
+
+  images[index] = {
+    name: file.name,
+    url: url,
+    file: file,
+  };
+
+  updateImagePreview();
+}
+
+// Function to handle form submission (update button)
+function handleFormSubmit() {
+ console.log('hi');
+}
+
+// Add an event listener to the update button
+const updateBtn = document.getElementById('update-product-btn');
+updateBtn.addEventListener('click', handleFormSubmit);
 
 </script> -->
-
-
-
-
-
-
-
-
-
-
-

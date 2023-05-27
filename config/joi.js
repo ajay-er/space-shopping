@@ -19,11 +19,11 @@ const addProductSchema = Joi.object({
     'string.min': 'Product title must be at least 2 characters long',
     'string.max': 'Product title cannot exceed 100 characters'
   }),
-  productDescription: Joi.string().trim().min(5).max(400).required().messages({
+  productDescription: Joi.string().trim().min(5).max(600).required().messages({
     'string.base': 'description must be a string',
     'string.empty': 'description is required',
     'string.min': 'description must be at least 5 characters long',
-    'string.max': 'description cannot exceed 400 characters'
+    'string.max': 'description cannot exceed 600 characters'
   }),
   productPrice: Joi.number().positive().required().messages({
     'number.base': 'Regular price must be a number',
@@ -48,6 +48,43 @@ const addProductSchema = Joi.object({
     'any.required': 'Product image is required'
   })
 });
+
+// update-product
+const updateProductSchema = Joi.object({
+  productName: Joi.string().trim().min(2).max(100).messages({
+    'string.base': 'Product title must be a string',
+    'string.empty': 'Product title is required',
+    'string.min': 'Product title must be at least 2 characters long',
+    'string.max': 'Product title cannot exceed 100 characters'
+  }),
+  productDescription: Joi.string().trim().min(5).max(600).messages({
+    'string.base': 'description must be a string',
+    'string.empty': 'description is required',
+    'string.min': 'description must be at least 5 characters long',
+    'string.max': 'description cannot exceed 600 characters'
+  }),
+  productPrice: Joi.number().positive().messages({
+    'number.base': 'Regular price must be a number',
+    'number.positive': 'Regular price must be a positive number'
+  }),
+  productOldPrice: Joi.number().positive().messages({
+    'number.base': 'Old price must be a number',
+    'number.positive': 'Old price must be a positive number'
+  }),
+  stocks: Joi.number().integer().min(0).messages({
+    'number.base': 'Stocks must be a number',
+    'number.integer': 'Stocks must be an integer',
+    'number.min': 'Stocks cannot be negative'
+  }),
+  productCategory: Joi.string().required().messages({
+    'any.required': 'Category is required'
+  }),
+  productImage: Joi.array().messages({
+    'any.required': 'Product image is required'
+  }),
+  productId: Joi.any().optional(),
+}).min(1); 
+
 
 //address
 const addressSchema = Joi.object({
@@ -75,5 +112,6 @@ module.exports = {
   signupSchema,
   addProductSchema,
   addressSchema,
-  updateUserSchema
+  updateUserSchema,
+  updateProductSchema
 };

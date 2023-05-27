@@ -10,10 +10,16 @@ async function fetchAllProducts(page, limit) {
         .skip((page - 1) * limit)
         .limit(limit);
 
-        const totalProducts = await productDatabase.countDocuments();
-        const totalPages = Math.ceil(totalProducts / limit);
+      const totalProducts = await productDatabase.countDocuments();
+      const totalPages = Math.ceil(totalProducts / limit);
 
-      return { status: true, products: products, totalPages: totalPages, currentPage: page,limit:limit };
+      return {
+        status: true,
+        products: products,
+        totalPages: totalPages,
+        currentPage: page,
+        limit: limit,
+      };
     } catch (error) {
       console.log(error);
       return { status: false, message: error.message };
@@ -25,7 +31,7 @@ async function fetchAllProducts(page, limit) {
 
 async function fetchProduct(productId) {
   try {
-    const product = await productDatabase.findById(productId);
+    const product = await productDatabase.findById(productId).populate('productCategory');
     if (!product.productStatus) {
       return { status: false };
     } else {
@@ -95,9 +101,54 @@ async function updateProductStatus(productId) {
   }
 }
 
+async function getProductImages(productId) {
+  try {
+    const product = await productDatabase.findById(productId).select('productImageUrls');
+    return product;
+  } catch (error) {
+    throw new Error(`Error fetchig product images: ${error.message}`);
+  }
+}
+
+async function updateProduct(productId, productData,productImages) {
+  try {
+    const product = await productDatabase.findById(productId);
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    if(productImages && product.productImageUrls.length < 4 && product.productImageUrls.length + productImages.length < 4 ){
+      for (let i = 0; i < productImages.length; i++) {
+        let locaFilePath = productImages[i].path;
+        let response = await cloudinary.uploader.upload(locaFilePath, {
+          folder: 'space/product_images',
+          unique_filename: true,
+        });
+        product.productImageUrls.push(response.url);
+      }
+    }
+
+    product.productName = productData.productName || product.productName;
+    product.productDescription = productData.productDescription || product.productDescription;
+    product.productPrice = productData.productPrice || product.productPrice;
+    product.productOldPrice = productData.productOldPrice || product.productOldPrice;
+    product.stocks = productData.stocks || product.stocks;
+    product.productCategory = productData.productCategory || product.productCategory;
+
+    const updatedProduct = await product.save();
+
+    return updatedProduct;
+  } catch (error) {
+    throw new Error(`Error updating product details: ${error.message}`);
+  }
+}
+
 module.exports = {
   fetchAllProducts,
   fetchProduct,
   addNewProduct,
   updateProductStatus,
+  getProductImages,
+  updateProduct,
 };
