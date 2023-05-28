@@ -278,6 +278,18 @@ async function httpChangeOrderStatus(req, res) {
   }
 }
 
+
+async function   httpGetOrderDetails(req,res){
+  try{
+
+    
+
+  }catch(error){
+    handleError(res,error);
+  }
+}
+
+
 async function httpGetWallet(req, res) {
   try {
     const walletAmount = await getWallet(req.session.user._id);
@@ -296,6 +308,8 @@ async function httpGetWallet(req, res) {
     handleError(res, error);
   }
 }
+
+
 
 
 async function httpApplyWallet(req, res) {
@@ -322,5 +336,6 @@ module.exports = {
   httpGetOrderPage,
   httpChangeOrderStatus,
   httpGetWallet,
-  httpApplyWallet
+  httpApplyWallet,
+  httpGetOrderDetails
 };

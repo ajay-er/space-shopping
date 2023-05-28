@@ -40,6 +40,7 @@ const {
 } = require('../controllers/cart.controller');
 
 
+
 const {
   httpGetCheckout,
   httpPostCheckout,
@@ -52,6 +53,8 @@ const {
   httpDeleteAddress,
   httpGetWallet,
   httpApplyWallet,
+  httpGetOrderDetails,
+
 } = require('../controllers/order.controller');
 
 
@@ -94,6 +97,8 @@ userRouter.get('/wallet',isLoggedIn,httpGetWallet);
 userRouter.put('/apply-wallet',isLoggedIn,httpApplyWallet);
 
 userRouter.get('/account', httpGetAccount);
+userRouter.get('/order-details/:id', httpGetOrderDetails);
+
 userRouter.get('/logout', httpGetLogout);
 userRouter.get('*', httpGet404);
 

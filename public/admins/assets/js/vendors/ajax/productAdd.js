@@ -8,6 +8,8 @@ submitButton.addEventListener('click', (event) => {
   submitButton.disabled = true;
   const formData = new FormData(form);
 
+  formData.delete('productImage')
+
   for (let i = 0; i < images.length; i++) {
     formData.append('productImage', images[i].file);
   }
