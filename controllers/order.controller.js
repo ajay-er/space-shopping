@@ -12,6 +12,7 @@ const {
   setSuccessStatus,
   getWallet,
   getUserData,
+  getOrderdetails,
 } = require('../models/order.model');
 
 const { cartProductTotal } = require('../models/cart.model');
@@ -36,14 +37,12 @@ async function httpGetCheckout(req, res) {
     const cartResult = await cartProductTotal(req.session.user._id);
 
     if (cartResult.cart) {
-     
       cartResult.cart.items.forEach(async (item) => {
         const product = await productDatabase.find({ _id: item.product });
         if (product[0].stocks < item.quantity) {
-        return  res.redirect('/cart')
+          return res.redirect('/cart');
         }
       });
-      
     }
 
     const result = await getAddresses(req.session.user._id, res);
@@ -278,17 +277,19 @@ async function httpChangeOrderStatus(req, res) {
   }
 }
 
-
-async function   httpGetOrderDetails(req,res){
-  try{
-
-    
-
-  }catch(error){
-    handleError(res,error);
+async function httpGetOrderDetails(req, res) {
+  try {
+    const orderId = req.query.id;
+    const result = await getOrderdetails(orderId);
+    if (result.status) {
+      return res.render('user/order-details',{ orderData: result.orderData });
+    } else {
+      return res.redirect('/404');
+    }
+  } catch (error) {
+    handleError(res, error);
   }
 }
-
 
 async function httpGetWallet(req, res) {
   try {
@@ -309,15 +310,10 @@ async function httpGetWallet(req, res) {
   }
 }
 
-
-
-
 async function httpApplyWallet(req, res) {
   try {
     const { id, walletApplied } = req.body;
     const userId = req.session.user._id;
-    
-   
   } catch (error) {
     handleError(res, error);
   }
@@ -337,5 +333,5 @@ module.exports = {
   httpChangeOrderStatus,
   httpGetWallet,
   httpApplyWallet,
-  httpGetOrderDetails
+  httpGetOrderDetails,
 };

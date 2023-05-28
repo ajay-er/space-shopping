@@ -405,6 +405,32 @@ async function getUserData(userId) {
   }
 }
 
+async function getOrderdetails(orderId) {
+  try {
+    const orderData = await orderDatabase.findById(orderId)
+    .populate({
+      path: 'items.product',
+      select: 'productName productPrice productImageUrls', 
+      model: 'Product'
+    })
+    .populate({
+      path: 'user',
+      select: 'username email', 
+      model: 'User'
+    })
+    .populate('shippingAddress');
+   
+    if (orderData) {
+      return { status: true, orderData };
+    } else {
+      return { status: false };
+    }
+  } catch (error) {
+    throw new Error('Error finding order!');
+  }
+}
+
+
 
 
 
@@ -424,4 +450,5 @@ module.exports = {
   setSuccessStatus,
   getWallet,
   getUserData,
+  getOrderdetails,
 };

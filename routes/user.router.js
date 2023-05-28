@@ -97,7 +97,7 @@ userRouter.get('/wallet',isLoggedIn,httpGetWallet);
 userRouter.put('/apply-wallet',isLoggedIn,httpApplyWallet);
 
 userRouter.get('/account', httpGetAccount);
-userRouter.get('/order-details/:id', httpGetOrderDetails);
+userRouter.get('/order-details',isLoggedIn, httpGetOrderDetails);
 
 userRouter.get('/logout', httpGetLogout);
 userRouter.get('*', httpGet404);

@@ -13,7 +13,8 @@
                                 <th>Date</th>
                                 <th>Status</th>
                                 <th>Total</th>
-                                <th>Actions/Details</th>
+                                <th>Actions</th>
+                                <th>Details</th>
                             </tr>
                             <% } %>
 
@@ -72,32 +73,12 @@
                                     <td>&#8377;<%= order.total %> for <%= order.productCount %> items</td>
                                     
                                     <% if (order.status==='canceled' || order.status==='cancelPending' ||  order.status==='returnPending' ||  order.status==='returned'  ) { %>
-                                        <td class="text-end">
-                                            <div class="dropdown">
-                                                <a href="#" data-bs-toggle="dropdown">
-                                                    <span> &#8230;</span>
-                                                </a>
-                                                <div class="dropdown-menu">
-                                                    <a  href="/order-details" class="dropdown-item">View
-                                                        detail</a>
-                                                   
-                                                </div>
-                                            </div>
-                                        </td>
+                                        <td></td>
                                         <% } else if(order.paymentStatus==='failed' ){ %>
                                             <td><a class=" d-block btn btn-sm"
                                                     style="border: 0px; background-color: rgb(120, 120, 120); color: #ffffff;">Try
                                                     again</a>
-                                                    <div class="dropdown">
-                                                        <a href="#" data-bs-toggle="dropdown">
-                                                            <span> &#8230;</span>
-                                                        </a>
-                                                        <div class="dropdown-menu">
-                                                            <a href="/order-details" class="dropdown-item">View
-                                                                detail</a>
-                                                            
-                                                        </div>
-                                                    </div>
+                                                    
                                             </td>
                                             <% } else if(order.status==='delivered' ){ %>
 
@@ -112,57 +93,37 @@
                                                                     <%= returnDaysLeft %> days left
                                                                 </span>
                                                             </a>
-                                                            <div class="dropdown">
-                                                                <a href="#" data-bs-toggle="dropdown">
-                                                                    <span> &#8230;</span>
-                                                                </a>
-                                                                <div  class="dropdown-menu">
-                                                                    <a href="/order-details" class="dropdown-item">View
-                                                                        detail</a>
-                                                                    <!-- <a class="dropdown-item text-danger"
-                                                                        href="#">Delete</a> -->
-                                                                </div>
-                                                            </div>
+                                                           
                                                     </td>
 
+                                                    
                                                     <% } else { %>
-                                                        <td class="text-end">
-                                                            <div class="dropdown">
-                                                                <a href="#" data-bs-toggle="dropdown"
-                                                                    class="btn btn-light rounded btn-sm font-sm">
-                                                                    <i class="material-icons md-    "></i>
-                                                                </a>
-                                                                <div class="dropdown-menu">
-                                                                    <a href="/order-details" class="dropdown-item">View
-                                                                        detail</a>
-                                                                    <!-- <a class="dropdown-item text-danger"
-                                                                        href="#">Delete</a> -->
-                                                                </div>
-                                                            </div>
-                                                        </td>
-
+                                                        <td></td>
                                                         <% } %>
                                                           
                                                                 <% } else { %>
-                                                                    <td><a class="cancelBtn d-block btn btn-sm"
+                                                                    <td>
+                                                                        <a class="cancelBtn d-block btn btn-sm"
                                                                             onclick="cancelOrder('<%= order.id %>')"
-                                                                            style="background-color: rgb(255, 0, 0); color: #ffffff;">cancel</a>
+                                                                            style="background-color: rgb(255, 0, 0); color: #ffffff;">cancel
+                                                                        </a>
+                                                                            
+                                                                    </td>
+
+                                                                    <% } %>
+
+                                                                        <td class="text-end">
                                                                             <div class="dropdown">
                                                                                 <a href="#" data-bs-toggle="dropdown">
                                                                                     <span> &#8230;</span>
                                                                                 </a>
                                                                                 <div class="dropdown-menu">
-                                                                                    <a href="/order-details" class="dropdown-item">View
+                                                                                    <a  href="/order-details?id=<%= order.id %>" class="dropdown-item">View
                                                                                         detail</a>
-                                                                                    <!-- <a class="dropdown-item text-danger"
-                                                                                        href="#">Delete</a> -->
+                                                                                   
                                                                                 </div>
                                                                             </div>
-                                                                    </td>
-
-                                                                    <% } %>
-
-
+                                                                        </td>
                                 </tr>
 
                                 <% }) %>
@@ -176,7 +137,6 @@
                                             </td>
                                         </tr>
                                         <% } %>
-
                     </tbody>
                 </table>
             </div>
@@ -196,8 +156,8 @@
             text: 'Please provide a reason for cancellation:',
             input: 'text',
             showCancelButton: true,
-            confirmButtonText: 'Cancel',
-            cancelButtonText: 'Close',
+            confirmButtonText: 'ok',
+            cancelButtonText: 'cancel',
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
