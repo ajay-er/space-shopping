@@ -38,7 +38,7 @@ const {
   httpAddBanner,
 } = require('../controllers/banner.controller');
 
-const { httpGetOrderPage, httpChangeOrderStatus } = require('../controllers/order.controller');
+const { httpGetOrderPage, httpChangeOrderStatus, httpGetOrderDetails } = require('../controllers/order.controller');
 
 const { isAdminLoggedIn, isAdminLoggedOut } = require('../middlewares/auth.handler');
 
@@ -65,6 +65,7 @@ adminRouter.put('/product-status/:id', isAdminLoggedIn, httpPutProduct);
 
 adminRouter.get('/orders', isAdminLoggedIn, httpGetOrderPage);
 adminRouter.post('/order-status', isAdminLoggedIn, httpChangeOrderStatus);
+adminRouter.get('/order-details',isAdminLoggedIn,httpGetOrderDetails)
 
 adminRouter.get('/graph', isAdminLoggedIn, httpGetGraphData);
 adminRouter.get('/chart', isAdminLoggedIn, httpGetChartData);

@@ -279,9 +279,15 @@ async function httpChangeOrderStatus(req, res) {
 
 async function httpGetOrderDetails(req, res) {
   try {
+   
     const orderId = req.query.id;
+    const admin = req.query.admin;
     const result = await getOrderdetails(orderId);
+
     if (result.status) {
+      if(admin && req.session.adminLoggedIn){
+        return res.render('admin/order-details',{ orderData: result.orderData,activePage:'orders' });
+      }
       return res.render('user/order-details',{ orderData: result.orderData });
     } else {
       return res.redirect('/404');
