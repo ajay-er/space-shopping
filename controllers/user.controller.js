@@ -188,6 +188,9 @@ async function httpUpdateUserdata(req, res) {
 
     const updateResult = await updateUserData(value, req.file, req.session.user._id);
     if (updateResult.status) {
+      if(updateResult.user){
+       req.session.user =  updateResult.user
+      }
       return res.json({status:true, message: updateResult?.message });
     } else {
       return res.json({status:false, message: updateResult?.message });

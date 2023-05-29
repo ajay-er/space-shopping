@@ -144,9 +144,11 @@ async function updateUserData(userData, profilePicture, userId) {
     const filter = { _id: userId };
     const update = { $set: dataObj };
     const result = await userDatabase.updateOne(filter, update);
+    const updatedUser = await userDatabase.findById(userId)
+    
 
     if (result.modifiedCount > 0) {
-      return { status: true, message: 'Updated successfully'};
+      return { status: true, message: 'Updated successfully',user:updatedUser};
     } else {
       throw new Error('Updation failed');
     }

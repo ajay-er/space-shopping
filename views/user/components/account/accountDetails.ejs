@@ -1,15 +1,48 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.css">
+
+<style>
+    #profilePhoto {
+        height: 140px;
+    }
+
+    #file {
+        display: none;
+    }
+
+    .img-account-profile {
+        border: 1px solid rgb(0, 0, 0);
+    }
+
+    #imagePreviewContainer {
+        width: 100%;
+        height: 350px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #imagePreviewContainer img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+
+    #profilePhoto {
+        max-width: 100%;
+        max-height: 100%;
+    }
+</style>
+
 <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
-    <div class="toast-container position-fixed top-0 p-3" style="z-index: 10000; right: 60px;">
-    </div>
+    <div class="toast-container position-fixed top-0 p-3" style="z-index: 10000; right: 60px;"></div>
     <div class="card">
         <div class="card-header">
             <h5>Account Details</h5>
         </div>
         <div class="card-body">
-
             <form id="updateUser">
                 <div class="row">
-                    <label>profile picture <span class="required">*</span></label>
+                    <label>Profile Picture <span class="required">*</span></label>
                     <div class="card mb-4 mb-xl-0 profile-picture-card">
                         <div class="card-body text-center">
                             <img id="profilePhoto" class="img-account-profile rounded-circle mb-2"
@@ -57,33 +90,86 @@
     </div>
 </div>
 
-<style>
-    #profilePhoto {
-        height: 140px;
-    }
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" role="dialog" aria-labelledby="imagePreviewModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imagePreviewModalLabel">Crop Image</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="imagePreviewContainer"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="cropImageButton">Crop</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    #file {
-        display: none;
-    }
-
-    .img-account-profile {
-        border: 1px solid rgb(0, 0, 0);
-    }
-</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.js"></script>
 
 <script>
+    const fileIn = document.getElementById('file');
+    const profilePhoto = document.getElementById('profilePhoto');
+    const imagePreviewModal = document.getElementById('imagePreviewModal');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const cropImageButton = document.getElementById('cropImageButton');
+    let croppedImage;
+    // Add event listener to file input
+    fileIn.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
 
-    const fileInput = document.getElementById('file');
-    const profilePicture = document.getElementById('profilePhoto');
+        reader.onload = function (e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.classList.add('img-fluid');
+            img.style.display = 'block';
+            img.style.maxWidth = '80%';
 
-    fileInput.addEventListener('change', function () {
-        if (fileInput.files && fileInput.files[0]) {
-            const reader = new FileReader();
+            // Display the image in the modal
+            imagePreviewContainer.innerHTML = '';
+            imagePreviewContainer.appendChild(img);
 
-            reader.onload = function (e) {
-                profilePicture.src = e.target.result;
-            };
-            reader.readAsDataURL(fileInput.files[0]);
+            // Show the modal
+            $(imagePreviewModal).modal('show');
+
+            // Initialize Cropper.js for the image
+            const cropper = new Cropper(img, {
+                aspectRatio: 1, // Set the aspect ratio to 1:1 for a square crop area
+                viewMode: 1,
+                autoCropArea: 1,
+                cropBoxResizable: false,
+                minCropBoxWidth: 200, // Set the minimum crop box width (change as desired)
+                minCropBoxHeight: 200, // Set the minimum crop box height (change as desired)
+            });
+
+            // Add event listener to the crop button
+            cropImageButton.addEventListener('click', function () {
+                const croppedCanvas = cropper.getCroppedCanvas({
+                    width: 800, // Set the desired width
+                    height: 800, // Set the desired height
+                });
+
+                const croppedImageData = cropper.getCroppedCanvas().toDataURL('image/jpeg');
+
+                // Set the cropped image as the source for the profile photo
+                profilePhoto.src = croppedImageData;
+
+                 croppedImage = dataURItoBlob(croppedImageData);
+
+                // Hide the modal
+                $(imagePreviewModal).modal('hide');
+            });
+        };
+
+        if(reader){
+            reader.readAsDataURL(file);
         }
     });
 
@@ -93,7 +179,10 @@
 
         document.getElementById('buttonSub').disabled = true;
         const formData = new FormData(form1);
+        formData.delete('profileimage');
+        formData.append('profileimage', croppedImage, 'cropped_image.jpg');
 
+        console.log(...formData);
         fetch('/update-userdata', {
             method: 'POST',
             body: formData
@@ -129,4 +218,37 @@
             });
     });
 
+
+    function sendCroppedImage(imageData) {
+    // Create a new FormData object
+    const formData = new FormData();
+
+    // Append the cropped image data as a blob to the FormData
+    formData.append('profileimage', dataURItoBlob(imageData), 'cropped_image.jpg');
+
+    // Send the cropped image data to the server using fetch or AJAX
+    fetch('/upload-profileimage', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('image uploaded successfully');
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
+// Function to convert a data URI to a Blob object
+function dataURItoBlob(dataURI) {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+}
 </script>
