@@ -270,14 +270,16 @@ async function returnOrder(orderId, returnreason) {
 async function getAllOrders(page, limit) {
   try {
     const orders = await orderDatabase
-      .find()
-      .populate('user', 'username')
-      .skip((page - 1) * limit)
-      .limit(limit);
+    .find()
+    .sort({ date: -1 }) // Sort by date in descending order
+    .populate('user', 'username')
+    .skip((page - 1) * limit)
+    .limit(limit);
+  
 
-    if (!orders) {
-      throw new Error('No orders found');
-    }
+  if (!orders || orders.length === 0) {
+    throw new Error('No orders found');
+  }
 
     const totalOrders = await orderDatabase.countDocuments();
     const totalPages = Math.ceil(totalOrders / limit);

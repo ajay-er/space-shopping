@@ -11,6 +11,7 @@ const {
   updateProductStatus,
   getProductImages,
   updateProduct,
+  getProductsWithCategory
 } = require('../models/product.model');
 
 async function httpGetProducts(req, res) {
@@ -159,13 +160,15 @@ async function httpGetAllProducts(req, res) {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 8;
+    const sortBy  = req.query.sortBy
 
-    const allProductsResult = await fetchAllProducts(page, limit);
+    const allProductsResult = await fetchAllProducts(page, limit,sortBy);
     res.render('user/all-products', {
       products: allProductsResult.products,
       totalPages: allProductsResult.totalPages,
       currentPage: allProductsResult.currentPage,
       limit: allProductsResult.limit,
+      productCount:allProductsResult.productCount
     });
   } catch (error) {
     handleError(res, error);
@@ -181,6 +184,34 @@ async function httpGetProductImages(req, res) {
   }
 }
 
+async function httpCategoryProduct(req, res) {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
+    const sortBy  = req.query.sortBy
+    const categoryId = req.params.id
+
+
+    const result = await getProductsWithCategory(categoryId,page,limit,sortBy);
+
+    if(result.products.length>0){
+      return res.render('user/shop-category',{ products: result.products,
+        totalPages: result.totalPages,
+        currentPage: result.currentPage,
+        limit: result.limit,
+        productCount:result.productCount,categoryId});
+    }else{
+    return  res.redirect('/shop')
+    }
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
+
+
+
+
 module.exports = {
   httpGetProducts,
   httpGetAddProduct,
@@ -191,4 +222,5 @@ module.exports = {
   httpGetProduct,
   httpGetAllProducts,
   httpGetProductImages,
+  httpCategoryProduct
 };

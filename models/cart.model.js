@@ -32,7 +32,6 @@ async function addItemToCart(userId, productId, quantity) {
       }
 
       cart.total = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-      console.log(cart.total);
       await cart.save();
       return {
         status: true,

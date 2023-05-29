@@ -30,7 +30,7 @@ function removeProduct(productId) {
 
           const dropdownItem = document.querySelector(`li[data-product-id="${productId}"]`);
 
-          if (window.location.href === 'http://localhost:8000/cart') {
+          if (window.location.href === 'https://getmyshoe/cart' || window.location.href === 'http://localhost:8000/cart') {
             const cartItem = document.querySelector(`tr[data-item-id="${productId}"]`);
 
             if (cartItem.parentElement.rows.length === 2) {
@@ -204,13 +204,20 @@ function updateProductQuantity(productId, quantity) {
 }
 
 function updateSubtotalAndTotal(subtotal) {
-  // var shippingChargeElement = document.querySelector('#shipping-charge');
-
   var navSubtotalElement = document.querySelector('#nav-sub-total');
   var cartSubtotalElement = document.querySelector('#cart-sub-total');
   var totalElement = document.querySelector('#total');
 
-  navSubtotalElement.textContent = '₹' + subtotal.toFixed(2);
-  cartSubtotalElement.textContent = '₹' + subtotal.toFixed(2);
-  totalElement.textContent = '₹' + subtotal.toFixed(2);
+  if (navSubtotalElement) {
+    navSubtotalElement.textContent = '₹' + subtotal.toFixed(2);
+  }
+  
+  if (cartSubtotalElement) {
+    cartSubtotalElement.textContent = '₹' + subtotal.toFixed(2);
+  }
+  
+  if (totalElement) {
+    totalElement.textContent = '₹' + subtotal.toFixed(2); 
+  }
 }
+

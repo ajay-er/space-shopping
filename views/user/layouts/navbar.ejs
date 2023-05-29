@@ -55,32 +55,34 @@
                         </div>
                         <div class="header-right">
                             <div class="search-style-2">
-                                <form action="#">
-                                    <select class="select-active">
-                                        <option>All Categories</option>
-                                        <% categories.forEach(category=> { %>
+                                <form >
+                                    <select class="select-active" id="categorySelect">
+                                        <option disabled selected>All Categories</option>
+                                        <% categories.forEach(category => { %>
                                             <% if (category.active) { %>
-                                                <option>
+                                                <option value="<%= category._id %>">
                                                     <%= category.name %>
                                                 </option>
-                                                <% } %>
-                                                    <% }) %>
+                                            <% } %>
+                                        <% }) %>
                                     </select>
                                     <input type="text" placeholder="Search for items...">
                                 </form>
+                                
                             </div>
                             <div class="header-action-right">
                                 <div class="header-action-2">
-                                    
+
                                     <div class="header-action-icon-2">
                                         <a href="/account">
                                             <% if (locals.user) { %>
-                                            <img class="svgInject" alt="account" style="border: 2px solid #000000; border-radius: 50%; padding: 2px;"
-                                            src="<%= user?.profileimage %>">
-                                                
-                                            <% }%>
+                                                <img class="svgInject" alt="account"
+                                                    style="border: 2px solid #000000; border-radius: 50%; padding: 2px;"
+                                                    src="<%= user?.profileimage %>">
 
-                                            <!-- <img class="svgInject" alt="account"
+                                                <% }%>
+
+                                                    <!-- <img class="svgInject" alt="account"
                                                 src="/user/assets/imgs/theme/icons/icon-account.svg"> -->
                                         </a>
                                     </div>
@@ -88,14 +90,14 @@
                                     <div class="header-action-icon-2">
                                         <a href="/wallet">
                                             <% if (locals.user) { %>
-                                            <img class="svgInject" alt="account" 
-                                            src="/user/assets/imgs/theme/icons/wallet.svg">
-                                                
-                                            <% }%>
+                                                <img class="svgInject" alt="account"
+                                                    src="/user/assets/imgs/theme/icons/wallet.svg">
+
+                                                <% }%>
                                         </a>
                                     </div>
                                     <!-- <div class="header-action-icon-2"> -->
-                                        <!-- <a href="/wishlist">
+                                    <!-- <a href="/wishlist">
                                             <img class="svgInject" alt="space"
                                                 src="/user/assets/imgs/theme/icons/icon-heart.svg">
                                             <%# if (locals.user) { %>
@@ -105,19 +107,19 @@
                                                 <%# } %>
                                         </a> -->
                                     <!-- </div> -->
-                                    <% if (locals.user  ) { %>
-                                    <div class="header-action-icon-2">
-                                        <a class="mini-cart-icon" href="/cart">
-                                            <img alt="space" src="/user/assets/imgs/theme/icons/icon-cart.svg">
-                                            <% if (locals.user) { %>
-                                                <span class="pro-count blue" id="cart-count1">
-                                                    <%= locals.cart?.items?.length ?? 0 %>
-                                                </span>
-                                                <% } %>
-                                        </a>
+                                    <% if (locals.user ) { %>
+                                        <div class="header-action-icon-2">
+                                            <a class="mini-cart-icon" href="/cart">
+                                                <img alt="space" src="/user/assets/imgs/theme/icons/icon-cart.svg">
+                                                <% if (locals.user) { %>
+                                                    <span class="pro-count blue" id="cart-count1">
+                                                        <%= locals.cart?.items?.length ?? 0 %>
+                                                    </span>
+                                                    <% } %>
+                                            </a>
                                             <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                                 <ul class="shopping-cart-list">
-                                                        <% (locals.cart?.items || []).forEach(item => { %>
+                                                    <% (locals.cart?.items || []).forEach(item=> { %>
                                                         <li data-product-id="<%= item.product._id %>">
                                                             <div class="shopping-cart-img">
                                                                 <a href="/product"><img
@@ -144,19 +146,20 @@
                                                 </ul>
                                                 <div class="shopping-cart-footer">
                                                     <div class="shopping-cart-total">
-                                                        <h4>Total <span id="nav-sub-total">₹<%= (cart?.total||0.00) %></span>
+                                                        <h4>Total <span id="nav-sub-total">₹<%= (cart?.total||0.00) %>
+                                                                    </span>
                                                         </h4>
                                                     </div>
                                                     <div class="shopping-cart-button">
                                                         <a href="/cart" class="outline">View cart</a>
-                                                            <a  href="/checkout">Checkout</a>
-                                                          
+                                                        <a href="/checkout">Checkout</a>
+
                                                     </div>
                                                 </div>
 
 
                                             </div>
-                                            
+
                                         </div>
 
                                         <% } else { %>
@@ -166,7 +169,7 @@
                                                         src="/user/assets/imgs/theme/icons/icon-account.svg">
                                                 </a>
                                             </div>
-                                        <% } %>
+                                            <% } %>
                                 </div>
                             </div>
                         </div>
@@ -189,13 +192,16 @@
                                     <ul>
                                         <% categories.forEach(category=> { %>
                                             <% if (category.active) { %>
-                                                <li><a href="">
+                                                <li>
+                                                    <a href="/shop/<%= category._id %>">
                                                         <%= category.name %>
-                                                    </a></li>
-                                                <% } %>
-                                                    <% }) %>
+                                                    </a>
+                                                </li>
+                                            <% } %>
+                                        <% }) %>
                                     </ul>
                                 </div>
+                                
                             </div>
                             <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
                                 <nav>
@@ -227,15 +233,16 @@
                                     <a href="/account">
                                         <!-- <img class="svgInject" alt="account"
                                             src="/user/assets/imgs/theme/icons/icon-account.svg"> -->
-                                            <% if (locals.user) { %>
-                                            <img class="svgInject" alt="account" style="border: 2px solid #000000; border-radius: 50%; padding: 2px;"
-                                            src="<%= user?.profileimage %>">
+                                        <% if (locals.user) { %>
+                                            <img class="svgInject" alt="account"
+                                                style="border: 2px solid #000000; border-radius: 50%; padding: 2px;"
+                                                src="<%= user?.profileimage %>">
                                             <% } %>
 
                                     </a>
                                 </div>
                                 <!-- <div class="header-action-icon-2"> -->
-                                    <!-- <a href="/wishlist">
+                                <!-- <a href="/wishlist">
                                         <img alt="space" src="/user/assets/imgs/theme/icons/icon-heart.svg">
                                         <%# if (locals.user) { %>
                                             <span class="pro-count blue" id="wishlist-count">
@@ -245,20 +252,20 @@
                                     </a> -->
                                 <!-- </div> -->
                                 <% if (locals.user) { %>
-                                <div class="header-action-icon-2">
-                                    <a class="mini-cart-icon" href="/cart">
-                                        <img alt="space" src="/user/assets/imgs/theme/icons/icon-cart.svg">
-                                        <% if (locals.user) { %>
-                                            <span class="pro-count blue" id="cart-count2">
-                                                <%= locals.cart?.items?.length ?? 0 %>
-                                            </span>
-                                            <% } %>
-                                    </a>
+                                    <div class="header-action-icon-2">
+                                        <a class="mini-cart-icon" href="/cart">
+                                            <img alt="space" src="/user/assets/imgs/theme/icons/icon-cart.svg">
+                                            <% if (locals.user) { %>
+                                                <span class="pro-count blue" id="cart-count2">
+                                                    <%= locals.cart?.items?.length ?? 0 %>
+                                                </span>
+                                                <% } %>
+                                        </a>
 
 
                                         <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                             <ul class="shopping-cart-list">
-                                                    <% (locals.cart?.items || []).forEach(item => { %>
+                                                <% (locals.cart?.items || []).forEach(item=> { %>
                                                     <li data-product-id="<%= item.product._id %>">
                                                         <div class="shopping-cart-img">
                                                             <a href="/product"><img
@@ -283,20 +290,21 @@
                                             </ul>
                                             <div class="shopping-cart-footer">
                                                 <div class="shopping-cart-total">
-                                                    <h4>Total <span id="nav-sub-total">₹<%= (cart?.total||0.00)  %></span>
+                                                    <h4>Total <span id="nav-sub-total">₹<%= (cart?.total||0.00) %>
+                                                                </span>
                                                     </h4>
                                                 </div>
-                                              
-                                                    <div class="shopping-cart-button">
-                                                        <a href="/cart" class="outline">View cart</a>
-                                                        
-                                                            <a href="/checkout">Checkout</a>
-                                                    </div>
-                                                    
+
+                                                <div class="shopping-cart-button">
+                                                    <a href="/cart" class="outline">View cart</a>
+
+                                                    <a href="/checkout">Checkout</a>
+                                                </div>
+
                                             </div>
 
                                         </div>
-                                        
+
                                     </div>
                                     <% } else { %>
                                         <div class="header-action-icon-2">
@@ -305,16 +313,16 @@
                                                     src="/user/assets/imgs/theme/icons/icon-account.svg">
                                             </a>
                                         </div>
-                                    <% } %>
-                                    
+                                        <% } %>
 
-                                <div class="header-action-icon-2 d-block d-lg-none">
-                                    <div class="burger-icon burger-icon-white">
-                                        <span class="burger-icon-top"></span>
-                                        <span class="burger-icon-mid"></span>
-                                        <span class="burger-icon-bottom"></span>
-                                    </div>
-                                </div>
+
+                                            <div class="header-action-icon-2 d-block d-lg-none">
+                                                <div class="burger-icon burger-icon-white">
+                                                    <span class="burger-icon-top"></span>
+                                                    <span class="burger-icon-mid"></span>
+                                                    <span class="burger-icon-bottom"></span>
+                                                </div>
+                                            </div>
                             </div>
                         </div>
                     </div>
@@ -324,4 +332,7 @@
 
 <%- include("./mobile-nav.ejs") %>
 
+
     <script src="/user/assets/js/custom/ajaxCart.js"></script>
+
+

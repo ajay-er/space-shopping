@@ -29,6 +29,7 @@ const {
 const {
   httpGetProduct,
   httpGetAllProducts,
+  httpCategoryProduct,
 } = require('../controllers/product.controller');
 
 const {
@@ -73,6 +74,8 @@ userRouter.post('/signup-otp', isLoggedOut, httpSignupOtpVerify);
 
 userRouter.get('/product/:id', httpGetProduct);
 userRouter.get('/shop', httpGetAllProducts);
+userRouter.get('/shop/:id', httpCategoryProduct);
+
 
 userRouter.get('/cart', isLoggedIn, httpGetCart);
 userRouter.post('/cart', isLoggedIn, httpPostToCart);
