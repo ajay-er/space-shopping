@@ -72,7 +72,7 @@ userRouter.get('/signup', isLoggedOut, httpGetSignup);
 userRouter.post('/signup', isLoggedOut, httpPostSignup);
 userRouter.post('/signup-otp', isLoggedOut, httpSignupOtpVerify);
 
-userRouter.get('/product/:id', httpGetProduct);
+userRouter.get('/product/:slug', httpGetProduct);
 userRouter.get('/shop', httpGetAllProducts);
 userRouter.get('/shop/:id', httpCategoryProduct);
 

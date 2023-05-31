@@ -53,6 +53,10 @@ async function httpGetAddProduct(req, res) {
 
 async function httpPostAddProduct(req, res) {
   try {
+    if (req.fileValidationError) {
+      return res.status(400).json({ error: req.fileValidationError.message });
+    }
+    
     const validation = addProductSchema.validate(
       { ...req.body, productImage: req.files },
       { abortEarly: false },
@@ -75,8 +79,8 @@ async function httpPostAddProduct(req, res) {
 
 async function httpGetEditProduct(req, res) {
   try {
-    const productId = req.params.id;
-    const productResult = await fetchProduct(productId);
+    const slug = req.params.slug;
+    const productResult = await fetchProduct(slug);
     const categoryResult = await fetchCategories();
 
     if (productResult.status) {
@@ -140,8 +144,8 @@ async function httpPutProductDetails(req, res) {
 //user
 async function httpGetProduct(req, res) {
   try {
-    const productId = req.params.id;
-    const productResult = await fetchProduct(productId);
+    const slug = req.params.slug;
+    const productResult = await fetchProduct(slug);
     const allProductsResult = await fetchAllProducts();
     if (productResult.status) {
       res.render('user/product', {
@@ -190,7 +194,6 @@ async function httpCategoryProduct(req, res) {
     const limit = parseInt(req.query.limit) || 8;
     const sortBy  = req.query.sortBy
     const categoryId = req.params.id
-
 
     const result = await getProductsWithCategory(categoryId,page,limit,sortBy);
 

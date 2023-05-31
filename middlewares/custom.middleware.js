@@ -2,6 +2,7 @@ const { fetchCategories } = require('../models/category.model');
 const { fetchCartProducts } = require('../models/cart.model');
 const { handleError } = require('./error.handler');
 
+
 async function categoryMiddleware(req, res, next) {
   try {
     const categoryResult = await fetchCategories();
@@ -34,5 +35,6 @@ async function cartProducts(req, res, next) {
     handleError(res, error);
   }
 }
+
 
 module.exports = { categoryMiddleware, loggedInMiddleware, cartProducts };

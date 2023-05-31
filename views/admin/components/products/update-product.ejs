@@ -172,7 +172,7 @@ document.getElementById('update-product-btn').addEventListener('click', (event) 
     .then((response) => {
       if(response.data.success){
         callAlertify('success',response.data.message)
-        window.location.reload();
+        window.location.href = '/admin/products';
       }else{
         callAlertify('error',response.data.message)
       }

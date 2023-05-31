@@ -52,9 +52,10 @@ submitButton.addEventListener('click', (event) => {
         console.log('Product added successfully!');
         submitButton.disabled = false;
         callAlertify('success', response.data.message);
-        event.target.form.reset();
-        selectedImages = [];
-        images = []
+        // event.target.form.reset();
+        // selectedImages = [];
+        // images = []
+        window.location.href = '/admin/products'
         document.getElementById('image-preview').innerHTML = '';
       }else{
         callAlertify('error',response.data.message)

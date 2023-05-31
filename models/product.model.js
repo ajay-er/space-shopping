@@ -1,5 +1,6 @@
 const productDatabase = require('../schema/product.schema');
 const cloudinary = require('../config/cloudinary');
+const slugify = require('slugify');
 
 async function fetchAllProducts(page, limit,sortBy) {
   try {
@@ -60,9 +61,9 @@ async function fetchAllProducts(page, limit,sortBy) {
   }
 }
 
-async function fetchProduct(productId) {
+async function fetchProduct(slug) {
   try {
-    const product = await productDatabase.findById(productId).populate('productCategory');
+    const product = await productDatabase.findOne({slug:slug}).populate('productCategory');
     if (!product.productStatus) {
       return { status: false };
     } else {
@@ -92,6 +93,7 @@ async function addNewProduct(dataBody, dataFiles) {
     productCategory: productCategory,
     deleteStatus: false,
   });
+  product.slug = slugify(productName, { lower: true });
 
   try {
     const imageUrlList = [];

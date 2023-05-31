@@ -17,7 +17,7 @@
         <tr data-item-id="<%= item.product._id %>">
           <td class="image product-thumbnail"><img src="<%= item.product.productImageUrls[0] %>" alt="#"></td>
           <td class="product-des product-name">
-            <h5 class="product-name"><a href="/product/<%= item.product._id %>">
+            <h5 class="product-name"><a href="/product/<%= item.product.slug %>">
                 <%= item.product.productName %>
               </a></h5>
             </p>

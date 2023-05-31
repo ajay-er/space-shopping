@@ -13,14 +13,23 @@ const storage = multer.diskStorage({
 //file validation
 const fileFilter = (req, file, cb) => {
   if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-    return cb(new Error('Only JPEG and PNG images are allowed!'), false);
+    const error = new Error('Only JPEG and PNG images are allowed!');
+    error.status = 400; 
+    return cb(error, false);
+  }
+
+  // Check file size
+  if (file.size > 1024 * 1024) {
+    const error = new Error('File size exceeds the limit of 1MB!');
+    error.status = 400;
+    return cb(error, false);
   }
   cb(null, true);
 };
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1024 * 1024 },
+  limits: { fileSize: 1024 * 1024 }, // 1MB limit
   fileFilter: fileFilter,
 });
 
