@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
     <%- include("../partials/user-header") %>
-    <%- include("./components/preloading.ejs") %>
+        <%- include("./components/preloading.ejs") %>
 </head>
 <body>
     <main class="main page-404">
@@ -23,10 +23,7 @@
                         <div class="text-center ">
                             <h1>Thank You!</h1>
                             <p>Order succesfull!</p>
-                            <div >
-                                <a class="btn btn-outline-success" href="/">Back Home</a>
-                            </div>
-                          
+                            <div id="countdown"></div>
                         </div>
                     </div>
                 </div>
@@ -35,6 +32,31 @@
         </div>
     </main>
     <%- include("./script/script.ejs") %>
+        <script>
+            var countdownElement = document.getElementById("countdown");
+            var countdownTime = 3;
+            countdownElement.textContent = countdownTime;
+
+            var countdownInterval = setInterval(function () {
+                countdownTime--;
+                countdownElement.textContent = countdownTime;
+
+                if (countdownTime < 2) {
+                    clearInterval(countdownInterval);
+                    var url = window.location.href;
+                    var name = '';
+
+                    var urlParts = url.split('/');
+                    if (urlParts.length > 0) {
+                        var lastPart = urlParts[urlParts.length - 1];
+                        var nameParts = lastPart.split('?');
+                        id = nameParts[0];
+
+                    } 
+                    window.location.href = `/order-details?id=${id}`;
+                }
+            }, 2000); 
+        </script>
 </body>
 
 </html>

@@ -76,7 +76,6 @@ userRouter.get('/product/:slug', httpGetProduct);
 userRouter.get('/shop', httpGetAllProducts);
 userRouter.get('/shop/:id', httpCategoryProduct);
 
-
 userRouter.get('/cart', isLoggedIn, httpGetCart);
 userRouter.post('/cart', isLoggedIn, httpPostToCart);
 userRouter.delete('/cart',isLoggedIn,httpRemoveFromCart);

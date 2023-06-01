@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 
 <style>
     #profilePhoto {
@@ -111,7 +111,7 @@
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.js"></script>
+<script src="/user/assets/js/custom/cropper.js"></script>
 
 <script>
     const fileIn = document.getElementById('file');
@@ -139,31 +139,27 @@
             // Show the modal
             $(imagePreviewModal).modal('show');
 
-            // Initialize Cropper.js for the image
             const cropper = new Cropper(img, {
-                aspectRatio: 1, // Set the aspect ratio to 1:1 for a square crop area
+                aspectRatio: 1,
                 viewMode: 1,
-                autoCropArea: 1,
                 cropBoxResizable: false,
-                minCropBoxWidth: 200, // Set the minimum crop box width (change as desired)
-                minCropBoxHeight: 200, // Set the minimum crop box height (change as desired)
+                minCropBoxWidth: 200, 
+                minCropBoxHeight: 200,  
+                dragMode: 'move'
             });
 
-            // Add event listener to the crop button
             cropImageButton.addEventListener('click', function () {
                 const croppedCanvas = cropper.getCroppedCanvas({
-                    width: 800, // Set the desired width
-                    height: 800, // Set the desired height
+                    width: 800, 
+                    height: 800,
                 });
 
                 const croppedImageData = cropper.getCroppedCanvas().toDataURL('image/jpeg');
 
-                // Set the cropped image as the source for the profile photo
                 profilePhoto.src = croppedImageData;
 
                  croppedImage = dataURItoBlob(croppedImageData);
 
-                // Hide the modal
                 $(imagePreviewModal).modal('hide');
             });
         };

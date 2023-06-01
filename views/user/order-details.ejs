@@ -149,41 +149,37 @@
                                                     </strong>
                                                     <br>
 
-                                                   <strong> Order Status:
-
-                                                    <% if (orderData.status==='processing' ) { %>
-                                                            <span class="badge bg-danger">
-                                                                <%= orderData.status %>
-                                                            </span>
-                                                            <% } else if (orderData.status==='shipped' ) { %>
-                                                                <span class="badge bg-danger">
-                                                                    <%= orderData.status %>
-                                                                </span>
-                                                                <% } else if (orderData.status==='delivered' ) { %>
-                                                                    <span class="badge bg-danger">
-                                                                        <%= orderData.status %>
-                                                                    </span>
-                                                                    <% } else if (orderData.status==='cancelPending' ) { %>
-                                                                        <span class="badge bg-danger">
-                                                                            <%= orderData.status %>
-                                                                        </span>
-                                                                        <% } else if (orderData.status==='returnPending' ) { %>
-                                                                            <span class="badge bg-danger">
-                                                                                <%= orderData.status %>
-                                                                            </span>
-                                                                            <% } else if (orderData.status==='returned' ) { %>
-                                                                                <span class="badge bg-danger">
-                                                                                    <%= orderData.status %>
-                                                                                </span>
-                                                                                <% } else { %>
-                                                                                    <span class="badge bg-danger">
-                                                                                        <%= orderData.status %>
-                                                                                    </span>
-                                                                                    <% } %>
-                                                   </strong><br><br>
+                                                    <strong>Order Status:
+                                                        <% if (orderData.status === 'pending') { %>
+                                                            <span class="badge bg-primary">Pending Confirmation</span> - Your order is awaiting confirmation.
+                                                        <% } else if (orderData.status === 'processing') { %>
+                                                            <span class="badge bg-info">Processing</span> - Your order is being processed.
+                                                        <% } else if (orderData.status === 'shipped') { %>
+                                                            <span class="badge bg-success">Shipped</span> - Your order has been shipped.
+                                                        <% } else if (orderData.status === 'delivered') { %>
+                                                            <span class="badge bg-success">Delivered</span> - Your order has been delivered.
+                                                        <% } else if (orderData.status === 'canceled') { %>
+                                                            <span class="badge bg-danger">Canceled</span> - Your order has been canceled.
+                                                        <% } else if (orderData.status === 'cancelPending') { %>
+                                                            <span class="badge bg-warning">Cancellation Pending</span> - Your cancellation request is being processed.
+                                                        <% } else if (orderData.status === 'returnPending') { %>
+                                                            <span class="badge bg-warning">Return Pending</span> - Your return request is being processed.
+                                                        <% } else if (orderData.status === 'returned') { %>
+                                                            <span class="badge bg-secondary">Returned</span> - Your order has been returned.
+                                                        <% } else { %>
+                                                            <span class="badge bg-dark">Unknown</span> - The status of your order is unknown.
+                                                        <% } %>
+                                                        </strong><br><br>
+                                                        
+                                                        
+                                                        
                                                    <strong> TransactionId:
                                                     <span class="text-grey-5"> 
                                                     <%= orderData.transactionId %></span>
+                                                   </strong><br>
+                                                   <strong> OrderId:
+                                                    <span class="text-grey-5"> 
+                                                    <%= orderData.orderNumber %></span>
                                                    </strong><br>
                                         </div>
 

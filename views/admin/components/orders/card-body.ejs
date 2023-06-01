@@ -12,6 +12,7 @@
                     <th scope="col">Status</th>
                     <th scope="col">Payment</th>
                     <th scope="col">Date</th>
+                    <th scope="col">Order-ID</th>
                     <th scope="col" class="text-end"> Action </th>
                 </tr>
             </thead>
@@ -80,6 +81,9 @@
 
                                     <td>
                                         <%= new Date(order.date).toLocaleDateString('en-US') %>
+                                    </td>
+                                    <td>
+                                        <%= order.orderNumber %>
                                     </td>
                                     <td class="text-end">
 

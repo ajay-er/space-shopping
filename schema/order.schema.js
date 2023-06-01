@@ -38,7 +38,16 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'processing', 'shipped', 'delivered', 'canceled', 'cancelPending','returnPending','returned'],
+    enum: [
+      'pending',
+      'processing',
+      'shipped',
+      'delivered',
+      'canceled',
+      'cancelPending',
+      'returnPending',
+      'returned',
+    ],
     default: 'pending',
   },
   paymentResponse: [],
@@ -54,13 +63,33 @@ const orderSchema = new mongoose.Schema({
   cancel_reason: {
     type: String,
   },
-  return_reason:{
+  return_reason: {
     type: String,
   },
+  orderNumber: { type: Number },
   date: {
     type: Date,
     default: Date.now,
   },
 });
+
+const autoIncrementPlugin = (schema, options) => {
+  const { field = 'orderNumber', startAt = 1 } = options;
+
+  schema.pre('save', async function (next) {
+    try {
+      if (!this[field]) {
+        const lastOrder = await this.constructor.findOne({}, field).sort({ [field]: -1 }).exec();
+        const newOrderNumber = lastOrder ? lastOrder[field] + 1 : startAt;
+        this[field] = newOrderNumber;
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });
+};
+
+orderSchema.plugin(autoIncrementPlugin, { field: 'orderNumber', startAt: 1000 });
 
 module.exports = mongoose.model('Order', orderSchema);

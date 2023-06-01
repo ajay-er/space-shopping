@@ -76,13 +76,13 @@ async function deleteAddress(addressId) {
 
 async function addOrderDetails(addressId, paymentMethod, userId, res) {
   try {
-    if (!['razorpay', 'cashOnDelivery', 'bankTransfer'].includes(paymentMethod)) {
+    if (!['razorpay', 'cashOnDelivery'].includes(paymentMethod)) {
       throw new Error('Invalid payment method');
     }
-
+    console.log('😁');
     //fetching the cart items and total
     const cartResult = await cartDatabase.findOne({ user: userId }).select('items total');
-
+    console.log('😁🫡');
     if (cartResult) {
       //crate transaction id
       const transactionId = crypto
@@ -91,7 +91,10 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
         .digest('hex')
         .substr(0, 16);
 
+    console.log('😁🫡');
+
       const orderStatus = paymentMethod === 'cashOnDelivery' ? 'processing' : 'pending';
+      console.log('😁🫡');
 
       const order = new orderDatabase({
         user: userId,
@@ -102,6 +105,7 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
         transactionId: transactionId,
         status: orderStatus,
       });
+      console.log('😁🫡');
 
       for (const item of cartResult.items) {
         const quantity = item.quantity;
@@ -111,9 +115,13 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
           { new: true },
         );
       }
+      console.log('😁🫡');
 
-      await order.save();
-      await cartDatabase.deleteOne({ user: userId });
+      const l = await order.save();
+      console.log(l);
+      const o = await cartDatabase.deleteOne({ user: userId });
+      
+      console.log(o);
 
       return { status: true, order: order };
     } else {
