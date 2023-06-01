@@ -79,10 +79,8 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
     if (!['razorpay', 'cashOnDelivery'].includes(paymentMethod)) {
       throw new Error('Invalid payment method');
     }
-    console.log('😁');
     //fetching the cart items and total
     const cartResult = await cartDatabase.findOne({ user: userId }).select('items total');
-    console.log('😁🫡');
     if (cartResult) {
       //crate transaction id
       const transactionId = crypto
@@ -91,11 +89,7 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
         .digest('hex')
         .substr(0, 16);
 
-    console.log('😁🫡');
-
       const orderStatus = paymentMethod === 'cashOnDelivery' ? 'processing' : 'pending';
-      console.log('😁🫡');
-
       const order = new orderDatabase({
         user: userId,
         items: cartResult.items,
@@ -105,7 +99,6 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
         transactionId: transactionId,
         status: orderStatus,
       });
-      console.log('😁🫡');
 
       for (const item of cartResult.items) {
         const quantity = item.quantity;
@@ -115,14 +108,9 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
           { new: true },
         );
       }
-      console.log('😁🫡');
 
-      const l = await order.save();
-      console.log(l);
-      const o = await cartDatabase.deleteOne({ user: userId });
-      
-      console.log(o);
-
+      await order.save();
+      await cartDatabase.deleteOne({ user: userId });
       return { status: true, order: order };
     } else {
       return { status: false };
@@ -278,16 +266,15 @@ async function returnOrder(orderId, returnreason) {
 async function getAllOrders(page, limit) {
   try {
     const orders = await orderDatabase
-    .find()
-    .sort({ date: -1 }) // Sort by date in descending order
-    .populate('user', 'username')
-    .skip((page - 1) * limit)
-    .limit(limit);
-  
+      .find()
+      .sort({ date: -1 }) // Sort by date in descending order
+      .populate('user', 'username')
+      .skip((page - 1) * limit)
+      .limit(limit);
 
-  if (!orders || orders.length === 0) {
-    throw new Error('No orders found');
-  }
+    if (!orders || orders.length === 0) {
+      throw new Error('No orders found');
+    }
 
     const totalOrders = await orderDatabase.countDocuments();
     const totalPages = Math.ceil(totalOrders / limit);
@@ -417,19 +404,20 @@ async function getUserData(userId) {
 
 async function getOrderdetails(orderId) {
   try {
-    const orderData = await orderDatabase.findById(orderId)
-    .populate({
-      path: 'items.product',
-      select: 'productName productPrice productImageUrls', 
-      model: 'Product'
-    })
-    .populate({
-      path: 'user',
-      select: 'username email', 
-      model: 'User'
-    })
-    .populate('shippingAddress');
-   
+    const orderData = await orderDatabase
+      .findById(orderId)
+      .populate({
+        path: 'items.product',
+        select: 'productName productPrice productImageUrls',
+        model: 'Product',
+      })
+      .populate({
+        path: 'user',
+        select: 'username email',
+        model: 'User',
+      })
+      .populate('shippingAddress');
+
     if (orderData) {
       return { status: true, orderData };
     } else {
@@ -439,10 +427,6 @@ async function getOrderdetails(orderId) {
     throw new Error('Error finding order!');
   }
 }
-
-
-
-
 
 module.exports = {
   addOrderDetails,

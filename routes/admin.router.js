@@ -44,6 +44,8 @@ const {
   httpGetOrderDetails,
 } = require('../controllers/order.controller');
 
+const { httpGetCoupons,httpAddCoupons,httpChangeCouponStatus } = require('../controllers/coupon.controller');
+
 const { isAdminLoggedIn, isAdminLoggedOut } = require('../middlewares/auth.handler');
 
 adminRouter.get('/', isAdminLoggedIn, httpGetDashBoard);
@@ -88,6 +90,10 @@ adminRouter.get('/sales-report', isAdminLoggedIn, httpGetReport);
 adminRouter.get('/banners', isAdminLoggedIn, httpGetBannerPage);
 adminRouter.post('/add-banner', upload.single('bannerImage'), isAdminLoggedIn, httpAddBanner);
 adminRouter.post('/edit-banner', upload.single('bannerImage'), isAdminLoggedIn, httpEditBanner);
+
+adminRouter.get('/coupons', isAdminLoggedIn, httpGetCoupons);
+adminRouter.post('/coupons', isAdminLoggedIn, httpAddCoupons);
+adminRouter.put('/coupon-status', isAdminLoggedIn, httpChangeCouponStatus);
 
 adminRouter.get('*', httpGet404);
 

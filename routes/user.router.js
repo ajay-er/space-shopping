@@ -6,7 +6,6 @@ const upload = require('../config/multer');
 const {
   isLoggedIn,
   isLoggedOut,
-  isAdminLoggedIn,
 } = require('../middlewares/auth.handler');
 
 const {

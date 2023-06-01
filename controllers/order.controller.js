@@ -116,8 +116,6 @@ async function httpPostCheckout(req, res) {
       res,
     );
 
-  
-
     if (checkoutResult.status) {
       if (paymentmethod === 'cashOnDelivery') {
         return res.json({
