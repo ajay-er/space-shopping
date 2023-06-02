@@ -68,7 +68,13 @@
                                                     <tr>
                                                         <th>SubTotal</th>
                                                         <td class="product-subtotal" colspan="2">₹<%=
-                                                                (orderData?.total|| 0) %>
+                                                                (orderData?.subtotal|| 0) %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Discount</th>
+                                                        <td class="product-subtotal" colspan="2">₹<%=
+                                                                (orderData?.discount|| 0).toFixed(2) %>
                                                         </td>
                                                     </tr>
 

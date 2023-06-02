@@ -24,9 +24,16 @@
                     <div class="row align-items-center">
                         <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
                             <span>
-                                <i class="material-icons md-calendar_today"></i> <b><%= orderData.date %></b>
+
+                                <% const year = orderData.date.getFullYear();
+                                const month = orderData.date.getMonth() + 1; 
+                                const day = orderData.date.getDate();
+                                const formattedDate = `${day}/${month}/${year}`;
+
+                                 %>
+                                <i class="material-icons md-calendar_today"></i> <b><%= formattedDate %></b>
                             </span> <br>
-                            <small class="text-muted">Order ID: <%= orderData._id %></small>
+                            <small class="text-muted">Order ID: <%= orderData.orderNumber %></small>
                         </div>
                         <div class="col-lg-6 col-md-6 ms-auto text-md-end">
                             <!-- <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
@@ -122,7 +129,11 @@
                                                 <article class="float-end">
                                                     <dl class="dlist">
                                                         <dt>Subtotal:</dt>
-                                                        <dd><span>&#8377;</span><%= orderData.total %></dd>
+                                                        <dd><span>&#8377;</span><%= orderData.subtotal %></dd>
+                                                    </dl>
+                                                    <dl class="dlist">
+                                                        <dt>Discount:</dt>
+                                                        <dd>&#8377;<span><%= orderData.discount.toFixed(2) %></span></dd>
                                                     </dl>
                                                     <dl class="dlist">
                                                         <dt>Shipping cost:</dt>

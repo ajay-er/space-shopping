@@ -44,27 +44,62 @@
                                 </td>
                             </tr>
                             <% if ( locals.walletAmount) { %>
-                            <tr style="background-color: rgba(170, 239, 255, 0.187);">
-                                <th><a onclick="applyWalletAmount('<%= cart?._id %>')" style="color: rgb(0, 90, 60);"
-                                        id="applyWallet"> Apply wallet amount</a></th>
-                                <td colspan="2"><em id="walletAmount">₹<%= locals.walletAmount %></em></td>
-                            </tr>
-                            <% } %>
+                                <tr style="background-color: rgba(170, 239, 255, 0.187);">
+                                    <th><a onclick="applyWalletAmount('<%= cart?._id %>')"
+                                            style="color: rgb(0, 90, 60);" id="applyWallet"> Apply wallet amount</a>
+                                    </th>
+                                    <td colspan="2"><em id="walletAmount">₹<%= locals.walletAmount %></em></td>
+                                </tr>
+                                <% } %>
 
-                            <tr>
-                                <th>Shipping</th>
-                                <td colspan="2"><em>Free Shipping</em></td>
-                            </tr>
-                            <tr>
-                                <th>Total</th>
-                                <td colspan="2" class="product-subtotal"><span class="font-xl text-brand fw-900"
-                                        id="totalAmountSpn">₹<%= (cart?.total || 0) %></span></td>
-                            </tr>
+                                    <tr>
+                                        <th>Discount</th>
+                                        <td class="product-discount" colspan="2">₹<span id="coupon-discount">0</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Shipping</th>
+                                        <td colspan="2"><em>Free Shipping</em></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total</th>
+                                        <td colspan="2" class="product-subtotal">₹<span
+                                                class="font-xl text-brand fw-900" id="totalAmountSpn"><%= (cart?.total || 0) %></span></td>
+                                    </tr>
 
                 </tbody>
             </table>
         </div>
+
+
         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+        <!-- apply coupon -->
+        <div class="col-lg-6">
+            <div class="toggle_info">
+                <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon"
+                        data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your
+                        code</a></span>
+            </div>
+            <div class="panel-collapse collapse coupon_form " id="coupon">
+                <div class="panel-body">
+                    <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
+                    <form method="post">
+                        <span id="error-msg"></span>
+                        <div class="form-group">
+
+                            <input type="text" id="couponName" placeholder="Enter Coupon Code..." required>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn  btn-md" id="apply-coupon" name="Apply coupon">Apply Coupon</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+
         <div class="payment_method">
             <div class="mb-25">
                 <h5>Payment</h5>
@@ -102,6 +137,84 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let couponInput = document.getElementById('couponName');
+        let errMsg = document.getElementById('error-msg');
+        let applyButton = document.getElementById('apply-coupon');
+        let totalElement = document.getElementById('totalAmountSpn');
+        let discountElement = document.getElementById('coupon-discount');
+
+        let total =+ totalElement.textContent;
+
+
+        couponInput.addEventListener('input', () => {
+            errMsg.textContent = '';
+            couponInput.style.border = '';
+            couponInput.style.borderRadius = '';
+            couponInput.style.paddingRight = '';
+
+            if (applyButton.style.display == 'none') {
+                applyButton.style.display = 'block';
+            }
+
+            totalElement.textContent = total;
+            discountElement.textContent = 0;
+        });
+
+        applyButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            const couponName = document.getElementById('couponName').value;
+            const url = '/apply-coupon';
+            fetch(url, {
+                method: 'post',
+                body: JSON.stringify({ couponName: couponName }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(async (res) => {
+                res = await res.json();
+                console.log(res);
+
+                if (res.success) {
+                    //apply discount amount
+                    discountElement.textContent = res.discount.toFixed(2);
+                    let totalAmount = + totalElement.textContent;
+                    totalAmount = totalAmount - res.discount;
+                    totalElement.textContent = totalAmount.toFixed(2);
+
+                    //show success message
+                    errMsg.style.color = 'green';
+                    errMsg.textContent = res.message;
+                    couponInput.style.border = '1px solid green';
+                    couponInput.style.borderRadius = '50px';
+                    couponInput.style.paddingRight = '30px';
+                    applyButton.style.display = 'none';
+
+                    setTimeout(() => {
+                        errMsg.textContent = '';
+                    }, 5000);
+
+                } else {
+                    errMsg.style.color = 'red';
+                    errMsg.textContent = res.message;
+                    couponInput.style.border = '1px solid red';
+                    couponInput.style.borderRadius = '50px';
+                    couponInput.style.paddingRight = '30px';
+                    applyButton.style.display = 'block';
+
+                    setTimeout(() => {
+                        errMsg.textContent = '';
+                        couponInput.style.border = '';
+                        couponInput.style.borderRadius = '';
+                        couponInput.style.paddingRight = '';
+                    }, 5000);
+                }
+            }).catch(err => {
+                console.log(err);
+            });
+        });
+    });
+
 
     let walletApplied = false;
     function applyWalletAmount(id) {
@@ -365,7 +478,7 @@
 
     document.getElementById('placeOrder').addEventListener('click', (event) => {
         event.preventDefault();
-        console.log('hi');
+
 
         const selectedcard = document.getElementById('cardBodyId');
 
@@ -473,5 +586,7 @@
             }
         })
     }
+
+
 
 </script>

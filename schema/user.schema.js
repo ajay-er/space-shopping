@@ -36,7 +36,14 @@ const userSchema = new mongoose.Schema({
   wallet:{
     type:Number,
     default:0
-  }
+  },
+  couponHistory: {
+    type: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Coupon',
+    }],
+    default: [],
+  },
 });
 
 module.exports = mongoose.model('User', userSchema);

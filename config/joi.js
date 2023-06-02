@@ -115,10 +115,19 @@ const couponValidationSchema = Joi.object({
     'any.required': 'Coupon Name is required',
     'string.empty': 'Coupon Name cannot be empty',
   }),
+  couponDescription: Joi.string().required().trim().min(5).max(300).messages({
+    'any.required': 'Coupon Description is required',
+    'string.empty': 'Coupon Description cannot be empty',
+  }),
   discount: Joi.number().required().min(0).messages({
     'any.required': 'Discount is required',
     'number.base': 'Discount must be a number',
     'number.min': 'Discount cannot be negative',
+  }),
+  minimumPurchase:Joi.number().required().min(0).messages({
+    'any.required': 'Minimum purachase amount is required',
+    'number.base': 'Minimum purachase amount must be a number',
+    'number.min': 'Minimum purachase amount cannot be negative',
   }),
   validFrom: Joi.date().required().messages({
     'any.required': 'Valid From date is required',

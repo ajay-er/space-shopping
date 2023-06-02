@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const couponSchema = new mongoose.Schema({
   couponname: {
     type: String,
-    unique: true,
     required: true,
   },
   code: {
@@ -15,6 +14,14 @@ const couponSchema = new mongoose.Schema({
     type: Number,
     required: true,
     min: 0,
+  },
+  couponDescription:{
+    type: String,
+    required: true,
+  },
+  minimumPurchase:{
+    type: Number,
+    required: true,
   },
   validFrom: {
     type: Date,
@@ -28,6 +35,14 @@ const couponSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+});
+
+couponSchema.pre('save', function(next) {
+  const currentDate = new Date();
+  if (this.validUntil < currentDate) {
+    this.isActive = false;
+  }
+  next();
 });
 
 module.exports = mongoose.model('Coupon', couponSchema);

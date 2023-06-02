@@ -54,9 +54,9 @@ const {
   httpGetWallet,
   httpApplyWallet,
   httpGetOrderDetails,
-
 } = require('../controllers/order.controller');
 
+const {httpApplycoupon,httpGetCoupons} = require('../controllers/coupon.controller');
 
 //user routes
 userRouter.get('/', httpGetHome);
@@ -85,7 +85,6 @@ userRouter.get('/checkout',isLoggedIn,httpGetCheckout);
 userRouter.post('/checkout',isLoggedIn,httpPostCheckout);
 userRouter.post('/add-address',isLoggedIn,httpAddAddress);
 userRouter.delete('/delete-address',isLoggedIn,httpDeleteAddress);
-userRouter.post('/update-userdata',upload.single('profileimage'),isLoggedIn,httpUpdateUserdata);
 
 userRouter.post('/verify-payment',isLoggedIn,httpVerifyPayment);
 userRouter.get('/order-successfull/:id',isLoggedIn,httpSuccessPage);
@@ -97,8 +96,11 @@ userRouter.post('/order-return',isLoggedIn,httpReturnOrder);
 userRouter.get('/wallet',isLoggedIn,httpGetWallet);
 userRouter.put('/apply-wallet',isLoggedIn,httpApplyWallet);
 
+userRouter.post('/apply-coupon',isLoggedIn,httpApplycoupon);
+
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/order-details',isLoggedIn, httpGetOrderDetails);
+userRouter.post('/update-userdata',upload.single('profileimage'),isLoggedIn,httpUpdateUserdata);
 
 userRouter.get('/logout', httpGetLogout);
 userRouter.get('*', httpGet404);

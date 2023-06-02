@@ -74,7 +74,7 @@ async function deleteAddress(addressId) {
   }
 }
 
-async function addOrderDetails(addressId, paymentMethod, userId, res) {
+async function addOrderDetails(addressId, paymentMethod, userId, req, res) {
   try {
     if (!['razorpay', 'cashOnDelivery'].includes(paymentMethod)) {
       throw new Error('Invalid payment method');
@@ -95,10 +95,16 @@ async function addOrderDetails(addressId, paymentMethod, userId, res) {
         items: cartResult.items,
         shippingAddress: addressId,
         paymentmethod: paymentMethod,
-        total: cartResult.total,
         transactionId: transactionId,
         status: orderStatus,
       });
+
+      if (req.session.coupon) {
+        let coupon = req.session.coupon;
+        const discountAmount = (coupon.discount / 100) * cartResult.total;
+        order.discount = discountAmount;
+        order.total = cartResult.total - discountAmount.toFixed(2);
+      }
 
       for (const item of cartResult.items) {
         const quantity = item.quantity;
@@ -161,7 +167,7 @@ async function changePaymentStatus(orderId, paymentDetails, res) {
   }
 }
 
-async function setSuccessStatus(orderId) {
+async function setSuccessStatus(orderId, req) {
   try {
     const result = await orderDatabase.updateOne(
       { _id: orderId },
@@ -171,6 +177,7 @@ async function setSuccessStatus(orderId) {
         },
       },
     );
+
     if (result) {
       return true;
     }
@@ -272,12 +279,19 @@ async function getAllOrders(page, limit) {
       .skip((page - 1) * limit)
       .limit(limit);
 
-    if (!orders || orders.length === 0) {
-      throw new Error('No orders found');
-    }
-
     const totalOrders = await orderDatabase.countDocuments();
     const totalPages = Math.ceil(totalOrders / limit);
+
+    if (!orders || orders.length === 0) {
+      return {
+        status: false,
+        limit: limit,
+        orders: [],
+        totalPages: totalPages,
+        currentPage: page,
+        message: 'Orders not found',
+      };
+    }
 
     return {
       status: true,
@@ -418,6 +432,9 @@ async function getOrderdetails(orderId) {
       })
       .populate('shippingAddress');
 
+    const subtotal = orderData.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    orderData.subtotal = subtotal;
+    
     if (orderData) {
       return { status: true, orderData };
     } else {

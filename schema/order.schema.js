@@ -66,11 +66,16 @@ const orderSchema = new mongoose.Schema({
   return_reason: {
     type: String,
   },
+  discount:{
+    type: Number,
+    default:0,
+  },
   orderNumber: { type: Number },
   date: {
     type: Date,
     default: Date.now,
   },
+
 });
 
 const autoIncrementPlugin = (schema, options) => {

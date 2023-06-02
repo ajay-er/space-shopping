@@ -20,6 +20,7 @@ const productDatabase = require('../schema/product.schema');
 
 const { generateRazorpay } = require('../config/razorpay');
 const { handleError } = require('../middlewares/error.handler');
+const { getAllCoupons,addCouponData } = require('../models/coupon.model');
 
 /**
  * This function retrieves user addresses and cart product total and renders the checkout page with the
@@ -35,7 +36,7 @@ const { handleError } = require('../middlewares/error.handler');
 async function httpGetCheckout(req, res) {
   try {
     const cartResult = await cartProductTotal(req.session.user._id);
-
+    const coupons = await getAllCoupons();
     if (cartResult.cart) {
       cartResult.cart.items.forEach(async (item) => {
         const product = await productDatabase.find({ _id: item.product });
@@ -52,9 +53,10 @@ async function httpGetCheckout(req, res) {
         return res.render('user/checkout', {
           addresses: result.addresses,
           walletAmount: userWallet.amount,
+          coupons:coupons
         });
       } else {
-        return res.render('user/checkout', { addresses: [], walletAmount: userWallet.amount });
+        return res.render('user/checkout', { addresses: [], walletAmount: userWallet.amount, coupons:[] });
       }
     } else {
       return res.redirect('/cart');
@@ -112,7 +114,7 @@ async function httpPostCheckout(req, res) {
     const checkoutResult = await addOrderDetails(
       addressId,
       paymentmethod,
-      req.session.user._id,
+      req.session.user._id,req,
       res,
     );
 
@@ -188,10 +190,24 @@ async function httpVerifyPayment(req, res) {
  * response to the
  */
 async function httpSuccessPage(req, res) {
-  const id = req.params.id;
-  await setSuccessStatus(id);
-  res.render('user/success-page');
+  try {
+    const id = req.params.id;
+  
+    await setSuccessStatus(id);
+
+    if (req.session.coupon) {
+      await addCouponData(req.session.coupon, req.session.user._id);
+      delete req.session.coupon;
+    }
+    res.render('user/success-page');
+  } catch (error) {
+    handleError(res,error)
+  }
 }
+
+
+
+
 async function httpFailedPage(req, res) {
   res.render('user/failed-page');
 }
@@ -250,14 +266,25 @@ async function httpGetOrderPage(req, res) {
     const limit = parseInt(req.query.limit) || 10;
 
     const orderResult = await getAllOrders(page, limit);
-    return res.render('admin/orders', {
-      orders: orderResult.orders,
-      message: orderResult.message,
-      totalPages: orderResult.totalPages,
-      currentPage: orderResult.currentPage,
-      limit: orderResult.limit,
-      activePage: 'orders',
-    });
+    if(orderResult.status){
+      return res.render('admin/orders', {
+        orders: orderResult.orders,
+        message: orderResult.message,
+        totalPages: orderResult.totalPages,
+        currentPage: orderResult.currentPage,
+        limit: orderResult.limit,
+        activePage: 'orders',
+      });
+    }else{
+      return res.render('admin/orders', {
+        orders: [],
+        message: orderResult.message,
+        totalPages: orderResult.totalPages,
+        currentPage: orderResult.currentPage,
+        limit: orderResult.limit,
+        activePage: 'orders',
+      });
+    }
   } catch (error) {
     handleError(res, error);
   }
@@ -283,7 +310,6 @@ async function httpGetOrderDetails(req, res) {
     const orderId = req.query.id;
     const admin = req.query.admin;
     const result = await getOrderdetails(orderId);
-
     if (result.status) {
       if(admin && req.session.adminLoggedIn){
         return res.render('admin/order-details',{ orderData: result.orderData,activePage:'orders' });

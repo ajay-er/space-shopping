@@ -9,12 +9,15 @@
             <main class="main">
 
                 <%- include("./components/checkout/chekoutPath.ejs") %>
+                
+                <section class="mt-50 mb-50">
+                    <div class="container">
+                        <div class="row">
 
-                    <section class="mt-50 mb-50">
-                        <div class="container">
-                            <div class="row">
-                                <%- include('./components/checkout/address.ejs') %>
-                                    <%- include('./components/checkout/editAddress.ejs') %>
+                            <%- include('./components/checkout/coupon-view.ejs') %>
+                            <%- include('./components/checkout/address.ejs') %>
+
+                            <%- include('./components/checkout/editAddress.ejs') %>
                                         <%- include('./components/checkout/payment.ejs') %>
                             </div>
                         </div>
