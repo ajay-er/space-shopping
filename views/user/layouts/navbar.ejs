@@ -159,23 +159,23 @@
                                             <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                                 <ul class="shopping-cart-list">
                                                     <% (locals.cart?.items || []).forEach(item=> { %>
-                                                        <li data-product-id="<%= item.product._id %>">
+                                                        <li data-product-id="<%= item.product?._id %>">
                                                             <div class="shopping-cart-img">
                                                                 <a href="/product"><img
-                                                                        alt="<%= item.product.productName %>"
-                                                                        src="<%= item.product.productImageUrls[0] %>"></a>
+                                                                        alt="<%= item.product?.productName %>"
+                                                                        src="<%= item.product?.productImageUrls[0] %>"></a>
                                                             </div>
                                                             <div class="shopping-cart-title">
-                                                                <h4><a href="/product/<%= item.product.slug %>">
-                                                                        <%= item.product.productName %>
+                                                                <h4><a href="/product/<%= item.product?.slug %>">
+                                                                        <%= item.product?.productName %>
                                                                     </a></h4>
-                                                                <h4><span id="qty-navbar-<%= item.product._id %>">
+                                                                <h4><span id="qty-navbar-<%= item.product?._id %>">
                                                                         <%= item.quantity %> ×
                                                                     </span>₹<%= item.price %>
                                                                 </h4>
                                                             </div>
                                                             <div class="shopping-cart-delete">
-                                                                <a onclick="removeProduct('<%= item.product._id %>')"><i
+                                                                <a onclick="removeProduct('<%= item.product?._id %>')"><i
                                                                         class="fi-rs-cross-small"></i></a>
                                                             </div>
                                                         </li>
@@ -305,23 +305,23 @@
                                         <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                             <ul class="shopping-cart-list">
                                                 <% (locals.cart?.items || []).forEach(item=> { %>
-                                                    <li data-product-id="<%= item.product._id %>">
+                                                    <li data-product-id="<%= item.product?._id %>">
                                                         <div class="shopping-cart-img">
                                                             <a href="/product"><img
-                                                                    alt="<%= item.product.productName %>"
-                                                                    src="<%= item.product.productImageUrls[0] %>"></a>
+                                                                    alt="<%= item.product?.productName %>"
+                                                                    src="<%= item.product?.productImageUrls[0] %>"></a>
                                                         </div>
                                                         <div class="shopping-cart-title">
-                                                            <h4><a href="/product/<%= item.product.slug %>">
-                                                                    <%= item.product.productName %>
+                                                            <h4><a href="/product/<%= item.product?.slug %>">
+                                                                    <%= item.product?.productName %>
                                                                 </a></h4>
-                                                            <h4><span id="qty-navbar-<%= item.product._id %>">
-                                                                    <%= item.quantity %> ×
-                                                                </span>₹<%= item.price %>
+                                                            <h4><span id="qty-navbar-<%= item.product?._id %>">
+                                                                    <%= item?.quantity %> ×
+                                                                </span>₹<%= item?.price %>
                                                             </h4>
                                                         </div>
                                                         <div class="shopping-cart-delete">
-                                                            <a onclick="removeProduct('<%= item.product._id %>')"><i
+                                                            <a onclick="removeProduct('<%= item.product?._id %>')"><i
                                                                     class="fi-rs-cross-small"></i></a>
                                                         </div>
                                                     </li>

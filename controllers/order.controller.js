@@ -13,6 +13,7 @@ const {
   getWallet,
   getUserData,
   getOrderdetails,
+  updateWalletData
 } = require('../models/order.model');
 
 const { cartProductTotal } = require('../models/cart.model');
@@ -50,10 +51,29 @@ async function httpGetCheckout(req, res) {
     const userWallet = await getUserData(req.session.user._id);
     if (cartResult.status) {
       if (result.status) {
+        let discountAmount;
+        let couponcode;
+        if (req.session.coupon) {
+          const coupon = req.session.coupon;
+          couponcode = coupon.code;
+          discountAmount = (coupon.discount / 100) * cartResult.cart.total;
+        } else {
+          discountAmount = 0;
+          couponcode = null;
+        }
+
+        let appliedWallet;
+        if(req.session.appliedWallet){
+          appliedWallet = req.session.appliedWallet
+        }
+
         return res.render('user/checkout', {
           addresses: result.addresses,
           walletAmount: userWallet.amount,
           coupons: coupons,
+          couponDiscount: discountAmount,
+          couponcode: couponcode,
+          appliedWallet:appliedWallet
         });
       } else {
         return res.render('user/checkout', {
@@ -204,6 +224,12 @@ async function httpSuccessPage(req, res) {
       await addCouponData(req.session.coupon, req.session.user._id);
       delete req.session.coupon;
     }
+
+    if(req.session.appliedWallet){
+      await updateWalletData(req.session.appliedWallet,req.session.user._id,id);
+      delete req.session.appliedWallet;
+    }
+
     res.render('user/success-page');
   } catch (error) {
     handleError(res, error);
@@ -358,10 +384,17 @@ async function httpApplyWallet(req, res) {
 
     let cart = result.cart;
     let totalWallet = response.amount;
+    let cartTotal = cart.total;
     let maxAmount;
 
-    if (totalWallet > cart.total) {
-      maxAmount = cart.total;
+    if (req.session.coupon) {
+      let coupon = req.session.coupon;
+      const discountAmount = (coupon.discount / 100) * cartTotal;
+      cartTotal = cartTotal - discountAmount;
+    }
+
+    if (totalWallet > cartTotal) {
+      maxAmount = cartTotal;
     } else {
       maxAmount = totalWallet;
     }
@@ -370,11 +403,11 @@ async function httpApplyWallet(req, res) {
       return res.status(400).json({ success: false, message: 'Oops!Wrong wallet amount' });
     }
 
-    let cartTotal = cart.total - walletAmount;
-    let walletBalace = totalWallet - walletAmount;
+    cartTotal = cartTotal - walletAmount;
+    let walletBalance = totalWallet - walletAmount;
     req.session.appliedWallet = walletAmount;
 
-    return res.json({ success: true, cartTotal, walletBalace });
+    return res.json({ success: true, cartTotal, walletBalance });
   } catch (error) {
     handleError(res, error);
   }

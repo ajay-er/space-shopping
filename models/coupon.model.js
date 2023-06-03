@@ -86,7 +86,8 @@ async function isUserValidForCoupon(userId, coupon) {
       };
     }
     const discountAmount = (coupon.discount / 100) * cart.total;
-    return { status: true, discountAmount };
+    let cartTotal = cart.total - discountAmount;
+    return { status: true, discountAmount,cartTotal };
   } catch (error) {
     throw new Error('oops!something wrong while checking user is valid for coupon');
   }

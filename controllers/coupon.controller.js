@@ -68,8 +68,15 @@ async function httpApplycoupon(req, res) {
 
     if (response.status) {
       req.session.coupon = coupon.coupon;
+      let cartTotal = response.cartTotal;
+
+      if (req.session.appliedWallet) {
+        cartTotal = response.cartTotal - req.session.appliedWallet;
+      }
+
       return res.json({
         success: true,
+        cartTotal: cartTotal,
         discount: response.discountAmount,
         message: 'Coupon successfully added',
       });
@@ -81,9 +88,22 @@ async function httpApplycoupon(req, res) {
   }
 }
 
+async function httpRemoveCoupon(req,res){
+  try {
+    if(req.session.coupon){
+      req.session.coupon = null;
+      return res.json({status:true,message:'coupon removed succesfully'})
+    }
+    return res.json({status:false,message:'something wrong!cant remove coupon!'})
+  } catch (error) {
+    handleError(res, error);
+  }
+}
+
 module.exports = {
   httpGetCoupons,
   httpAddCoupons,
   httpChangeCouponStatus,
   httpApplycoupon,
+  httpRemoveCoupon
 };

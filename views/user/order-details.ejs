@@ -74,7 +74,13 @@
                                                     <tr>
                                                         <th>Discount</th>
                                                         <td class="product-subtotal" colspan="2">₹<%=
-                                                                (orderData?.discount|| 0).toFixed(2) %>
+                                                              Math.floor((orderData?.discount|| 0))  %>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Wallet</th>
+                                                        <td class="product-subtotal" colspan="2">₹<%=
+                                                              Math.floor((orderData?.wallet|| 0))  %>
                                                         </td>
                                                     </tr>
 
@@ -87,7 +93,7 @@
                                                         <th>Total</th>
                                                         <td colspan="2" class="product-subtotal"><span
                                                                 class="font-xl text-brand fw-900" id="totalAmountSpn">₹
-                                                                <%= (orderData?.total || 0) %>
+                                                                <%= Math.floor((orderData?.total || 0)) %>
                                                             </span></td>
                                                     </tr>
 

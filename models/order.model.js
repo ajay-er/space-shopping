@@ -81,7 +81,7 @@ async function addOrderDetails(addressId, paymentMethod, userId, req, res) {
     }
     //fetching the cart items and total
     const cartResult = await cartDatabase.findOne({ user: userId }).select('items total');
-   
+
     if (cartResult) {
       //crate transaction id
       const transactionId = crypto
@@ -89,7 +89,7 @@ async function addOrderDetails(addressId, paymentMethod, userId, req, res) {
         .update(`${Date.now()}-${Math.floor(Math.random() * 12939)}`)
         .digest('hex')
         .substr(0, 16);
-        
+
       const orderStatus = paymentMethod === 'cashOnDelivery' ? 'processing' : 'pending';
       const order = new orderDatabase({
         user: userId,
@@ -98,11 +98,9 @@ async function addOrderDetails(addressId, paymentMethod, userId, req, res) {
         paymentmethod: paymentMethod,
         transactionId: transactionId,
         status: orderStatus,
-        total : cartResult.total
+        total: cartResult.total,
       });
 
-      
-      
       if (req.session.coupon) {
         let coupon = req.session.coupon;
         const discountAmount = (coupon.discount / 100) * cartResult.total;
@@ -110,8 +108,8 @@ async function addOrderDetails(addressId, paymentMethod, userId, req, res) {
         order.total = cartResult.total - discountAmount.toFixed(2);
       }
 
-      if(req.session.appliedWallet){
-        let appliedWallet = req.session.appliedWallet
+      if (req.session.appliedWallet) {
+        let appliedWallet = req.session.appliedWallet;
         order.total = order.total - appliedWallet;
       }
 
@@ -329,7 +327,7 @@ async function changeOrderStatus(changeStatus, orderId) {
     if (changeStatus === 'returned') {
       const orderResult = await orderDatabase.findById(orderId).select('total user');
       const { total, user } = orderResult;
-      const userResult = await userDatabase.findById(user).select('wallet')
+      const userResult = await userDatabase.findById(user).select('wallet');
       const wallet = userResult.wallet;
       const updatedWallet = wallet + total;
       await userDatabase.findByIdAndUpdate(user, {
@@ -451,6 +449,29 @@ async function getOrderdetails(orderId) {
   }
 }
 
+async function updateWalletData(walletAmount, userId, orderId) {
+  try {
+    const user = await userDatabase.findByIdAndUpdate(
+      userId,
+      {
+        $inc: { wallet: -walletAmount },
+      },
+      { new: true },
+    );
+    const result = await orderDatabase.findByIdAndUpdate(
+      orderId,
+      {
+        $set: { wallet: walletAmount },
+      },
+      { new: true },
+    );
+    return;
+  } catch (error) {
+    console.error('Error updating wallet data:', error);
+    throw new Error('Error updating wallet data!');
+  }
+}
+
 module.exports = {
   addOrderDetails,
   getAddresses,
@@ -468,4 +489,5 @@ module.exports = {
   getWallet,
   getUserData,
   getOrderdetails,
+  updateWalletData,
 };

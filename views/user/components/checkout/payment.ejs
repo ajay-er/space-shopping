@@ -66,12 +66,16 @@
 
                             <tr>
                                 <th>Discount</th>
-                                <td class="product-discount" colspan="2">₹<span id="coupon-discount">0</span>
+                                <td class="product-discount" colspan="2">₹<span id="coupon-discount"><% if (locals.couponDiscount) { %><%= Math.floor(locals.couponDiscount) %>
+                                                <% } else { %>0
+                                                    <% } %>
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Applied Wallet Amount</th>
-                                <td class="product-wallet" colspan="2">₹<span id="wallet-discount">0</span>
+                                <td class="product-wallet" colspan="2">₹<span id="wallet-discount"><%= locals.appliedWallet?locals.appliedWallet:0 %>
+                                    </span>
                                 </td>
                             </tr>
 
@@ -83,7 +87,16 @@
                                 <th>Total</th>
                                 <td colspan="2" class="product-subtotal">₹<span class="font-xl text-brand fw-900"
                                         id="totalAmountSpn">
-                                        <%= (cart?.total || 0) %>
+                                        <% if (locals.appliedWallet && locals.couponDiscount ) { %>
+                                            <%= cart?.total - couponDiscount - appliedWallet  %>
+                                        <% } else if(locals.appliedWallet) { %>
+                                            <%=  cart?.total - appliedWallet %>
+                                        <% } else if(locals.couponDiscount) { %>
+                                            <%=  cart?.total - couponDiscount %>
+                                        <% } else { %>
+                                            <%= (cart?.total || 0) %>
+                                        <% } %>
+                                        
                                     </span></td>
                             </tr>
 
@@ -109,7 +122,8 @@
                             <span id="error-msg"></span>
                             <div class="form-group">
 
-                                <input type="text" id="couponName" placeholder="Enter Coupon Code..." required>
+                                <input type="text" id="couponName" value="<%= couponcode %>"
+                                    placeholder="Enter Coupon Code..." required>
                             </div>
                             <div class="form-group">
                                 <button class="btn  btn-md" id="apply-coupon" name="Apply coupon">Apply Coupon</button>
@@ -135,29 +149,38 @@
                                 <p class="ps-3 textmuted fw-bold h6 mb-0">Wallet balance</p>
                                 <p class="h1 fw-bold d-flex">
                                     <span>&#8377;</span>
-                                    <span  id="walletBalance"><%= locals.walletAmount %></span>
+                                    <span id="walletBalance">
+                                        <% if (appliedWallet) { %>
+                                            <%= locals.walletAmount - appliedWallet %>
+                                                <% } else { %>
+                                                    <%= locals.walletAmount %>
+                                                        <% } %>
+                                    </span>
                                 </p>
                                 <% if (walletAmount> cart.total) { %>
-                                    <div class="mt-1 mb-1">
+                                    <div id="maxWallet" class="mt-1 mb-1">
                                         <p style="color: black;" id="message">you can apply total &#8377;<span
                                                 class="fw-600">
                                                 <%= cart.total %>
                                             </span> from your wallet!</p>
                                     </div>
                                     <% } else { %>
-                                        <div class="mt-1 mb-1">
+                                        <div id="maxWallet" class="mt-1 mb-1">
                                             <p style="color: black;" id="message">you can apply total &#8377;<span
                                                     class="fw-600">
                                                     <%= walletAmount %>
                                                 </span> from your wallet!</p>
                                         </div>
                                         <% } %>
+
+
                             </div>
                             <div class="col-md-4">
                                 <form id="walletForm">
                                     <span id="error-msg2"></span>
                                     <div class="form-group">
-                                        <input type="number" id="wallet-input" min="0" class="no-arrow"
+                                        <input type="number" value="<%= appliedWallet %>" id="wallet-input" min="0"
+                                            class="no-arrow"
                                             placeholder="<%= walletAmount>cart.total?cart.total: walletAmount %>">
                                     </div>
                                     <div class="form-group">
@@ -226,6 +249,7 @@
         let walletDiscount = document.getElementById('wallet-discount');
 
         let total = + totalElement.textContent;
+        let discount = + discountElement.textContent;
 
 
         couponInput.addEventListener('input', () => {
@@ -238,8 +262,19 @@
                 applyButton.style.display = 'block';
             }
 
-            totalElement.textContent = total;
+            
             discountElement.textContent = 0;
+            totalElement.textContent = Math.floor(total + discount);
+
+            fetch('/remove-coupon', {
+                method: 'put',
+            }).then(async (res) => {
+                res = await res.json()
+                console.log(res.message);
+            }).catch((err) => {
+                console.log(err);
+            })
+
         });
 
         applyButton.addEventListener('click', (event) => {
@@ -261,7 +296,7 @@
                     discountElement.textContent = res.discount.toFixed(2);
                     let totalAmount = + totalElement.textContent;
                     totalAmount = totalAmount - res.discount;
-                    totalElement.textContent = totalAmount.toFixed(2);
+                    totalElement.textContent = Math.floor(totalAmount)
 
                     //show success message
                     errMsg.style.color = 'green';
@@ -294,8 +329,6 @@
                 console.log(err);
             });
         });
-
-
 
 
 
@@ -340,9 +373,9 @@
             }).then(res => {
                 console.log(res);
                 if (res.success) {
-                    totalElement.textContent = res.cartTotal;
-                    walletBalanceElement.textContent = res.walletBalace;
-                    walletDiscount.textContent = walletInput;
+                    totalElement.textContent = Math.floor(res.cartTotal);
+                    walletBalanceElement.textContent = Math.floor(res.walletBalance);
+                    walletDiscount.textContent = Math.floor(walletInput);
                 } else {
 
                 }

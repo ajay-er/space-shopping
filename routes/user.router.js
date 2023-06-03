@@ -53,7 +53,7 @@ const {
   httpGetOrderDetails,
 } = require('../controllers/order.controller');
 
-const { httpApplycoupon } = require('../controllers/coupon.controller');
+const { httpApplycoupon,httpRemoveCoupon } = require('../controllers/coupon.controller');
 
 //user routes
 userRouter.get('/', httpGetHome);
@@ -94,6 +94,7 @@ userRouter.get('/wallet', isLoggedIn, httpGetWallet);
 userRouter.post('/apply-wallet', isLoggedIn, httpApplyWallet);
 
 userRouter.post('/apply-coupon', isLoggedIn, httpApplycoupon);
+userRouter.put('/remove-coupon', isLoggedIn, httpRemoveCoupon);
 
 userRouter.get('/account', httpGetAccount);
 userRouter.get('/order-details', isLoggedIn, httpGetOrderDetails);

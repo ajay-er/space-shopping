@@ -70,6 +70,10 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     default:0,
   },
+  wallet:{
+    type: Number,
+    default:0,
+  },
   orderNumber: { type: Number },
   date: {
     type: Date,
