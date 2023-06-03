@@ -1,3 +1,41 @@
+<script>
+    window.addEventListener("DOMContentLoaded", (event) => {
+
+    let searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('keyup', (event) => {
+            event.preventDefault();
+
+            if(event.key === 'Enter'){
+
+            const searchTerm = searchInput.value.trim();
+            const data = {
+                searchInput: searchTerm
+            };
+            fetch('/search-products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(async(res) => {
+                res = await res.json();
+                
+                if(res.success){
+                    window.location.href = '/search';
+                }else{
+                    
+                }
+
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+
+    });
+    });
+
+
+</script>
 <header class="header-area header-style-1 header-height-2">
     <% if (!locals.user) { %>
         <div class="header-top header-top-ptb-1 d-none d-lg-block">
@@ -55,20 +93,21 @@
                         </div>
                         <div class="header-right">
                             <div class="search-style-2">
-                                <form >
+                                <form>
                                     <select class="select-active" id="categorySelect">
                                         <option disabled selected>All Categories</option>
-                                        <% categories.forEach(category => { %>
+                                        <% categories.forEach(category=> { %>
                                             <% if (category.active) { %>
                                                 <option value="<%= category._id %>">
                                                     <%= category.name %>
                                                 </option>
-                                            <% } %>
-                                        <% }) %>
+                                                <% } %>
+                                                    <% }) %>
                                     </select>
-                                    <input type="text" placeholder="Search for items...">
+                                    <input type="text" id="searchInput" placeholder="Search for items...">
+
                                 </form>
-                                
+
                             </div>
                             <div class="header-action-right">
                                 <div class="header-action-2">
@@ -147,7 +186,7 @@
                                                 <div class="shopping-cart-footer">
                                                     <div class="shopping-cart-total">
                                                         <h4>Total <span id="nav-sub-total">₹<%= (cart?.total||0.00) %>
-                                                                    </span>
+                                                            </span>
                                                         </h4>
                                                     </div>
                                                     <div class="shopping-cart-button">
@@ -197,11 +236,11 @@
                                                         <%= category.name %>
                                                     </a>
                                                 </li>
-                                            <% } %>
-                                        <% }) %>
+                                                <% } %>
+                                                    <% }) %>
                                     </ul>
                                 </div>
-                                
+
                             </div>
                             <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
                                 <nav>
@@ -291,7 +330,7 @@
                                             <div class="shopping-cart-footer">
                                                 <div class="shopping-cart-total">
                                                     <h4>Total <span id="nav-sub-total">₹<%= (cart?.total||0.00) %>
-                                                                </span>
+                                                        </span>
                                                     </h4>
                                                 </div>
 
@@ -336,3 +375,4 @@
     <script src="/user/assets/js/custom/ajaxCart.js"></script>
 
 
+    

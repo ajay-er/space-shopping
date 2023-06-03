@@ -11,7 +11,8 @@ const {
   updateProductStatus,
   getProductImages,
   updateProduct,
-  getProductsWithCategory
+  getProductsWithCategory,
+  searchProductsWithRegex,
 } = require('../models/product.model');
 
 async function httpGetProducts(req, res) {
@@ -56,7 +57,7 @@ async function httpPostAddProduct(req, res) {
     if (req.fileValidationError) {
       return res.status(400).json({ error: req.fileValidationError.message });
     }
-    
+
     const validation = addProductSchema.validate(
       { ...req.body, productImage: req.files },
       { abortEarly: false },
@@ -115,9 +116,8 @@ async function httpPutProduct(req, res) {
 
 async function httpPutProductDetails(req, res) {
   try {
-
     const { productId } = req.body;
-    const validation =  updateProductSchema.validate(
+    const validation = updateProductSchema.validate(
       { ...req.body, productImage: req.files },
       { abortEarly: false },
     );
@@ -126,7 +126,7 @@ async function httpPutProductDetails(req, res) {
       return res.status(400).json({ success: false, message: validation.error.details[0].message });
     }
 
-    const productResult = await updateProduct(productId, req.body,req.files);
+    const productResult = await updateProduct(productId, req.body, req.files);
     if (productResult) {
       return res.json({
         success: true,
@@ -164,15 +164,15 @@ async function httpGetAllProducts(req, res) {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 8;
-    const sortBy  = req.query.sortBy
+    const sortBy = req.query.sortBy;
 
-    const allProductsResult = await fetchAllProducts(page, limit,sortBy);
+    const allProductsResult = await fetchAllProducts(page, limit, sortBy);
     res.render('user/all-products', {
       products: allProductsResult.products,
       totalPages: allProductsResult.totalPages,
       currentPage: allProductsResult.currentPage,
       limit: allProductsResult.limit,
-      productCount:allProductsResult.productCount
+      productCount: allProductsResult.productCount,
     });
   } catch (error) {
     handleError(res, error);
@@ -192,28 +192,57 @@ async function httpCategoryProduct(req, res) {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 8;
-    const sortBy  = req.query.sortBy
-    const categoryId = req.params.id
+    const sortBy = req.query.sortBy;
+    const categoryId = req.params.id;
 
-    const result = await getProductsWithCategory(categoryId,page,limit,sortBy);
+    const result = await getProductsWithCategory(categoryId, page, limit, sortBy);
 
-    if(result.products.length>0){
-      return res.render('user/shop-category',{ products: result.products,
+    if (result.products.length > 0) {
+      return res.render('user/shop-category', {
+        products: result.products,
         totalPages: result.totalPages,
         currentPage: result.currentPage,
         limit: result.limit,
-        productCount:result.productCount,categoryId});
-    }else{
-    return  res.redirect('/shop')
+        productCount: result.productCount,
+        categoryId,
+      });
+    } else {
+      return res.redirect('/shop');
     }
   } catch (error) {
     handleError(res, error);
   }
 }
 
+async function httpProductsBySearch(req, res) {
+  try {
+    const searchTerm = req.body.searchInput.trim();
+    const searchRegex = new RegExp(`^${searchTerm}`, 'i');
+    const products = await searchProductsWithRegex(searchRegex);
+    if (products.length > 0) {
+      req.session.searchProducts = products;
+      return res.json({ success: true, productsCount: products.length });
+    } else {
+      return res.json({ success: false, productsCount: products.length });
+    }
+  } catch (error) {
+    handleError(res, error);
+  }
+}
 
-
-
+async function httpSearchResult(req, res) {
+  try {
+    let products;
+    if (req.session.searchProducts) {
+      products = req.session.searchProducts;
+    } else {
+      products = [];
+    }
+    res.render('user/search-result', { products });
+  } catch (error) {
+    handleError(res, error);
+  }
+}
 
 module.exports = {
   httpGetProducts,
@@ -225,5 +254,7 @@ module.exports = {
   httpGetProduct,
   httpGetAllProducts,
   httpGetProductImages,
-  httpCategoryProduct
+  httpCategoryProduct,
+  httpProductsBySearch,
+  httpSearchResult,
 };

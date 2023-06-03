@@ -168,6 +168,7 @@ async function cartProductTotal(userId) {
 }
 
 
+
 module.exports = {
   addItemToCart,
   removeItemFromCart,
@@ -175,5 +176,4 @@ module.exports = {
   clearCartItems,
   updateCartDetails,
   cartProductTotal,
-  
 };

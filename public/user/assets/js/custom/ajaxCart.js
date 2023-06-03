@@ -30,7 +30,7 @@ function removeProduct(productId) {
 
           const dropdownItem = document.querySelector(`li[data-product-id="${productId}"]`);
 
-          if (window.location.href === 'https://getmyshoe/cart' || window.location.href === 'http://localhost:8000/cart') {
+          if (window.location.href === 'https://getmyshoe/cart' || window.location.href === 'http://localhost:8000/cart' ) {
             const cartItem = document.querySelector(`tr[data-item-id="${productId}"]`);
 
             if (cartItem.parentElement.rows.length === 2) {

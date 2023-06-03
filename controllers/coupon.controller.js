@@ -62,7 +62,7 @@ async function httpApplycoupon(req, res) {
     if (!coupon.status) {
       return res.json({ success: false, message: 'Invalid coupon' });
     }
-    
+
     const userId = req.session.user._id;
     const response = await isUserValidForCoupon(userId, coupon.coupon);
 
@@ -86,5 +86,4 @@ module.exports = {
   httpAddCoupons,
   httpChangeCouponStatus,
   httpApplycoupon,
-  httpGetCoupons,
 };

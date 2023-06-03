@@ -20,7 +20,7 @@ const productDatabase = require('../schema/product.schema');
 
 const { generateRazorpay } = require('../config/razorpay');
 const { handleError } = require('../middlewares/error.handler');
-const { getAllCoupons,addCouponData } = require('../models/coupon.model');
+const { getAllCoupons, addCouponData } = require('../models/coupon.model');
 
 /**
  * This function retrieves user addresses and cart product total and renders the checkout page with the
@@ -53,10 +53,14 @@ async function httpGetCheckout(req, res) {
         return res.render('user/checkout', {
           addresses: result.addresses,
           walletAmount: userWallet.amount,
-          coupons:coupons
+          coupons: coupons,
         });
       } else {
-        return res.render('user/checkout', { addresses: [], walletAmount: userWallet.amount, coupons:[] });
+        return res.render('user/checkout', {
+          addresses: [],
+          walletAmount: userWallet.amount,
+          coupons: [],
+        });
       }
     } else {
       return res.redirect('/cart');
@@ -114,7 +118,8 @@ async function httpPostCheckout(req, res) {
     const checkoutResult = await addOrderDetails(
       addressId,
       paymentmethod,
-      req.session.user._id,req,
+      req.session.user._id,
+      req,
       res,
     );
 
@@ -192,7 +197,7 @@ async function httpVerifyPayment(req, res) {
 async function httpSuccessPage(req, res) {
   try {
     const id = req.params.id;
-  
+
     await setSuccessStatus(id);
 
     if (req.session.coupon) {
@@ -201,12 +206,9 @@ async function httpSuccessPage(req, res) {
     }
     res.render('user/success-page');
   } catch (error) {
-    handleError(res,error)
+    handleError(res, error);
   }
 }
-
-
-
 
 async function httpFailedPage(req, res) {
   res.render('user/failed-page');
@@ -266,7 +268,7 @@ async function httpGetOrderPage(req, res) {
     const limit = parseInt(req.query.limit) || 10;
 
     const orderResult = await getAllOrders(page, limit);
-    if(orderResult.status){
+    if (orderResult.status) {
       return res.render('admin/orders', {
         orders: orderResult.orders,
         message: orderResult.message,
@@ -275,7 +277,7 @@ async function httpGetOrderPage(req, res) {
         limit: orderResult.limit,
         activePage: 'orders',
       });
-    }else{
+    } else {
       return res.render('admin/orders', {
         orders: [],
         message: orderResult.message,
@@ -306,15 +308,17 @@ async function httpChangeOrderStatus(req, res) {
 
 async function httpGetOrderDetails(req, res) {
   try {
-   
     const orderId = req.query.id;
     const admin = req.query.admin;
     const result = await getOrderdetails(orderId);
     if (result.status) {
-      if(admin && req.session.adminLoggedIn){
-        return res.render('admin/order-details',{ orderData: result.orderData,activePage:'orders' });
+      if (admin && req.session.adminLoggedIn) {
+        return res.render('admin/order-details', {
+          orderData: result.orderData,
+          activePage: 'orders',
+        });
       }
-      return res.render('user/order-details',{ orderData: result.orderData });
+      return res.render('user/order-details', { orderData: result.orderData });
     } else {
       return res.redirect('/404');
     }
@@ -344,8 +348,33 @@ async function httpGetWallet(req, res) {
 
 async function httpApplyWallet(req, res) {
   try {
-    const { id, walletApplied } = req.body;
+    const walletAmount = req.body.walletInput;
     const userId = req.session.user._id;
+    const result = await cartProductTotal(userId);
+    const response = await getUserData(userId);
+    if (!result.status) {
+      return res.status(404).json({ success: false, message: 'something wrong!cart not found' });
+    }
+
+    let cart = result.cart;
+    let totalWallet = response.amount;
+    let maxAmount;
+
+    if (totalWallet > cart.total) {
+      maxAmount = cart.total;
+    } else {
+      maxAmount = totalWallet;
+    }
+
+    if (maxAmount < walletAmount) {
+      return res.status(400).json({ success: false, message: 'Oops!Wrong wallet amount' });
+    }
+
+    let cartTotal = cart.total - walletAmount;
+    let walletBalace = totalWallet - walletAmount;
+    req.session.appliedWallet = walletAmount;
+
+    return res.json({ success: true, cartTotal, walletBalace });
   } catch (error) {
     handleError(res, error);
   }

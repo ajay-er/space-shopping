@@ -81,6 +81,7 @@ async function addOrderDetails(addressId, paymentMethod, userId, req, res) {
     }
     //fetching the cart items and total
     const cartResult = await cartDatabase.findOne({ user: userId }).select('items total');
+   
     if (cartResult) {
       //crate transaction id
       const transactionId = crypto
@@ -88,7 +89,7 @@ async function addOrderDetails(addressId, paymentMethod, userId, req, res) {
         .update(`${Date.now()}-${Math.floor(Math.random() * 12939)}`)
         .digest('hex')
         .substr(0, 16);
-
+        
       const orderStatus = paymentMethod === 'cashOnDelivery' ? 'processing' : 'pending';
       const order = new orderDatabase({
         user: userId,
@@ -97,13 +98,21 @@ async function addOrderDetails(addressId, paymentMethod, userId, req, res) {
         paymentmethod: paymentMethod,
         transactionId: transactionId,
         status: orderStatus,
+        total : cartResult.total
       });
 
+      
+      
       if (req.session.coupon) {
         let coupon = req.session.coupon;
         const discountAmount = (coupon.discount / 100) * cartResult.total;
         order.discount = discountAmount;
         order.total = cartResult.total - discountAmount.toFixed(2);
+      }
+
+      if(req.session.appliedWallet){
+        let appliedWallet = req.session.appliedWallet
+        order.total = order.total - appliedWallet;
       }
 
       for (const item of cartResult.items) {
@@ -114,7 +123,6 @@ async function addOrderDetails(addressId, paymentMethod, userId, req, res) {
           { new: true },
         );
       }
-
       await order.save();
       await cartDatabase.deleteOne({ user: userId });
       return { status: true, order: order };
@@ -167,7 +175,7 @@ async function changePaymentStatus(orderId, paymentDetails, res) {
   }
 }
 
-async function setSuccessStatus(orderId, req) {
+async function setSuccessStatus(orderId) {
   try {
     const result = await orderDatabase.updateOne(
       { _id: orderId },
@@ -321,12 +329,10 @@ async function changeOrderStatus(changeStatus, orderId) {
     if (changeStatus === 'returned') {
       const orderResult = await orderDatabase.findById(orderId).select('total user');
       const { total, user } = orderResult;
-      const userResult = await userDatabase.findById(user);
+      const userResult = await userDatabase.findById(user).select('wallet')
       const wallet = userResult.wallet;
-
       const updatedWallet = wallet + total;
-
-      const walletResult = await userDatabase.findByIdAndUpdate(user, {
+      await userDatabase.findByIdAndUpdate(user, {
         $set: {
           wallet: updatedWallet,
         },
@@ -379,7 +385,6 @@ async function getOrderData() {
 async function getWallet(userId) {
   try {
     const amount = await userDatabase.findById(userId).select('wallet');
-
     const pendingOrders = await orderDatabase
       .find({
         user: userId,
@@ -389,9 +394,10 @@ async function getWallet(userId) {
 
     let pendingAmount = 0;
 
-    pendingOrders.forEach((order) => {
+    for (const order of pendingOrders) {
+      await new Promise((resolve) => setTimeout(resolve, 0));
       pendingAmount += order.total;
-    });
+    }
 
     if (amount) {
       return { status: true, amount: amount.wallet, pendingWallet: pendingAmount };
@@ -434,7 +440,7 @@ async function getOrderdetails(orderId) {
 
     const subtotal = orderData.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
     orderData.subtotal = subtotal;
-    
+
     if (orderData) {
       return { status: true, orderData };
     } else {

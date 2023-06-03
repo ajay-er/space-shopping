@@ -3,10 +3,7 @@ const userRouter = express.Router();
 
 const upload = require('../config/multer');
 
-const {
-  isLoggedIn,
-  isLoggedOut,
-} = require('../middlewares/auth.handler');
+const { isLoggedIn, isLoggedOut } = require('../middlewares/auth.handler');
 
 const {
   httpGetHome,
@@ -29,6 +26,8 @@ const {
   httpGetProduct,
   httpGetAllProducts,
   httpCategoryProduct,
+  httpProductsBySearch,
+  httpSearchResult,
 } = require('../controllers/product.controller');
 
 const {
@@ -38,8 +37,6 @@ const {
   httpUpdateQuantity,
   httpClearCart,
 } = require('../controllers/cart.controller');
-
-
 
 const {
   httpGetCheckout,
@@ -56,7 +53,7 @@ const {
   httpGetOrderDetails,
 } = require('../controllers/order.controller');
 
-const {httpApplycoupon,httpGetCoupons} = require('../controllers/coupon.controller');
+const { httpApplycoupon } = require('../controllers/coupon.controller');
 
 //user routes
 userRouter.get('/', httpGetHome);
@@ -77,30 +74,33 @@ userRouter.get('/shop/:id', httpCategoryProduct);
 
 userRouter.get('/cart', isLoggedIn, httpGetCart);
 userRouter.post('/cart', isLoggedIn, httpPostToCart);
-userRouter.delete('/cart',isLoggedIn,httpRemoveFromCart);
-userRouter.patch('/cart',isLoggedIn,httpUpdateQuantity);
-userRouter.delete('/clear-cart',isLoggedIn,httpClearCart);
+userRouter.delete('/cart', isLoggedIn, httpRemoveFromCart);
+userRouter.patch('/cart', isLoggedIn, httpUpdateQuantity);
+userRouter.delete('/clear-cart', isLoggedIn, httpClearCart);
 
-userRouter.get('/checkout',isLoggedIn,httpGetCheckout);
-userRouter.post('/checkout',isLoggedIn,httpPostCheckout);
-userRouter.post('/add-address',isLoggedIn,httpAddAddress);
-userRouter.delete('/delete-address',isLoggedIn,httpDeleteAddress);
+userRouter.get('/checkout', isLoggedIn, httpGetCheckout);
+userRouter.post('/checkout', isLoggedIn, httpPostCheckout);
+userRouter.post('/add-address', isLoggedIn, httpAddAddress);
+userRouter.delete('/delete-address', isLoggedIn, httpDeleteAddress);
 
-userRouter.post('/verify-payment',isLoggedIn,httpVerifyPayment);
-userRouter.get('/order-successfull/:id',isLoggedIn,httpSuccessPage);
-userRouter.get('/order-failed/:id',isLoggedIn,httpFailedPage);
+userRouter.post('/verify-payment', isLoggedIn, httpVerifyPayment);
+userRouter.get('/order-successfull/:id', isLoggedIn, httpSuccessPage);
+userRouter.get('/order-failed/:id', isLoggedIn, httpFailedPage);
 
-userRouter.post('/order-cancel',isLoggedIn,httpCancelOrder);
-userRouter.post('/order-return',isLoggedIn,httpReturnOrder);
+userRouter.post('/order-cancel', isLoggedIn, httpCancelOrder);
+userRouter.post('/order-return', isLoggedIn, httpReturnOrder);
 
-userRouter.get('/wallet',isLoggedIn,httpGetWallet);
-userRouter.put('/apply-wallet',isLoggedIn,httpApplyWallet);
+userRouter.get('/wallet', isLoggedIn, httpGetWallet);
+userRouter.post('/apply-wallet', isLoggedIn, httpApplyWallet);
 
-userRouter.post('/apply-coupon',isLoggedIn,httpApplycoupon);
+userRouter.post('/apply-coupon', isLoggedIn, httpApplycoupon);
 
 userRouter.get('/account', httpGetAccount);
-userRouter.get('/order-details',isLoggedIn, httpGetOrderDetails);
-userRouter.post('/update-userdata',upload.single('profileimage'),isLoggedIn,httpUpdateUserdata);
+userRouter.get('/order-details', isLoggedIn, httpGetOrderDetails);
+userRouter.post('/update-userdata', upload.single('profileimage'), isLoggedIn, httpUpdateUserdata);
+
+userRouter.get('/search', httpSearchResult);
+userRouter.post('/search-products', httpProductsBySearch);
 
 userRouter.get('/logout', httpGetLogout);
 userRouter.get('*', httpGet404);
