@@ -13,7 +13,8 @@ const {
   getWallet,
   getUserData,
   getOrderdetails,
-  updateWalletData
+  updateWalletData,
+  orderStatus
 } = require('../models/order.model');
 
 const { cartProductTotal } = require('../models/cart.model');
@@ -143,6 +144,28 @@ async function httpPostCheckout(req, res) {
       res,
     );
 
+
+    let cartTotal = checkoutResult.cartResult.total;
+    if(req.session.coupon){
+      let coupon = req.session.coupon;
+      const discountAmount = (coupon.discount / 100) * cartTotal;
+      cartTotal = cartTotal - discountAmount;
+    }
+
+    if(req.session.appliedWallet){
+      cartTotal = cartTotal - req.session.appliedWallet;
+    }
+
+    if(cartTotal<1){
+      await orderStatus(checkoutResult.order._id);
+      return res.json({
+        success: true,
+        paymethod: 'COD',
+        message: 'order details added!Order with wallet amount',
+        orderId: checkoutResult.order._id,
+      });
+    }
+
     if (checkoutResult.status) {
       if (paymentmethod === 'cashOnDelivery') {
         return res.json({
@@ -237,6 +260,13 @@ async function httpSuccessPage(req, res) {
 }
 
 async function httpFailedPage(req, res) {
+  if (req.session.coupon) {
+    delete req.session.coupon;
+  }
+  
+  if(req.session.appliedWallet){
+    delete req.session.appliedWallet;
+  }
   res.render('user/failed-page');
 }
 
@@ -386,6 +416,7 @@ async function httpApplyWallet(req, res) {
     let totalWallet = response.amount;
     let cartTotal = cart.total;
     let maxAmount;
+
 
     if (req.session.coupon) {
       let coupon = req.session.coupon;

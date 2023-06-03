@@ -85,9 +85,9 @@ async function isUserValidForCoupon(userId, coupon) {
         message: 'Cart total does not meet the minimum purchase requirement',
       };
     }
-    const discountAmount = (coupon.discount / 100) * cart.total;
-    let cartTotal = cart.total - discountAmount;
-    return { status: true, discountAmount,cartTotal };
+   
+    let cartTotal = cart.total;
+    return { status: true,cartTotal};
   } catch (error) {
     throw new Error('oops!something wrong while checking user is valid for coupon');
   }

@@ -66,7 +66,9 @@
 
                             <tr>
                                 <th>Discount</th>
-                                <td class="product-discount" colspan="2">₹<span id="coupon-discount"><% if (locals.couponDiscount) { %><%= Math.floor(locals.couponDiscount) %>
+                                <td class="product-discount" colspan="2">₹<span id="coupon-discount">
+                                        <% if (locals.couponDiscount) { %>
+                                            <%= Math.floor(locals.couponDiscount) %>
                                                 <% } else { %>0
                                                     <% } %>
                                     </span>
@@ -74,7 +76,8 @@
                             </tr>
                             <tr>
                                 <th>Applied Wallet Amount</th>
-                                <td class="product-wallet" colspan="2">₹<span id="wallet-discount"><%= locals.appliedWallet?locals.appliedWallet:0 %>
+                                <td class="product-wallet" colspan="2">₹<span id="wallet-discount">
+                                        <%= locals.appliedWallet?locals.appliedWallet:0 %>
                                     </span>
                                 </td>
                             </tr>
@@ -88,15 +91,15 @@
                                 <td colspan="2" class="product-subtotal">₹<span class="font-xl text-brand fw-900"
                                         id="totalAmountSpn">
                                         <% if (locals.appliedWallet && locals.couponDiscount ) { %>
-                                            <%= cart?.total - couponDiscount - appliedWallet  %>
-                                        <% } else if(locals.appliedWallet) { %>
-                                            <%=  cart?.total - appliedWallet %>
-                                        <% } else if(locals.couponDiscount) { %>
-                                            <%=  cart?.total - couponDiscount %>
-                                        <% } else { %>
-                                            <%= (cart?.total || 0) %>
-                                        <% } %>
-                                        
+                                            <%= Math.floor(cart?.total - couponDiscount - appliedWallet) %>
+                                                <% } else if(locals.appliedWallet) { %>
+                                                    <%= Math.floor(cart?.total - appliedWallet) %>
+                                                        <% } else if(locals.couponDiscount) { %>
+                                                            <%= Math.floor(cart?.total - couponDiscount) %>
+                                                                <% } else { %>
+                                                                    <%= Math.floor((cart?.total || 0)) %>
+                                                                        <% } %>
+
                                     </span></td>
                             </tr>
 
@@ -262,9 +265,11 @@
                 applyButton.style.display = 'block';
             }
 
-            
+
             discountElement.textContent = 0;
-            totalElement.textContent = Math.floor(total + discount);
+            if(discount>0){
+                totalElement.textContent = Math.floor(total + discount);
+            }
 
             fetch('/remove-coupon', {
                 method: 'put',
@@ -377,7 +382,12 @@
                     walletBalanceElement.textContent = Math.floor(res.walletBalance);
                     walletDiscount.textContent = Math.floor(walletInput);
                 } else {
+                    setTimeout(() => {
+                        document.getElementById('error-msg2').style.color = 'red'
+                    document.getElementById('error-msg2').textContent = res.message;
 
+                }, 5000);
+          
                 }
 
             }).catch(error => {
@@ -385,24 +395,6 @@
             })
 
         })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     });
 

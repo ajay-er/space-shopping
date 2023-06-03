@@ -70,7 +70,7 @@
                                     </td>
 
 
-                                    <td>&#8377;<%= order.total %> for <%= order.productCount %> items</td>
+                                    <td>&#8377;<%= Math.floor(order.total) %> for <%= order.productCount %> items</td>
                                     
                                     <% if (order.status==='canceled' || order.status==='cancelPending' ||  order.status==='returnPending' ||  order.status==='returned'  ) { %>
                                         <td></td>

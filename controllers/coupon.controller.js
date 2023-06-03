@@ -67,17 +67,41 @@ async function httpApplycoupon(req, res) {
     const response = await isUserValidForCoupon(userId, coupon.coupon);
 
     if (response.status) {
-      req.session.coupon = coupon.coupon;
-      let cartTotal = response.cartTotal;
 
       if (req.session.appliedWallet) {
-        cartTotal = response.cartTotal - req.session.appliedWallet;
+         if(response.cartTotal - req.session.appliedWallet<1){
+          return res.json({
+            success: false,
+            cartTotal: 0,
+            message: 'Cant apply discount amount!',
+          });
+         }
+      }
+
+      const discountAmount = (coupon.coupon.discount / 100) * response.cartTotal;
+      let cartTotal = response.cartTotal - discountAmount;
+
+     
+
+      req.session.coupon = coupon.coupon;
+
+
+      if (req.session.appliedWallet) {
+        if(cartTotal<req.session.appliedWallet){
+         const wallet =  req.session.appliedWallet - cartTotal
+          return res.json({
+            success: false,
+            message: `You can only add wallet amount ${wallet} while using coupon!`,
+          });
+        }
+
+        cartTotal = cartTotal - req.session.appliedWallet;
       }
 
       return res.json({
         success: true,
         cartTotal: cartTotal,
-        discount: response.discountAmount,
+        discount: discountAmount,
         message: 'Coupon successfully added',
       });
     } else {
@@ -88,13 +112,13 @@ async function httpApplycoupon(req, res) {
   }
 }
 
-async function httpRemoveCoupon(req,res){
+async function httpRemoveCoupon(req, res) {
   try {
-    if(req.session.coupon){
+    if (req.session.coupon) {
       req.session.coupon = null;
-      return res.json({status:true,message:'coupon removed succesfully'})
+      return res.json({ status: true, message: 'coupon removed succesfully' });
     }
-    return res.json({status:false,message:'something wrong!cant remove coupon!'})
+    return res.json({ status: false, message: 'something wrong!cant remove coupon!' });
   } catch (error) {
     handleError(res, error);
   }
@@ -105,5 +129,5 @@ module.exports = {
   httpAddCoupons,
   httpChangeCouponStatus,
   httpApplycoupon,
-  httpRemoveCoupon
+  httpRemoveCoupon,
 };

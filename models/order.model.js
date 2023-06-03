@@ -91,6 +91,7 @@ async function addOrderDetails(addressId, paymentMethod, userId, req, res) {
         .substr(0, 16);
 
       const orderStatus = paymentMethod === 'cashOnDelivery' ? 'processing' : 'pending';
+
       const order = new orderDatabase({
         user: userId,
         items: cartResult.items,
@@ -123,7 +124,7 @@ async function addOrderDetails(addressId, paymentMethod, userId, req, res) {
       }
       await order.save();
       await cartDatabase.deleteOne({ user: userId });
-      return { status: true, order: order };
+      return { status: true, order: order ,cartResult };
     } else {
       return { status: false };
     }
@@ -472,6 +473,23 @@ async function updateWalletData(walletAmount, userId, orderId) {
   }
 }
 
+
+async function  orderStatus(orderId){
+  try {
+    const result = await orderDatabase.findByIdAndUpdate(
+      orderId,
+      {
+        $set: { paymentmethod: 'COD',status:'processing' },
+      },
+      { new: true },
+    );
+    return true;
+  } catch (error) {
+    throw new Error('Error updating order  data!');
+    
+  }
+}
+
 module.exports = {
   addOrderDetails,
   getAddresses,
@@ -490,4 +508,5 @@ module.exports = {
   getUserData,
   getOrderdetails,
   updateWalletData,
+  orderStatus
 };
