@@ -390,6 +390,8 @@ async function getWallet(userId) {
         status: 'returnPending',
       })
       .select('total');
+      
+
 
     let pendingAmount = 0;
 
@@ -397,6 +399,9 @@ async function getWallet(userId) {
       await new Promise((resolve) => setTimeout(resolve, 0));
       pendingAmount += order.total;
     }
+
+    console.log(pendingAmount);
+    console.log(pendingOrders);
 
     if (amount) {
       return { status: true, amount: amount.wallet, pendingWallet: pendingAmount };

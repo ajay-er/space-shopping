@@ -27,6 +27,7 @@ function removeProduct(productId) {
         })
         .then((data) => {
           console.log('Product deleted:', data);
+          window.location.reload()
 
           const dropdownItem = document.querySelector(`li[data-product-id="${productId}"]`);
 
