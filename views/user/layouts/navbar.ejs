@@ -5,8 +5,6 @@
     searchInput.addEventListener('keyup', (event) => {
             event.preventDefault();
 
-            if(event.key === 'Enter'){
-
             const searchTerm = searchInput.value.trim();
             const data = {
                 searchInput: searchTerm
@@ -29,7 +27,6 @@
             }).catch((error) => {
                 console.log(error);
             });
-        }
 
     });
     });
