@@ -15,20 +15,17 @@ Before running Space Shopping on your local machine or a server, make sure you h
 
 ```
 https://github.com/ajay-er/space-shopping.git
-
 ```
 2.Navigate to the project directory:
 
 ```
 cd space-shopping
-
 ```
 
 3.Install project dependencies:
 
 ```
 npm install
-
 ```
 4.Create a new file named .env in the project's root directory and copy the contents of .env.template into it. This file will contain your environment variables.
 
@@ -40,6 +37,5 @@ npm install
 
 ```
 npm run watch
-
 ```
 # Thank you 
