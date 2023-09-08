@@ -70,10 +70,10 @@
         var bannerImagePreview1 = document.getElementById("bannerImagePreview1");
         var bannerImagePreview2 = document.getElementById("bannerImagePreview2");
 
-        if (selectedOption === "<%= banners[0]._id.toHexString() %>") {
+        if (selectedOption === "<%= banners[0]?._id.toHexString() %>") {
             bannerImagePreview1.style.display = "block";
             bannerImagePreview2.style.display = "none";
-        } else if (selectedOption === "<%= banners[1]._id.toHexString() %>") {
+        } else if (selectedOption === "<%= banners[1]?._id.toHexString() %>") {
             bannerImagePreview1.style.display = "none";
             bannerImagePreview2.style.display = "block";
         }
@@ -84,11 +84,11 @@
         var file = event.target.files[0];
 
         // Update the corresponding image preview based on the selected option
-        if (selectedOption === "<%= banners[0]._id.toHexString() %>") {
+        if (selectedOption === "<%= banners[0]?._id.toHexString() %>") {
             var bannerImagePreview1 = document.getElementById("bannerImagePreview1");
             bannerImagePreview1.style.display = "block";
             bannerImagePreview1.src = URL.createObjectURL(file);
-        } else if (selectedOption === "<%= banners[1]._id.toHexString() %>") {
+        } else if (selectedOption === "<%= banners[1]?._id.toHexString() %>") {
             var bannerImagePreview2 = document.getElementById("bannerImagePreview2");
             bannerImagePreview2.style.display = "block";
             bannerImagePreview2.src = URL.createObjectURL(file);
