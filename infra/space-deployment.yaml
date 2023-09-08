@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: space-ecommerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: space
+  template:
+    metadata:
+      labels:
+        app: space
+    spec:
+      containers:
+        - name: space
+          image: ajay404/space
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: space-service
+spec:
+  selector:
+    app: space
+  ports:
+    - name: space
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
