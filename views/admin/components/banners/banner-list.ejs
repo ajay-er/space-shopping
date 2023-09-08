@@ -18,10 +18,10 @@
 
                     <div class="mb-4">
                         <select required class="form-select" name="bannerId" onchange="handleBannerSelection(event)">
-                            <option value="<%= banners[0]._id.toHexString() %>">
+                            <option value="<%= banners[0]?._id.toHexString() %>">
                                 B1
                             </option>
-                            <option value="<%= banners[1]._id.toHexString() %>">
+                            <option value="<%= banners[1]?._id.toHexString() %>">
                                B2
                             </option>
                         </select>
