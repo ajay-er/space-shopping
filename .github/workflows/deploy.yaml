@@ -36,5 +36,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ajay404/ecommerce
+          tags: |
+            ajay404/ecommerce:${{ env.short_sha }}
+            ajay404/ecommerce:latest
 
