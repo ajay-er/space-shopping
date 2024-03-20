@@ -8,25 +8,13 @@ var instance = new Razorpay({
 
 async function generateRazorpay(orders) {
   var options = {
-    amount: orders.total * 100, // amount in the smallest currency unit
+    amount: orders.total * 100, 
     currency: 'INR',
     receipt: String(orders._id),
   };
-  
+
   try {
-    const order = await new Promise((resolve, reject) => {
-      instance.orders.create(options, function (err, order) {
-        if (err) {
-          reject(new Error('something goes wrong! while razorpay payment!'+err));
-        } else {
-          resolve(order);
-        }
-      });
-    });
-    
-    console.log(order);
-    return order;
-    
+    return instance.orders.create(options);
   } catch (error) {
     throw error;
   }
