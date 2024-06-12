@@ -1,3 +1,5 @@
+⚠️ Caution: This project was built during my skill development phase. Proceed with caution! Bugs and quirks are part of the package. 🐛
+
 # Space Shopping
 
 Space Shopping is an ecommerce shop that specializes in selling Funkoo toys. It is built using Node.js with MongoDB as the database and the EJS view engine for rendering dynamic web pages. This project aims to provide a user-friendly and interactive shopping experience for customers interested in Funkoo toys.
